@@ -81,7 +81,7 @@ class CalibrationActivity : MainActivity() {
                 Button(shape= RoundedCornerShape(10.dp), enabled = !textFixed, onClick = {
                     textFixed = true
                     val newDataValue = DataValue(0, labelText, concentration)
-                    database.dataValueDao().insert(newDataValue)
+                    //database.dataValueDao().insert(newDataValue)
                     BasicValues.updateData(newDataValue.voltage, newDataValue.concentration)
                     counter++
                     if (BasicValues.getConcentrationDataArray().size >= 2) {

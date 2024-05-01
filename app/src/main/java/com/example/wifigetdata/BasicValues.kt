@@ -6,8 +6,8 @@ object BasicValues {
     private var r2score :Double = 0.0
     private var url :String = ""
     private var calibrationConcentration = doubleArrayOf( 1.0, 10.0, 5.0, 7.5, 6.0, 2.5, 4.0, 1.25)
-    private var voltageDataArray  = mutableListOf<Double>(1.0, 2.0)
-    private var concentrationDataArray = mutableListOf<Double>(1.0, 3.0)
+    private var voltageDataArray  = mutableListOf<Double>()
+    private var concentrationDataArray = mutableListOf<Double>()
     private var gradient :Double= 0.0
     private var intercept :Double = 0.0
 
