@@ -39,7 +39,7 @@ object BasicValues {
     }
 
     fun getVoltageDataArray() :MutableList<Double> {
-        return concentrationDataArray
+        return voltageDataArray
     }
 
     fun getConcentrationDataArray() :MutableList<Double> {
