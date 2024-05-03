@@ -1,10 +1,12 @@
 package com.example.wifigetdata
 
+import kotlinx.coroutines.flow.MutableStateFlow
+
 
 object BasicValues {
-    private var receivedVal :Double = 0.0
+    private var receivedVal = MutableStateFlow(0.0)
     private var r2score :Double = 0.0
-    private var url :String = ""
+    private var url = MutableStateFlow("")
     private var calibrationConcentration = doubleArrayOf( 1.0, 10.0, 5.0, 7.5, 6.0, 2.5, 4.0, 1.25)
     private var voltageDataArray  = mutableListOf<Double>()
     private var concentrationDataArray = mutableListOf<Double>()
@@ -45,18 +47,18 @@ object BasicValues {
     }
 
     fun setURL(newURL:String){
-        url = newURL
+        url.value= newURL
     }
 
     fun getURL() :String {
-        return url
+        return url.value
     }
 
     fun getReceivedVal(): Double {
-        return receivedVal
+        return receivedVal.value
     }
     fun setReceivedVal(value:Double) {
-        receivedVal = value
+        receivedVal.value = value
     }
     fun getR2Score() :Double{
         return r2score
