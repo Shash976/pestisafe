@@ -32,7 +32,7 @@ fun calcSlopeIntercept(x1: Double, y1: Double, x2: Double, y2: Double): Pair<Dou
     return gradient to intercept
 }
 
-fun updateR2Score() {
+suspend fun updateR2Score() {
     val r2score = calculateRSquared(
         BasicValues.getVoltageDataArray().toDoubleArray(),
         BasicValues.getConcentrationDataArray().toDoubleArray()
