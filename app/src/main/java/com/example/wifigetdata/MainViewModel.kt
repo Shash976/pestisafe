@@ -36,7 +36,7 @@ class MainViewModel :ViewModel(){
                     value.value = updateReceivedValue()
                     println(value.value)
                 }
-                delay(1500)
+                delay(10000)
             }
         }
     }
@@ -56,13 +56,10 @@ class MainViewModel :ViewModel(){
     private suspend fun getRequest(apiUrl: String): String {
         val url: URL = URI.create(apiUrl).toURL()
         var response: StringBuilder? = null
-        println("the URL part works IG")
         try {
             val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            println("The connection definition works fine")
             connection.requestMethod = "GET"
             val responseCode = connection.responseCode
-            println("$responseCode is responses code")
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 val reader = BufferedReader(InputStreamReader(connection.inputStream))
                 var line: String?
