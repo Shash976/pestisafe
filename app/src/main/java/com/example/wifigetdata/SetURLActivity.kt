@@ -24,27 +24,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.wifigetdata.ui.theme.WifigetdataTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SetURLActivity : ComponentActivity() {
     private lateinit var sharedViewModel: MainViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedViewModel = ViewModelProvider((applicationContext as AppViewModel)).get(MainViewModel::class.java)
-
         setContent{
             WifigetdataTheme {
                 SetURLScreen()
             }
         }
+        sharedViewModel = ViewModelProvider((applicationContext as AppViewModel))[MainViewModel::class.java]
     }
-
 
     @SuppressLint("NotConstructor")
     @Composable
