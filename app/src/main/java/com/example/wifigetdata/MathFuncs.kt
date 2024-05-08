@@ -38,6 +38,7 @@ suspend fun updateR2Score() {
         BasicValues.getConcentrationDataArray().toDoubleArray()
     )
     BasicValues.setR2Score(r2score)
+    println(r2score)
 }
 
 fun calculateRSquared(array1: DoubleArray, array2: DoubleArray): Double {
