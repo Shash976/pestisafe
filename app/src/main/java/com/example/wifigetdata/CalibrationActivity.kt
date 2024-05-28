@@ -101,16 +101,6 @@ class CalibrationActivity : MainActivity() {
                         if (arraySize >= 2) {
                             mathCoroutineScope.launch {
                                 withContext(Dispatchers.Default) {
-                                    updateR2Score()
-                                    println(BasicValues.getR2Score())
-                                    updateGradientIntercept()
-                                }
-                            }
-                            if (BasicValues.getR2Score()>=0.9){
-                                val intent =
-                                    Intent(this@CalibrationActivity, HomeActivity::class.java)
-                                startActivity(intent)
-                            }
                                     sharedViewModel.insert(newDataValue)
                                     sharedViewModel.updateR2Score()
                                     println("This is the r2score ${BasicValues.getR2Score()}")
