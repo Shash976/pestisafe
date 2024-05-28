@@ -10,11 +10,11 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 
-@Entity
+@Entity(tableName = "DataValue")
 data class DataValue (
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name="Voltage") val voltage: Double,
-    @ColumnInfo(name="Concentration") val concentration:Double
+    @ColumnInfo(name="Concentration") val concentration:Double,
+    @PrimaryKey(autoGenerate = true) val id:Int = 0
 )
 
 @Dao
@@ -22,11 +22,25 @@ interface DataValueDao {
     @Query("SELECT * FROM DataValue")
     fun getAll(): LiveData<List<DataValue>>
 
+    @Query("SELECT Voltage FROM DataValue")
+    fun getVoltageArray(): List<Double>
+
+    @Query("SELECT Concentration FROM DataValue")
+    fun getConcentrationArray(): List<Double>
     @Insert
-    fun insert(vararg items: DataValue)
+    suspend fun insert(vararg items: DataValue)
 
     @Query("SELECT (SELECT COUNT(*) FROM DataValue) == 0")
-    fun isEmpty() :Boolean
+    suspend fun isEmpty() :Boolean
+
+    @Query("DELETE FROM DataValue")
+    suspend fun deleteAll()
+
+    @Query("SELECT * FROM DataValue WHERE Voltage = :voltage")
+    fun getFromVoltage(voltage: Double) :DataValue
+
+    @Query("SELECT * FROM DataValue WHERE id = :id")
+    fun getFromId(id :Int) :DataValue
 
 }
 
