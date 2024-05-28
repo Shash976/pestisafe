@@ -1,5 +1,6 @@
 package com.example.wifigetdata
 
+import android.provider.ContactsContract.Data
 import androidx.lifecycle.LiveData
 import androidx.room.ColumnInfo
 import androidx.room.Dao
@@ -48,4 +49,22 @@ interface DataValueDao {
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dataValueDao(): DataValueDao
 
+}
+
+class Repository(private val dataValueDao: DataValueDao){
+    val allData : LiveData<List<DataValue>> = dataValueDao.getAll()
+    val voltageArray :List<Double> = dataValueDao.getVoltageArray()
+    val concentrationArray :List<Double> = dataValueDao.getConcentrationArray()
+
+    suspend fun deleteAll(){
+        dataValueDao.deleteAll()
+    }
+
+    suspend fun insert(dataValue:DataValue){
+        dataValueDao.insert(dataValue)
+    }
+
+    suspend fun getFromVoltage(voltage: Double) :DataValue{
+        return dataValueDao.getFromVoltage(voltage)
+    }
 }

@@ -1,10 +1,12 @@
 package com.example.wifigetdata
 
 import android.app.Application
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.ViewModelFactoryDsl
 
 class AppViewModel : Application(), ViewModelStoreOwner {
 
@@ -17,5 +19,15 @@ class AppViewModel : Application(), ViewModelStoreOwner {
     override fun onCreate() {
         super.onCreate()
         sharedViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+    }
+}
+
+class MainViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MainViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
