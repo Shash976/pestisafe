@@ -1,18 +1,21 @@
 package com.example.wifigetdata
 
-import android.provider.ContactsContract.Data
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.lifecycle.LiveData
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import kotlin.math.sqrt
-import androidx.navigation.NavHost
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -20,44 +23,68 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
-import kotlin.math.sqrt
 
-class MainViewModel(private val repository: Repository) :ViewModel(){
-    val url = MutableStateFlow("")
+class MainViewModel(val repository: Repository) :ViewModel() {
+
+    val url = mutableStateOf("")
     val theValue = MutableStateFlow(0.0)
-    val r2score = mutableDoubleStateOf(0.0)
-    val calibrationConcentration = doubleArrayOf( 1.0, 10.0, 5.0, 7.5, 6.0, 2.5, 4.0, 1.25)
-    val allData =repository.allData
-
-    val voltageDataArray = repository.voltageArray
-    val concentrationDataArray = repository.concentrationArray
-
-
-    val gradient  = mutableDoubleStateOf(0.0)
+    val r2score = MutableStateFlow(0.0)
+    val calibrationConcentration = doubleArrayOf(1.0, 10.0, 5.0, 7.5, 6.0, 2.5, 4.0, 1.25)
+    //val allData :MutableStateFlow<List<DataValue>> = MutableStateFlow<List<DataValue>>(emptyList())
+    //val voltageDataArray : MutableStateFlow<List<Double>> = MutableStateFlow<List<Double>>(emptyList())
+    //val concentrationDataArray :MutableStateFlow<List<Double>> = MutableStateFlow<List<Double>>(emptyList())
+    val gradient = mutableDoubleStateOf(0.0)
     val intercept = mutableDoubleStateOf(0.0)
-    val updateTiming : MutableState<Long> = mutableLongStateOf(3000)
+    val updateTiming: MutableState<Long> = mutableLongStateOf(3000)
     private val viewModelJob = SupervisorJob()
 
-    fun changeURL(newURL :String){
-        url.value = newURL
+    init {
+        viewModelScope.launch {
+            //repository.allData.collect{allData.value = it; println("All Data ${allData.value}") }
+            //repository.voltageArray.collect{voltageDataArray.value = it; println("volatage array ${voltageDataArray.value}") }
+            //repository.concentrationArray.collect{concentrationDataArray.value=it; println("conc array ${concentrationDataArray.value}")}
+        }
     }
 
-    fun insert(dataValue: DataValue) = viewModelScope.launch {
-        repository.insert(dataValue)
+    fun insert(dataValue: DataValue)  {
+        viewModelScope.launch {
+            repository.insert(dataValue)
+            println("Inserted $dataValue")
+            println(repository.dataValueDao.getVoltageArray().asLiveData().value.orEmpty())
+            println(repository.dataValueDao.getConcentrationArray().asLiveData().value.orEmpty())
+            println(repository.dataValueDao.getAll().asLiveData().value.orEmpty())
+        }
     }
 
-    suspend fun getFromVoltage(voltage:Double) :DataValue = repository.getFromVoltage(voltage)
+    suspend fun getFromVoltage(voltage: Double): DataValue = repository.getFromVoltage(voltage)
 
-    fun deleteAll() = viewModelScope.launch {
+    private fun deleteAll() = viewModelScope.launch {
         repository.deleteAll()
     }
 
-    fun updateData(newVoltage :Double, newConcentration :Double) {
-        insert(DataValue(voltage = newVoltage, concentration = newConcentration))
+    fun resetValues() {
+        gradient.doubleValue = 0.0
+        intercept.doubleValue = 0.0
+        r2score.value = 0.0
 
-        if (voltageDataArray.size > 2) {
-            updateGradientIntercept()
-        }
+        //url.value = ""
+        deleteAll()
+//        println(repository.dataValueDao.getAll().asLiveData().value)
+//        println(repository.dataValueDao.getConcentrationArray().asLiveData().value)
+//        println(repository.dataValueDao.getAll().asLiveData().value)
+    }
+
+    fun updateData(newVoltage: Double, newConcentration: Double) = viewModelScope.launch{
+        insert(DataValue(voltage = newVoltage, concentration = newConcentration))
+        val vol = repository.dataValueDao.getConcentrationArray().asLiveData().value.orEmpty()
+        val conc = repository.dataValueDao.getVoltageArray().asLiveData().value.orEmpty()
+
+         if (vol.size > 2){
+                 val (m, c) = linearRegression(conc, vol)
+                 gradient.doubleValue = m
+                 intercept.doubleValue = c
+         }
+
     }
 
     fun updateConcentration() {
@@ -66,54 +93,49 @@ class MainViewModel(private val repository: Repository) :ViewModel(){
         updateData(voltage, concentration)
     }
 
-    fun calculateConcentration(voltage: Double): Double {
+    private fun calculateConcentration(voltage: Double): Double {
         // Y = MX + C -> X = Y-C / M
         return (voltage - intercept.doubleValue) / gradient.doubleValue
     }
 
-    fun updateGradientIntercept() {
-        val size  = concentrationDataArray.size
-        if (size > 2) {
-            val (m,c) = linearRegression(concentrationDataArray, voltageDataArray)
-            gradient.doubleValue = m
-            intercept.doubleValue = c
-        }
-    }
 
-    fun updateR2Score() = viewModelScope.launch{
-        r2score.doubleValue = calculateRSquared(
-            voltageDataArray.toDoubleArray(),
-            concentrationDataArray.toDoubleArray()
+    fun updateR2Score(dataArray:List<DataValue>) = viewModelScope.launch {
+        r2score.value= calculateRSquared(
+            dataArray.map { it.voltage }.orEmpty().toDoubleArray(),
+           dataArray.map { it.concentration }.orEmpty().toDoubleArray()
         )
-        println(r2score.doubleValue)
+        println(r2score.value)
     }
-
 
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
+
     fun fetchData() {
         println("Function called")
-        viewModelScope.launch(viewModelJob){
+        viewModelScope.launch(viewModelJob) {
             while (true) {
-                url.value = BasicValues.getURL()
-                withContext(Dispatchers.IO){
-                    theValue.value = updateReceivedValue()
-                    println(theValue.value)
+                withContext(Dispatchers.IO) {
+                    theValue.value  = updateReceivedValue()
+                    println("${ theValue.value} , ${url.value }")
                 }
-                delay(BasicValues.getUpdateTiming())
+                delay(updateTiming.value)
             }
         }
     }
+
     private suspend fun updateReceivedValue() :Double{
         try {
-            val received = getRequest(BasicValues.getURL()).toDouble()
-            BasicValues.setReceivedVal(received)
+            val received = getRequest(url.value).toDouble()
             return received
-        } catch (e: Exception) {  println("OOPS THIS IS THE ERROR $e")  }
+        } catch (e: Exception) {
+            println("OOPS THIS IS THE ERROR $e")
+            println("URL IS ${url.value}")
+        }
         return 0.0
     }
+
     private suspend fun getRequest(apiUrl: String): String {
         val url: URL = URI.create(apiUrl).toURL()
         var response: StringBuilder? = null

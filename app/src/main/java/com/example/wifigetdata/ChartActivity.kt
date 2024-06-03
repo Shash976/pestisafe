@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +18,7 @@ import com.patrykandpatrick.vico.compose.common.shader.color
 import com.patrykandpatrick.vico.compose.common.shader.verticalGradient
 import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModel
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.LineCartesianLayerModel
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 
@@ -39,6 +41,8 @@ private val model3 =
 @Preview("Line Chart Dark", widthDp = 200, showBackground = true)
 @Composable
 fun LineChartDark() {
+    val modelProducer1 = remember{ CartesianChartModelProducer.build()}
+    //val model4 = CartesianChartHost(modelProducer = modelProducer1)
     Surface(
         shape = RoundedCornerShape(8.dp),
         color = Color.Black,

@@ -2,43 +2,28 @@ package com.example.wifigetdata
 
 import kotlin.math.sqrt
 
-fun updateConcentration() {
-    val voltage = BasicValues.getReceivedVal()
-    val concentration = calculateConcentration(voltage)
-    BasicValues.updateData(voltage, concentration)
-}
-
-fun calculateConcentration(voltage: Double): Double {
-    // Y = MX + C -> X = Y-C / M
-    return (voltage - BasicValues.getIntercept()) / BasicValues.getGradient()
-}
-
-fun updateGradientIntercept() {
-    val size  = BasicValues.getConcentrationDataArray().size
-    if (size > 2) {
-        val x1 = BasicValues.getConcentrationDataArray()[size-2]
-        val x2 = BasicValues.getConcentrationDataArray()[size-1]
-        val y1 = BasicValues.getVoltageDataArray()[size-2]
-        val y2 = BasicValues.getVoltageDataArray()[size-1]
-        val (gradient, intercept) = calcSlopeIntercept(x1, y1, x2, y2)
-        BasicValues.setGradient(gradient)
-        BasicValues.setIntercept(intercept)
+fun linearRegression(x: List<Double>, y: List<Double>): Pair<Double, Double> {
+    if (x.size != y.size) {
+        throw IllegalArgumentException("Lists must have the same size")
     }
+
+    val n = x.size
+    val sumX = x.sum()
+    val sumY = y.sum()
+    val sumXY = x.zip(y) { a, b -> a * b }.sum()
+    val sumX2 = x.sumOf { it * it }
+
+    val slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
+    val intercept = (sumY - (slope * sumX)) / n
+
+    return Pair(slope, intercept)
 }
+
 
 fun calcSlopeIntercept(x1: Double, y1: Double, x2: Double, y2: Double): Pair<Double, Double> {
     val gradient = (y2 - y1) / (x2 - x1)
     val intercept = y1 - (gradient * x1)
-    return gradient to intercept
-}
-
-suspend fun updateR2Score() {
-    val r2score = calculateRSquared(
-        BasicValues.getVoltageDataArray().toDoubleArray(),
-        BasicValues.getConcentrationDataArray().toDoubleArray()
-    )
-    BasicValues.setR2Score(r2score)
-    println(r2score)
+    return Pair(gradient,intercept)
 }
 
 fun calculateRSquared(array1: DoubleArray, array2: DoubleArray): Double {

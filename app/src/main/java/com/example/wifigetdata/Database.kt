@@ -1,7 +1,5 @@
 package com.example.wifigetdata
 
-import android.provider.ContactsContract.Data
-import androidx.lifecycle.LiveData
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
@@ -10,6 +8,9 @@ import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 
 @Entity(tableName = "DataValue")
 data class DataValue (
@@ -21,13 +22,13 @@ data class DataValue (
 @Dao
 interface DataValueDao {
     @Query("SELECT * FROM DataValue")
-    fun getAll(): LiveData<List<DataValue>>
+    fun getAll(): Flow<List<DataValue>>
 
     @Query("SELECT Voltage FROM DataValue")
-    fun getVoltageArray(): List<Double>
+    fun getVoltageArray(): Flow<List<Double>>
 
     @Query("SELECT Concentration FROM DataValue")
-    fun getConcentrationArray(): List<Double>
+    fun getConcentrationArray(): Flow<List<Double>>
     @Insert
     suspend fun insert(vararg items: DataValue)
 
@@ -51,20 +52,24 @@ abstract class AppDatabase : RoomDatabase() {
 
 }
 
-class Repository(private val dataValueDao: DataValueDao){
-    val allData : LiveData<List<DataValue>> = dataValueDao.getAll()
-    val voltageArray :List<Double> = dataValueDao.getVoltageArray()
-    val concentrationArray :List<Double> = dataValueDao.getConcentrationArray()
+class Repository(val dataValueDao: DataValueDao){
 
-    suspend fun deleteAll(){
+    //val allData : Flow<List<DataValue>> = dataValueDao.getAll()
+    //var voltageArray : Flow<List<Double>> = dataValueDao.getAll().map { it.map { dataValue -> dataValue.voltage } }
+    //var concentrationArray :Flow<List<Double>>  = dataValueDao.getAll().map { it.map { dataValue -> dataValue.concentration } }
+
+    suspend fun deleteAll() {
         dataValueDao.deleteAll()
     }
 
-    suspend fun insert(dataValue:DataValue){
+    suspend fun insert(dataValue: DataValue) {
         dataValueDao.insert(dataValue)
+        //voltageArray = dataValueDao.getAll().map { it.map { dataValue -> dataValue.voltage } }
+        //concentrationArray = dataValueDao.getAll().map { it.map { dataValue -> dataValue.concentration } }
+
     }
 
-    suspend fun getFromVoltage(voltage: Double) :DataValue{
+    suspend fun getFromVoltage(voltage: Double): DataValue {
         return dataValueDao.getFromVoltage(voltage)
     }
-}
+    }

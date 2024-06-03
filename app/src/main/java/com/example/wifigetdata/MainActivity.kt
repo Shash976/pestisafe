@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -42,7 +44,6 @@ open class MainActivity : ComponentActivity() {
             }
         }
         setContent {
-            //val databaseDataValues by database.dataValueDao().getAll().observeAsState(emptyList())
             WifigetdataTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

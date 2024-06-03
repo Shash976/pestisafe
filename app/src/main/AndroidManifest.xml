@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SetURLActivity"/>
+        <activity android:name=".misc.SetURLActivity"/>
         <activity android:name=".CalibrationActivity"/>
         <activity android:name=".Charts"/>
         <activity android:name=".HomeActivity"/>

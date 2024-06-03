@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
@@ -17,7 +18,7 @@ object BasicValues {
     private var concentrationDataArray = mutableListOf<Double>()
     private val gradient : MutableState<Double> = mutableDoubleStateOf(0.0)
     private val intercept = mutableDoubleStateOf(0.0)
-    private val updateTiming :MutableState<Long> = mutableLongStateOf(1500)
+    private val updateTiming :MutableState<Long> = mutableLongStateOf(3000)
 
     fun getGradient() :Double {
         return gradient.value
@@ -39,26 +40,6 @@ object BasicValues {
         return calibrationConcentration
     }
 
-    fun updateData(newVoltage :Double, newConcentration :Double) {
-        voltageDataArray.add(newVoltage)
-        concentrationDataArray.add(newConcentration)
-
-        var array1= concentrationDataArray
-        var array2 = voltageDataArray
-
-        val pairList = array1.zip(array2).toList()
-        val sortedPairList = pairList.sortedBy { it.first }
-
-        array1 = sortedPairList.map { it.first }.toMutableList()
-        array2 = sortedPairList.map { it.second }.toMutableList()
-
-        voltageDataArray = array2
-        concentrationDataArray = array1
-
-        if (voltageDataArray.size > 2) {
-            updateGradientIntercept()
-        }
-    }
 
     fun getVoltageDataArray() :MutableList<Double> {
         return voltageDataArray
@@ -91,5 +72,13 @@ object BasicValues {
 
     fun getUpdateTiming() :Long {
         return updateTiming.value
+    }
+
+    fun resetValues(){
+        voltageDataArray.clear()
+        concentrationDataArray.clear()
+        r2score.doubleValue = 0.0
+        gradient.value = 0.0
+        intercept.doubleValue = 0.0
     }
 }
