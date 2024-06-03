@@ -34,6 +34,7 @@ import java.net.InetAddress
 
 @Composable
 fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity, navController: NavController){
+    //TODO ScanScreen
     val coroutineScope = rememberCoroutineScope()
     val ipAddresses = remember { mutableStateOf(listOf<String>()) }
     val isScanning = remember { mutableStateOf(false) }
@@ -42,7 +43,8 @@ fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity,
         isScanning.value = true
         val timeout = 1000
         // Get Wifi service
-        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiManager =
+            applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         // Get the IP address of the device and format it as a string
         val ipAddress = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
         // Extract the subnet from the IP address
