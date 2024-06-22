@@ -30,29 +30,17 @@ class MainViewModel(val repository: Repository) :ViewModel() {
     val theValue = MutableStateFlow(0.0)
     val r2score = MutableStateFlow(0.0)
     val calibrationConcentration = doubleArrayOf(1.0, 10.0, 5.0, 7.5, 6.0, 2.5, 4.0, 1.25)
-    //val allData :MutableStateFlow<List<DataValue>> = MutableStateFlow<List<DataValue>>(emptyList())
-    //val voltageDataArray : MutableStateFlow<List<Double>> = MutableStateFlow<List<Double>>(emptyList())
-    //val concentrationDataArray :MutableStateFlow<List<Double>> = MutableStateFlow<List<Double>>(emptyList())
+    val allData = MutableStateFlow(emptyList<DataValue>())
     val gradient = mutableDoubleStateOf(0.0)
     val intercept = mutableDoubleStateOf(0.0)
-    val updateTiming: MutableState<Long> = mutableLongStateOf(3000)
+    private val updateTiming: MutableState<Long> = mutableLongStateOf(3000)
+    var screen :Routes = Routes.MAIN
     private val viewModelJob = SupervisorJob()
 
-    init {
-        viewModelScope.launch {
-            //repository.allData.collect{allData.value = it; println("All Data ${allData.value}") }
-            //repository.voltageArray.collect{voltageDataArray.value = it; println("volatage array ${voltageDataArray.value}") }
-            //repository.concentrationArray.collect{concentrationDataArray.value=it; println("conc array ${concentrationDataArray.value}")}
-        }
-    }
-
-    fun insert(dataValue: DataValue)  {
+    private fun insert(dataValue: DataValue)  {
         viewModelScope.launch {
             repository.insert(dataValue)
             println("Inserted $dataValue")
-            println(repository.dataValueDao.getVoltageArray().asLiveData().value.orEmpty())
-            println(repository.dataValueDao.getConcentrationArray().asLiveData().value.orEmpty())
-            println(repository.dataValueDao.getAll().asLiveData().value.orEmpty())
         }
     }
 
@@ -76,15 +64,16 @@ class MainViewModel(val repository: Repository) :ViewModel() {
 
     fun updateData(newVoltage: Double, newConcentration: Double) = viewModelScope.launch{
         insert(DataValue(voltage = newVoltage, concentration = newConcentration))
-        val vol = repository.dataValueDao.getConcentrationArray().asLiveData().value.orEmpty()
-        val conc = repository.dataValueDao.getVoltageArray().asLiveData().value.orEmpty()
+    }
 
-         if (vol.size > 2){
-                 val (m, c) = linearRegression(conc, vol)
-                 gradient.doubleValue = m
-                 intercept.doubleValue = c
-         }
-
+    fun updateGradientIntercept() = viewModelScope.launch {
+        val data = repository.dataValueDao.getAll().asLiveData().value.orEmpty()
+        val voltageArray = data.map { it.voltage }
+        val concentrationArray = data.map { it.concentration }
+        val (slope, c) = linearRegression(voltageArray, concentrationArray)
+        println("$slope:Slope $c:Intercept")
+        gradient.doubleValue = slope
+        intercept.doubleValue = c
     }
 
     fun updateConcentration() {

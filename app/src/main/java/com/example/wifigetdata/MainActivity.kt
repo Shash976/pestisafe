@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -41,8 +42,11 @@ open class MainActivity : ComponentActivity() {
                     this@MainActivity,
                     MainViewModelFactory(repository)
                 )[MainViewModel::class.java]
+
             }
+
         }
+
         setContent {
             WifigetdataTheme {
                 Surface(
@@ -53,19 +57,53 @@ open class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = Routes.MAIN.toString()){
                         composable(Routes.MAIN.toString()){
                             MainScreen(sharedViewModel, navController)
+                            sharedViewModel.screen = Routes.MAIN
                         }
                         composable(Routes.IP_SCANNER.toString()){
                             ScanScreen(sharedViewModel = sharedViewModel,
                                 applicationContext = this@MainActivity,
                                 navController = navController
                             )
+                            sharedViewModel.screen = Routes.IP_SCANNER
                         }
                         composable(Routes.CALIBRATION.toString()){
                             CalibrationScreen(sharedViewModel = sharedViewModel, navController=navController)
+                            sharedViewModel.screen = Routes.CALIBRATION
                         }
                         composable(Routes.HOME.toString()){
                             HomeScreen(sharedViewModel = sharedViewModel, navController = navController, context = this@MainActivity)
+                            sharedViewModel.screen = Routes.HOME
                         }
+                    }
+                    LaunchedEffect(Unit) {
+                        lifecycleScope.launch {
+                            withContext(Dispatchers.IO){
+                                sharedViewModel.repository.dataValueDao.getAll().collect {
+                                    println("New Data ${it}")
+                                    when (sharedViewModel.screen) {
+                                        Routes.CALIBRATION -> {
+                                            if (it.size >= 2) {
+                                                sharedViewModel.updateR2Score(it)
+                                            }
+                                            if (it.size > 2) {
+                                                sharedViewModel.updateGradientIntercept()
+                                                //if (sharedViewModel.r2score.value >= 0.9) {
+                                                //    println("R2score is sufficient. Switching to main screen")
+                                                //    sharedViewModel.screen = Routes.HOME
+                                                //}
+                                            }
+                                        }
+
+                                        Routes.HOME -> {}
+                                        Routes.MAIN -> {}
+                                        Routes.IP_SCANNER -> TODO()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    LaunchedEffect(sharedViewModel.screen) {
+                        navController.navigate(sharedViewModel.screen.toString())
                     }
                 }
             }

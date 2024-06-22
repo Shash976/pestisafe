@@ -53,20 +53,12 @@ abstract class AppDatabase : RoomDatabase() {
 }
 
 class Repository(val dataValueDao: DataValueDao){
-
-    //val allData : Flow<List<DataValue>> = dataValueDao.getAll()
-    //var voltageArray : Flow<List<Double>> = dataValueDao.getAll().map { it.map { dataValue -> dataValue.voltage } }
-    //var concentrationArray :Flow<List<Double>>  = dataValueDao.getAll().map { it.map { dataValue -> dataValue.concentration } }
-
     suspend fun deleteAll() {
         dataValueDao.deleteAll()
     }
 
     suspend fun insert(dataValue: DataValue) {
         dataValueDao.insert(dataValue)
-        //voltageArray = dataValueDao.getAll().map { it.map { dataValue -> dataValue.voltage } }
-        //concentrationArray = dataValueDao.getAll().map { it.map { dataValue -> dataValue.concentration } }
-
     }
 
     suspend fun getFromVoltage(voltage: Double): DataValue {

@@ -23,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -33,12 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -51,14 +45,43 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
     val shownAdditionalCards = remember { mutableIntStateOf(0) }
     val startR2Math = remember{ mutableIntStateOf(0) }
     val allData = sharedViewModel.repository.dataValueDao.getAll().collectAsState(emptyList())
-    val concentrationDataArray = sharedViewModel.repository.dataValueDao.getConcentrationArray().collectAsState(emptyList())
-    val voltageDataArray = sharedViewModel.repository.dataValueDao.getVoltageArray().collectAsState(emptyList())
     val arraySize = allData.value.size+1
+    val calibConcentration = sharedViewModel.calibrationConcentration
+
+
+    LaunchedEffect(Unit) {
+        r2CoroutineScope.launch{
+            sharedViewModel.r2score.collect { r2 ->
+                withContext(Dispatchers.Default) {
+                    r2score.doubleValue = r2
+                    val idealR2conditions = r2 >= 0.9 && counter.intValue in 3..<arraySize
+                    println("\t is r2 (${r2score.doubleValue}) less? $idealR2conditions | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} ")
+                    when(idealR2conditions){
+                        true -> {
+                            println("R2score ($r2) is sufficient. Switching to main screen")
+                            navController.navigate(Routes.HOME.toString())
+                        }
+                        false -> {
+                            if (shownAdditionalCards.intValue < calibConcentration.size - 3) {
+                                shownAdditionalCards.intValue++ // Show one additional card
+                                println("showing additional card")
+                            }
+                            else if (counter.intValue+1 >= calibConcentration.size) {
+                                println("All calibration values calibrated. Switching to main screen")
+                                navController.navigate(Routes.HOME.toString())
+                            }
+                        }
+                    }
+                    //delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards
+                }
+            }
+        }
+    }
 
     @Composable
     fun CalibrateCard(index: Int) {
         val labelText = remember { mutableDoubleStateOf(0.0) }
-        val concentration = sharedViewModel.calibrationConcentration[index]
+        val concentration = calibConcentration[index]
         val textFixed by remember(counter) { derivedStateOf { counter.intValue != index } } // Is text fixed?
         val updateLabelCoroutineScope = rememberCoroutineScope() // Updates Label Text
         val mathCoroutineScope = rememberCoroutineScope() // Updates R2Score
@@ -74,29 +97,6 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
         val onButtonClick = {
             println("Counter ${counter.intValue}")
             sharedViewModel.updateData(newVoltage = labelText.doubleValue, newConcentration = concentration)
-            //println("${labelText.doubleValue}, $concentration")
-            mathCoroutineScope.launch {
-                sharedViewModel.repository.dataValueDao.getAll().collectLatest {
-                    println("Current in Var ${allData.value} \n\t in Rep $it \n\t volt in var ${voltageDataArray.value} \n\t conc in var ${concentrationDataArray.value} \n\t arraySize $arraySize")
-                    withContext(Dispatchers.Default) {
-                        if (arraySize >= 2) {
-                            sharedViewModel.updateR2Score(it)
-                            println("This is the r2score ${sharedViewModel.r2score.value}")
-                            startR2Math.intValue++
-                            if (arraySize > 2) {
-                                if (arraySize == counter.intValue + 1 || sharedViewModel.r2score.value >= 0.9) {
-                                    if (arraySize == counter.intValue + 1) {
-                                        println("All calibration values calibrated. Switching to main screen")
-                                    } else if (sharedViewModel.r2score.value >= 0.9) {
-                                        println("R2score is sufficient. Switching to main screen")
-                                    }
-                                    navController.navigate(Routes.HOME.toString())
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)){
@@ -123,20 +123,7 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
         }
 
     }
-    LaunchedEffect(key1 = startR2Math.intValue) {
-        sharedViewModel.r2score.collectLatest {r2 ->
-            withContext(Dispatchers.Default) {
-                r2score.doubleValue = r2
-                val isR2less = counter.intValue in 3..<arraySize && r2score.doubleValue < 0.9
-                println("\t is r2 (${r2score.doubleValue} less? $isR2less | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} ")
-                if (isR2less && shownAdditionalCards.intValue < sharedViewModel.calibrationConcentration.size - 3) {
-                    shownAdditionalCards.intValue++ // Show one additional card
-                    println("showing additional card")
-                }
-                //delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards
-            }
-        }
-    }
+
     Box(modifier= Modifier.fillMaxSize()){
         Column(
             modifier = Modifier.padding(10.dp),
