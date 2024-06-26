@@ -54,25 +54,43 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
             sharedViewModel.r2score.collect { r2 ->
                 withContext(Dispatchers.Default) {
                     r2score.doubleValue = r2
-                    val idealR2conditions = r2 >= 0.9 && counter.intValue in 3..<arraySize
-                    println("\t is r2 (${r2score.doubleValue}) less? $idealR2conditions | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} ")
-                    when(idealR2conditions){
-                        true -> {
-                            println("R2score ($r2) is sufficient. Switching to main screen")
-                            navController.navigate(Routes.HOME.toString())
+                    println("${counter.intValue} : counter")
+                    if (counter.intValue >= 3){
+                        println("Counter is more than or equal to 3 at ${counter.intValue}")
+                        if (r2score.doubleValue >= 0.9){
+                            println("R2 score is more than 0.9 at ${r2score.doubleValue}")
+                            idealR2conditions.value = true
                         }
-                        false -> {
-                            if (shownAdditionalCards.intValue < calibConcentration.size - 3) {
-                                shownAdditionalCards.intValue++ // Show one additional card
-                                println("showing additional card")
-                            }
-                            else if (counter.intValue+1 >= calibConcentration.size) {
-                                println("All calibration values calibrated. Switching to main screen")
-                                navController.navigate(Routes.HOME.toString())
-                            }
+                        else{
+                            println("R2 score is less than 0.9 at ${r2score.doubleValue}")
                         }
                     }
+                    else {
+                        println("Counter is less than 3 at ${counter.intValue}")
+                    }
+                    println("\t is r2 (${r2score.doubleValue}) less? ${idealR2conditions.value} (Counter is ${counter.intValue}) | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} ")
                     //delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards
+                }
+            }
+        }
+//        sharedViewModel.theValue.collect{
+//            voltageValue.doubleValue = it
+//            println("changed to $it")
+//        }
+    }
+    when(idealR2conditions.value){
+        true -> {
+            println("R2score (${r2score.doubleValue}) is sufficient. Switching to main screen")
+            navController.navigate(Routes.HOME.toString())
+        }
+        false -> {
+            if (counter.intValue > 2){
+                if (shownAdditionalCards.intValue < calibConcentration.size - 3) {
+                    shownAdditionalCards.intValue++ // Show one additional card
+                    println("showing additional card")
+                } else if (counter.intValue + 1 >= calibConcentration.size) {
+                    println("All calibration values calibrated. Switching to main screen")
+                    navController.navigate(Routes.HOME.toString())
                 }
             }
         }
