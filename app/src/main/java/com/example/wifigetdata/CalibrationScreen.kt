@@ -131,6 +131,12 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
             verticalArrangement = Arrangement.Center
         ) {
             Text(
+                text="Calibrate",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(15.dp)
+            )
+            Text(
                 text = "R-Square score: ${r2score.doubleValue}",
                 modifier = Modifier.padding(10.dp)
             )
