@@ -96,6 +96,7 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
 
         val onButtonClick = {
             println("Counter ${counter.intValue}")
+            counter.intValue = index+1
             sharedViewModel.updateData(newVoltage = labelText.doubleValue, newConcentration = concentration)
         }
 
@@ -114,7 +115,6 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
                     Text(text = "$concentration μm")
                     Button(shape = RoundedCornerShape(10.dp), enabled = !textFixed, onClick = {
                         onButtonClick()
-                        counter.intValue = index + 1
                     }) {
                         Text(text = "Set Voltage")
                     }
