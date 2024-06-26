@@ -168,7 +168,7 @@ fun rememberLegend(chartColors: List<Color>) =
                     textSize = 12.sp,
                     typeface = Typeface.MONOSPACE,
                 ),
-                labelText = "",
+                labelText = "Concentration",
             )
         },
         iconSize = 8.dp,
