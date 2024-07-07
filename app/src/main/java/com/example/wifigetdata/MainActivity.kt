@@ -91,10 +91,14 @@ open class MainActivity : ComponentActivity() {
                                                 //    println("R2score is sufficient. Switching to main screen")
                                                 //    sharedViewModel.screen = Routes.HOME
                                                 //}
+                                                if (it.size > 2) {
+                                                }
                                             }
                                         }
+                                        Routes.HOME -> {
 
-                                        Routes.HOME -> {}
+                                            sharedViewModel.allData.value = it
+                                        }
                                         Routes.MAIN -> {}
                                         Routes.IP_SCANNER -> TODO()
                                     }
