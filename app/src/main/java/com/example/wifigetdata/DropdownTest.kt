@@ -142,8 +142,6 @@ class DropdownTest : ComponentActivity(){
                 openDownloadedFile(context, file.absolutePath)
             }
 
-
-
             Column(modifier = Modifier.padding(10.dp)) {
                 Button(onClick = { openDialog.value = true }) {
                     Text(text = "Choose Format")
@@ -258,7 +256,8 @@ fun openDownloadedFile(context: Context, filePath: String) {
     }
 }
 
-fun downloadFile(context: Context, fileName:String, array: Array<DataValue>, format: Formats){
+fun downloadFile(context: Context, fileName:String, array: Array<DataValue>, formatStr: String){
+    val format = Formats.valueOf(formatStr)
     val content = convertFromArray(array, format)
     val dateFormat = SimpleDateFormat("ddMMMyy", Locale.getDefault())
     val date = dateFormat.format(Date())
