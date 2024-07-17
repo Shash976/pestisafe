@@ -25,14 +25,19 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -43,41 +48,40 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
     val r2score = remember { mutableDoubleStateOf(0.0) }
     val r2CoroutineScope = rememberCoroutineScope()
     val shownAdditionalCards = remember { mutableIntStateOf(0) }
-    val startR2Math = remember{ mutableIntStateOf(0) }
-    val allData = sharedViewModel.repository.dataValueDao.getAll().collectAsState(emptyList())
-    val arraySize = allData.value.size+1
     val calibConcentration = sharedViewModel.calibrationConcentration
-
+    val idealR2conditions = remember { mutableStateOf(false) }
+    val voltageValue = remember { mutableDoubleStateOf(0.0) }
+    val getValueCoroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        r2CoroutineScope.launch{
-            sharedViewModel.r2score.collect { r2 ->
-                withContext(Dispatchers.Default) {
-                    r2score.doubleValue = r2
-                    println("${counter.intValue} : counter")
-                    if (counter.intValue >= 3){
-                        println("Counter is more than or equal to 3 at ${counter.intValue}")
-                        if (r2score.doubleValue >= 0.9){
-                            println("R2 score is more than 0.9 at ${r2score.doubleValue}")
-                            idealR2conditions.value = true
-                        }
-                        else{
-                            println("R2 score is less than 0.9 at ${r2score.doubleValue}")
-                        }
-                    }
-                    else {
-                        println("Counter is less than 3 at ${counter.intValue}")
-                    }
-                    println("\t is r2 (${r2score.doubleValue}) less? ${idealR2conditions.value} (Counter is ${counter.intValue}) | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} ")
-                    //delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards
-                }
+        getValueCoroutineScope.launch {
+            sharedViewModel.theValue.collect {
+                voltageValue.doubleValue = it
+
             }
         }
-//        sharedViewModel.theValue.collect{
-//            voltageValue.doubleValue = it
-//            println("changed to $it")
-//        }
+        r2CoroutineScope.launch {
+            sharedViewModel.r2score.collect { r2 ->
+            withContext(Dispatchers.Default) {
+                r2score.doubleValue = r2
+                println("${counter.intValue} : counter")
+                if (counter.intValue >= 3) {
+                    println("Counter is more than or equal to 3 at ${counter.intValue}")
+                    if (r2score.doubleValue >= 0.9) {
+                        println("R2 score is more than 0.9 at ${r2score.doubleValue}")
+                        idealR2conditions.value = true
+                    } else {
+                        println("R2 score is less than 0.9 at ${r2score.doubleValue}")
+                    }
+                } else {
+                    println("Counter is less than 3 at ${counter.intValue}")
+                }
+                println("\t is r2 (${r2score.doubleValue}) less? ${idealR2conditions.value} (Counter is ${counter.intValue}) | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} ")
+                //delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards
+            }
+        } }
     }
+
     when(idealR2conditions.value){
         true -> {
             println("R2score (${r2score.doubleValue}) is sufficient. Switching to main screen")
@@ -102,15 +106,19 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
         val concentration = calibConcentration[index]
         val textFixed by remember(counter) { derivedStateOf { counter.intValue != index } } // Is text fixed?
         val updateLabelCoroutineScope = rememberCoroutineScope() // Updates Label Text
-        val mathCoroutineScope = rememberCoroutineScope() // Updates R2Score
 
-        updateLabelCoroutineScope.launch {
-            sharedViewModel.theValue.collect {
-                if (!textFixed && it != labelText.doubleValue) {
-                    labelText.doubleValue = it
+        LaunchedEffect(voltageValue.doubleValue) {
+            if (!textFixed) {
+                updateLabelCoroutineScope.launch {
+                    labelText.doubleValue = voltageValue.doubleValue
                 }
             }
+
         }
+
+
+
+
 
         val onButtonClick = {
             println("Counter ${counter.intValue}")
