@@ -134,15 +134,11 @@ fun MainChart(modelProducer: CartesianChartModelProducer, modifier: Modifier, ch
         chart =
         rememberCartesianChart(
             rememberLineCartesianLayer(
-                lines =
-                chartColors.map { color ->
-                    rememberLineSpec(shader = DynamicShader.color(color), backgroundShader = null)
-                }
+                lines = chartColors.map { color -> rememberLineSpec(shader = DynamicShader.color(color), backgroundShader = null) }
             ),
-            startAxis =
-            rememberStartAxis(
+            startAxis = rememberStartAxis(
                 label = rememberStartAxisLabel(),
-                horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside,
+                horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside
             ),
             bottomAxis = rememberBottomAxis(),
             legend = rememberLegend(chartColors),
@@ -155,11 +151,13 @@ fun MainChart(modelProducer: CartesianChartModelProducer, modifier: Modifier, ch
     )
 }
 
+val line_names = listOf("Concentration","Voltage")
+
 @Composable
 fun rememberLegend(chartColors: List<Color>) =
     rememberVerticalLegend<CartesianMeasureContext, CartesianDrawContext>(
         items =
-        chartColors.mapIndexed { _, chartColor ->
+        chartColors.mapIndexed { index, chartColor ->
             rememberLegendItem(
                 icon = rememberShapeComponent(Shape.Pill, chartColor),
                 label =
@@ -168,7 +166,7 @@ fun rememberLegend(chartColors: List<Color>) =
                     textSize = 12.sp,
                     typeface = Typeface.MONOSPACE,
                 ),
-                labelText = "Concentration",
+                labelText = line_names[index],
             )
         },
         iconSize = 8.dp,
