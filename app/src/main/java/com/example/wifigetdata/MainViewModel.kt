@@ -1,21 +1,15 @@
 package com.example.wifigetdata
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -23,6 +17,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
+import kotlin.math.round
 
 class MainViewModel(val repository: Repository) :ViewModel() {
 
@@ -40,7 +35,6 @@ class MainViewModel(val repository: Repository) :ViewModel() {
     private fun insert(dataValue: DataValue)  {
         viewModelScope.launch {
             repository.insert(dataValue)
-            println("Inserted $dataValue")
         }
     }
 
@@ -66,12 +60,10 @@ class MainViewModel(val repository: Repository) :ViewModel() {
         insert(DataValue(voltage = newVoltage, concentration = newConcentration))
     }
 
-    fun updateGradientIntercept() = viewModelScope.launch {
-        val data = repository.dataValueDao.getAll().asLiveData().value.orEmpty()
+    fun updateGradientIntercept(data: List<DataValue>) = viewModelScope.launch {
         val voltageArray = data.map { it.voltage }
         val concentrationArray = data.map { it.concentration }
-        val (slope, c) = linearRegression(voltageArray, concentrationArray)
-        println("$slope:Slope $c:Intercept")
+        val (slope, c) = linearRegression( concentrationArray, voltageArray)
         gradient.doubleValue = slope
         intercept.doubleValue = c
     }
@@ -84,14 +76,16 @@ class MainViewModel(val repository: Repository) :ViewModel() {
 
     private fun calculateConcentration(voltage: Double): Double {
         // Y = MX + C -> X = Y-C / M
-        return (voltage - intercept.doubleValue) / gradient.doubleValue
+        var concentration =  (voltage - intercept.doubleValue) / gradient.doubleValue
+        concentration = round(concentration*1000)/1000
+        return concentration
     }
 
 
     fun updateR2Score(dataArray:List<DataValue>) = viewModelScope.launch {
         r2score.value= calculateRSquared(
             dataArray.map { it.voltage }.orEmpty().toDoubleArray(),
-           dataArray.map { it.concentration }.orEmpty().toDoubleArray()
+            dataArray.map { it.concentration }.orEmpty().toDoubleArray()
         )
         println(r2score.value)
     }
