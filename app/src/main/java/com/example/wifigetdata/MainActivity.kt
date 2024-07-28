@@ -54,27 +54,91 @@ open class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = Routes.MAIN.toString()){
-                        composable(Routes.MAIN.toString()){
-                            MainScreen(sharedViewModel, navController)
-                            sharedViewModel.screen = Routes.MAIN
-                        }
-                        composable(Routes.IP_SCANNER.toString()){
-                            ScanScreen(sharedViewModel = sharedViewModel,
-                                applicationContext = this@MainActivity,
-                                navController = navController
-                            )
-                            sharedViewModel.screen = Routes.IP_SCANNER
-                        }
-                        composable(Routes.CALIBRATION.toString()){
-                            CalibrationScreen(sharedViewModel = sharedViewModel, navController=navController)
-                            sharedViewModel.screen = Routes.CALIBRATION
-                        }
-                        composable(Routes.HOME.toString()){
-                            HomeScreen(sharedViewModel = sharedViewModel, navController = navController, context = this@MainActivity)
-                            sharedViewModel.screen = Routes.HOME
-                        }
-                    }
+
+                    Scaffold(
+                        bottomBar = {
+                            BottomAppBar {
+                                val showMenu = remember { mutableStateOf(false) }
+                                val navOptions = listOf(Routes.MAIN, Routes.IP_SCANNER, Routes.CALIBRATION, Routes.HOME)
+
+                                IconButton(onClick = { showMenu.value = true }) {
+                                    Icon(Icons.Default.Menu, contentDescription = "Navigation Menu")
+                                }
+
+                                DropdownMenu(
+                                    expanded = showMenu.value,
+                                    onDismissRequest = { showMenu.value = false }
+                                ) {
+                                    navOptions.forEach { route ->
+                                        DropdownMenuItem(
+                                            text = { Text(route.toString()) },
+                                            onClick = {
+                                                navController.navigate(route.toString())
+                                                showMenu.value = false
+                                            }
+                                        )
+                                    }
+                                }
+//                                Row {
+//                                    Button(onClick = {
+//                                        navController.navigate(Routes.MAIN.toString())
+//                                    }) {
+//                                        Text("Main")
+//                                    }
+//                                    Button(onClick = {
+//                                        navController.navigate(Routes.IP_SCANNER.toString())
+//                                    }) {
+//                                        Text("Scan")
+//                                    }
+//                                    Button(onClick = {
+//                                        navController.navigate(Routes.CALIBRATION.toString())
+//                                    }) {
+//                                        Text("Calibration")
+//                                    }
+//                                    Button(onClick = {
+//                                        navController.navigate(Routes.HOME.toString())
+//                                    }) {
+//                                        Text("Home")
+//                                    }
+//                                }
+                            }
+                                    },
+                        content = { innerPadding ->
+                            Column(modifier = Modifier.padding(innerPadding)){
+                                NavHost(
+                                    navController = navController,
+                                    startDestination = Routes.MAIN.toString()
+                                ) {
+                                    composable(Routes.MAIN.toString()) {
+                                        MainScreen(sharedViewModel, navController)
+                                        sharedViewModel.screen = Routes.MAIN
+                                    }
+                                    composable(Routes.IP_SCANNER.toString()) {
+                                        ScanScreen(
+                                            sharedViewModel = sharedViewModel,
+                                            applicationContext = this@MainActivity,
+                                            navController = navController
+                                        )
+                                        sharedViewModel.screen = Routes.IP_SCANNER
+                                    }
+                                    composable(Routes.CALIBRATION.toString()) {
+                                        CalibrationScreen(
+                                            sharedViewModel = sharedViewModel,
+                                            navController = navController
+                                        )
+                                        sharedViewModel.screen = Routes.CALIBRATION
+                                    }
+                                    composable(Routes.HOME.toString()) {
+                                        HomeScreen(
+                                            sharedViewModel = sharedViewModel,
+                                            navController = navController,
+                                            context = this@MainActivity
+                                        )
+                                        sharedViewModel.screen = Routes.HOME
+                                    }
+                                }
+                            }
+                    })
                     LaunchedEffect(Unit) {
                         lifecycleScope.launch {
                             withContext(Dispatchers.IO){
