@@ -2,10 +2,13 @@ package com.example.wifigetdata
 
 import kotlin.math.sqrt
 
-fun linearRegression(x: List<Double>, y: List<Double>): Pair<Double, Double> {
-    if (x.size != y.size) {
+fun linearRegression(X: List<Double>, Y: List<Double>): Pair<Double, Double> {
+    if (X.size != Y.size) {
         throw IllegalArgumentException("Lists must have the same size")
     }
+    val sortedPairs = X.zip(Y).sortedBy { it.first }
+    val x = sortedPairs.map { it.first }
+    val y = sortedPairs.map { it.second }
 
     val n = x.size
     val sumX = x.sum()
@@ -15,8 +18,8 @@ fun linearRegression(x: List<Double>, y: List<Double>): Pair<Double, Double> {
 
     val slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX)
     val intercept = (sumY - (slope * sumX)) / n
-
     return Pair(slope, intercept)
+
 }
 
 
