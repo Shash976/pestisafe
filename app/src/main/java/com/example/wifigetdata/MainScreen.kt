@@ -1,5 +1,6 @@
 package com.example.wifigetdata
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.unit.dp
@@ -39,7 +41,7 @@ fun MainScreen(sharedViewModel: MainViewModel, navController: NavController){
             }
         }
     }
-    Column (modifier = Modifier.padding(10.dp)){
+    Column (modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
         Text(labelText.value)
         Button(onClick = onButtonClick) {
             Text(buttonText.value)
