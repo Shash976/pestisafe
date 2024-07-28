@@ -3,15 +3,31 @@ package com.example.wifigetdata
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -141,26 +157,25 @@ open class MainActivity : ComponentActivity() {
                     })
                     LaunchedEffect(Unit) {
                         lifecycleScope.launch {
-                            withContext(Dispatchers.IO){
+                            withContext(Dispatchers.Default){
                                 sharedViewModel.repository.dataValueDao.getAll().collect {
-                                    println("New Data ${it}")
+                                    if (it.isNotEmpty()){
+                                        println("New Data ${it.last().voltage} V, ${it.last().concentration} μm")
+                                    } else {
+                                        println("Data is empty")
+                                    }
+
                                     when (sharedViewModel.screen) {
                                         Routes.CALIBRATION -> {
                                             if (it.size >= 2) {
                                                 sharedViewModel.updateR2Score(it)
-                                            }
-                                            if (it.size > 2) {
-                                                sharedViewModel.updateGradientIntercept()
-                                                //if (sharedViewModel.r2score.value >= 0.9) {
-                                                //    println("R2score is sufficient. Switching to main screen")
-                                                //    sharedViewModel.screen = Routes.HOME
-                                                //}
                                                 if (it.size > 2) {
+                                                    sharedViewModel.updateGradientIntercept(it)
                                                 }
                                             }
                                         }
                                         Routes.HOME -> {
-
+                                            println("Updated to ${it.last().voltage} V, ${it.last().concentration} μm")
                                             sharedViewModel.allData.value = it
                                         }
                                         Routes.MAIN -> {}
