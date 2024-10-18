@@ -39,6 +39,11 @@ fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity,
     val ipAddresses = remember { mutableStateOf(listOf<String>()) }
     val isScanning = remember { mutableStateOf(false) }
     val scanComplete = remember { mutableStateOf(false) }
+
+    /**
+     * Check the hosts on the network
+     * @return the list of IP addresses of the hosts
+     */
     suspend fun checkHosts() = coroutineScope {
         isScanning.value = true
         val timeout = 1000
@@ -51,6 +56,9 @@ fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity,
         val subnet = ipAddress.substringBeforeLast(".")
         println(" Scanning subnet $subnet")
         ipAddresses.value = listOf()
+        /**
+         * Check the hosts on the network
+         */
         val jobs = List(254) { i ->
             async {
                 val host = "$subnet.$i"
@@ -93,7 +101,9 @@ fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity,
                     isScanning.value = false
                     println("Clicked on ${ipAddresses.value[index]}")
                     sharedViewModel.url.value = "http://${ipAddresses.value[index].substringBefore("(").trim()}"
+                    sharedViewModel.getPesticideData()
                     sharedViewModel.fetchData()
+                    sharedViewModel.resetValues()
                     println("fetch data function called")
                     navController.navigate(Routes.CALIBRATION.toString())
                 }){
