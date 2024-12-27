@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -31,13 +30,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -106,7 +103,6 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
         val concentration = calibConcentration[index]
         val textFixed by remember(counter) { derivedStateOf { counter.intValue != index } } // Is text fixed?
         val updateLabelCoroutineScope = rememberCoroutineScope() // Updates Label Text
-
         LaunchedEffect(voltageValue.doubleValue) {
             if (!textFixed) {
                 updateLabelCoroutineScope.launch {
@@ -115,10 +111,6 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
             }
 
         }
-
-
-
-
 
         val onButtonClick = {
             println("Counter ${counter.intValue}")
@@ -138,7 +130,7 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
                     modifier = Modifier.padding(10.dp)
                 ) {
                     Text(text = "${labelText.doubleValue} V")
-                    Text(text = "$concentration μm")
+                    Text(text = "$concentration ppm")
                     Button(shape = RoundedCornerShape(10.dp), enabled = !textFixed, onClick = {
                         onButtonClick()
                     }) {

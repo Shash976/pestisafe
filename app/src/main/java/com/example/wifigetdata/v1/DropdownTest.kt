@@ -1,9 +1,8 @@
-package com.example.wifigetdata
+package com.example.wifigetdata.v1
 
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.widget.Toast
@@ -32,10 +31,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
+import com.example.wifigetdata.DataValue
+import com.example.wifigetdata.Formats
 import com.google.gson.Gson
 import java.io.File
 import java.io.FileOutputStream
-import java.text.Format
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,7 +51,7 @@ class DropdownTest : ComponentActivity(){
             val chosenFormat = remember { mutableStateOf("")   }
             val X_array = Array(20){ Random.Default.nextDouble()}
             val Y_array = Array(20){Random.Default.nextDouble()}
-            val data_vals = Array(20){ DataValue(X_array[it], Y_array[it])}
+            val data_vals = Array(20){ DataValue(X_array[it], Y_array[it]) }
             val context = this
             val options = listOf("CSV", "JSON", "Excel")
 
@@ -95,7 +95,11 @@ class DropdownTest : ComponentActivity(){
 
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    println("No ${fileType.capitalize(Locale.ROOT)} Viewer Found. Error $e")
+                    println("No ${fileType.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(
+                            Locale.ROOT
+                        ) else it.toString()
+                    }} Viewer Found. Error $e")
                     Toast.makeText(context, "Could not find a ${fileType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} Viewer", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -225,7 +229,7 @@ fun arrayToJSON(array:Array<DataValue>) :String {
     return json
 }
 
-fun convertFromArray(array: Array<DataValue>, format:Formats) :String {
+fun convertFromArray(array: Array<DataValue>, format: Formats) :String {
     return when (format) {
         Formats.CSV -> arrayToCSV(array)
         Formats.JSON -> arrayToJSON(array)
@@ -251,7 +255,7 @@ fun openDownloadedFile(context: Context, filePath: String) {
 
         context.startActivity(intent)
     } catch (e: Exception) {
-        println("No ${fileType.capitalize(Locale.ROOT)} Viewer Found. Error $e")
+        println("No ${fileType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }} Viewer Found. Error $e")
         Toast.makeText(context, "Could not find a ${fileType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} Viewer", Toast.LENGTH_SHORT).show()
     }
 }
@@ -296,5 +300,4 @@ fun downloadFile(context: Context, fileName:String, array: Array<DataValue>, for
     outputStream.write(content.toByteArray())
     outputStream.close()
     Toast.makeText(context, "File downloaded successfully", Toast.LENGTH_SHORT).show()
-    openDownloadedFile(context, file.absolutePath)
-}
+    openDownloadedFile(context, file.absolutePath)}

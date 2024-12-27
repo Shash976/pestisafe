@@ -2,12 +2,12 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.dokka")
 }
 
 android {
     namespace = "com.example.wifigetdata"
     compileSdk = 34
-
     defaultConfig {
         applicationId = "com.example.wifigetdata"
         minSdk = 24
@@ -19,6 +19,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        ksp(){
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+
     }
 
     buildTypes {
@@ -48,6 +53,15 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+tasks.dokkaHtml {
+    outputDirectory.set(file(System.getProperty("user.home")).resolve("Downloads/dokka"))
+//    dokkaSourceSets {
+//        configureEach {
+//            includes.from("README.md")
+//        }
+//    }
 }
 
 dependencies {

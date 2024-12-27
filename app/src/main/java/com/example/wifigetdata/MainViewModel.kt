@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -19,6 +20,14 @@ import java.net.URI
 import java.net.URL
 import kotlin.math.round
 
+/**
+ * The ViewModel class for the main screen
+ * @param repository the repository to use
+ * @property url the url to get the data from
+ * @see Repository
+ * @see DataValue
+ * @see Pesticide
+ */
 class MainViewModel(val repository: Repository) :ViewModel() {
 
     val url = mutableStateOf("")
@@ -41,7 +50,7 @@ class MainViewModel(val repository: Repository) :ViewModel() {
     suspend fun getFromVoltage(voltage: Double): DataValue = repository.getFromVoltage(voltage)
 
     private fun deleteAll() = viewModelScope.launch {
-        repository.deleteAll()
+        repository.dataValueDao.deleteAll()
     }
 
     fun resetValues() {
@@ -81,7 +90,9 @@ class MainViewModel(val repository: Repository) :ViewModel() {
         return concentration
     }
 
-
+    /**
+     * Function to update the R2 score
+     */
     fun updateR2Score(dataArray:List<DataValue>) = viewModelScope.launch {
         r2score.value= calculateRSquared(
             dataArray.map { it.voltage }.orEmpty().toDoubleArray(),
@@ -95,6 +106,9 @@ class MainViewModel(val repository: Repository) :ViewModel() {
         viewModelJob.cancel()
     }
 
+    /**
+     * Function to start data fetching
+     */
     fun fetchData() {
         println("Function called")
         viewModelScope.launch(viewModelJob) {
@@ -108,6 +122,10 @@ class MainViewModel(val repository: Repository) :ViewModel() {
         }
     }
 
+    /**
+     * Function to update the received value
+     * @return the received value
+     */
     private suspend fun updateReceivedValue() :Double{
         try {
             val received = getRequest(url.value).toDouble()
@@ -119,6 +137,65 @@ class MainViewModel(val repository: Repository) :ViewModel() {
         return 0.0
     }
 
+    /**
+     * Function to get the pesticide data
+     * @see Pesticide
+     * @see Detail
+     * @see MRL
+     * @see Commodity
+     */
+    fun getPesticideData() {
+        println("Retrieving data")
+        viewModelScope.launch(viewModelJob) {
+            withContext(Dispatchers.IO) {
+                val apiUrl = "https://www.fao.org/jsoncodexpest/jsonrequest/pesticides/index.html"
+                val response = getRequest(apiUrl)
+                val gson = GsonBuilder().registerTypeAdapter(
+                    PesticidesResponse::class.java,
+                    PesticideDeserializer()
+                ).create()
+                val pesticideL = gson.fromJson(response, PesticidesResponse::class.java)
+                val pesticides: List<Pesticide> = pesticideL.pesticides
+                pesticides.forEach {
+                    if (it.id in arrayOf(49, 27, 17)) {
+                        val pesticideApi =
+                            "https://www.fao.org/jsoncodexpest/jsonrequest/pesticides/details.html?id=${it.id}&lang=en"
+                        val pesticideResponse = getRequest(pesticideApi)
+                        val detailGson =
+                            GsonBuilder().registerTypeAdapter(Detail::class.java, DetailDeserializer())
+                                .create()
+                        val detail: Detail = detailGson.fromJson(pesticideResponse, Detail::class.java)
+                        println(repository.pesticideDao.getAll().value.orEmpty().map { it.id })
+                        println(it.id)
+                        if (it.id !in repository.pesticideDao.getAll().value.orEmpty().map { it.id }) {
+                            repository.pesticideDao.insert(it)
+                        }
+
+                        detail.mrls.forEach { mrlDetail ->
+                            if (mrlDetail.commodity.id !in repository.commodityDao.getAll()
+                                    .map { it.id }
+                            ) {
+                                repository.commodityDao.insert(mrlDetail.commodity)
+                            }
+                            val mrl = MRL(
+                                mrlDetail.pesticide.id,
+                                mrlDetail.commodity.id,
+                                mrlDetail.mrl
+                            )
+                            repository.mrlDao.insert(mrl)
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Function to get the request from the API
+     * @param apiUrl the url to get the request from
+     * @return the response from the API
+     */
     private suspend fun getRequest(apiUrl: String): String {
         val url: URL = URI.create(apiUrl).toURL()
         var response: StringBuilder? = null
@@ -132,7 +209,7 @@ class MainViewModel(val repository: Repository) :ViewModel() {
                 response = StringBuilder()
 
                 while (reader.readLine().also { line = it } != null) {
-                    response!!.append(line)
+                    response.append(line)
                 }
                 reader.close()
 

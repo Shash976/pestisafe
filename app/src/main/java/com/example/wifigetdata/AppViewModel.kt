@@ -1,12 +1,10 @@
 package com.example.wifigetdata
 
 import android.app.Application
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.ViewModelFactoryDsl
 
 class AppViewModel : Application(), ViewModelStoreOwner {
 

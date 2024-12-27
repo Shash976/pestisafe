@@ -1,7 +1,9 @@
 package com.example.wifigetdata
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +15,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,9 +42,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
+/**
+ * The home screen of the app
+ * @param sharedViewModel the view model to use
+ * @param navController the navigation controller
+ * @param context the context to use
+ * @see MainViewModel
+ * @see NavController
+ * @see MainActivity
+ * @see CartesianChartModelProducer
+ * @see DataValue
+ * @see Pesticide
+ * @see Commodity
+ */
 fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, context: MainActivity){
-    //TODO HomeScreen
     val modelProducer1 = remember{CartesianChartModelProducer.build()}
     val modelProducer2 = remember { CartesianChartModelProducer.build()   }
     val chartCoroutineScope = rememberCoroutineScope()
@@ -46,11 +66,11 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
     val allData = remember { mutableStateOf(emptyList<DataValue>())    }
     LaunchedEffect(Unit) {
         updateCoroutineScope.launch{
-            sharedViewModel.theValue.collect {
+            sharedViewModel.theValue.collect { received ->
                 if (allData.value.size >= 2){
-                    val low = sharedViewModel.allData.value[0].voltage
-                    val high = sharedViewModel.allData.value[1].voltage
-                    if (it > low && it < high){
+                    val low = sharedViewModel.allData.value.map { it.voltage }.min()
+                    val high = sharedViewModel.allData.value.map { it.voltage }.max()
+                    if (received > low && received < high){
                         sharedViewModel.updateConcentration()
                     }
                 }
@@ -60,54 +80,154 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
             }
         }
         chartCoroutineScope.launch {
-            sharedViewModel.allData.collect { data ->
-                println("collecting.....")
-                allData.value = data
-                println(allData.value.size)
-                withContext(Dispatchers.Default) {
-                    modelProducer1.tryRunTransaction {
-                        lineSeries {
-                            series(
-                                y = allData.value.map { it.concentration },
-                            )
-                            series(
-                                y = allData.value.map { it.voltage },
-                            )
+            try {
+                sharedViewModel.allData.collect { data ->
+                    println("collecting.....")
+                    allData.value = data
+                    println(allData.value.size)
+    //                    modelProducer1.tryRunTransaction {
+    //                        lineSeries {
+    //                            series(
+    //                                y = allData.value.map { it.concentration },
+    //                            )
+    //                            series(
+    //                                y = allData.value.map { it.voltage },
+    //                            )
+    //                        }
+    //                    }
+                        //println("\t Added 1")
+                        modelProducer2.runTransaction {
+                            lineSeries {
+                                series(
+                                    x = allData.value.sortedBy { it.concentration }
+                                        .map { it.concentration },
+                                    y = allData.value.sortedBy { it.concentration }.map { it.voltage },
+                                )
+                            }
                         }
-                    }
-                    println("\t Added 1")
-                    modelProducer2.tryRunTransaction {
-                        lineSeries {
-                            series(
-                                x = allData.value.sortedBy { it.concentration }
-                                    .map { it.concentration },
-                                y = allData.value.sortedBy { it.concentration }.map { it.voltage },
-                            )
-                        }
-                    }
-                    println("\t Added 2")
+                        println("Added series")
                 }
-                    println("Added series")
+            } catch (e: Exception) {
+                println("Error: $e")
             }
         }
     }
 
     Column (modifier = Modifier.verticalScroll(rememberScrollState())){
-        Text("Home Screen!")
-        MainChart(modelProducer1, modifier = Modifier.padding(10.dp), chartColors = listOf(Color.Black, Color.Cyan))
-//        CartesianChartHost(
+        //MainChart(modelProducer1, modifier = Modifier.padding(10.dp), chartColors = listOf(Color.Black, Color.Cyan))
+/*        CartesianChartHost(
 //            rememberCartesianChart(
 //                rememberLineCartesianLayer(),
 //                startAxis = rememberStartAxis(),
 //                bottomAxis = rememberBottomAxis()
 //            ),
 //            modelProducer = modelProducer,
-//        )
+        )*/
         MainChart(modelProducer2, modifier = Modifier.padding(15.dp), chartColors = listOf(Color.Black))
 
         Card(modifier = Modifier.padding(10.dp)){
-            if (allData.value.isNotEmpty()){ Text("Voltage: ${allData.value.last().voltage} V \nConcentration: ${allData.value.last().concentration} μm") }
+            if (allData.value.isNotEmpty()){ Text("Voltage: ${allData.value.last().voltage} V \nConcentration: ${allData.value.last().concentration} ppm") }
         }
+
+        val pesticides by sharedViewModel.repository.pesticideDao.getAll().observeAsState(emptyList())
+        println("works till line 121 $pesticides")
+        var selectedPesticide by remember { mutableStateOf<Pesticide?>(null) }
+        var selectedCommodity by remember { mutableStateOf<Commodity?>(null) }
+        var showPesticideDropdown by remember { mutableStateOf(false) }
+        var showCommodityDropdown by remember { mutableStateOf(false) }
+
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = { showPesticideDropdown = true }) {
+                    Text(selectedPesticide?.name ?: "Select Pesticide")
+                }
+                DropdownMenu(
+                    expanded = showPesticideDropdown,
+                    onDismissRequest = { showPesticideDropdown = false }
+                ) {
+                    pesticides.forEach { pesticide ->
+                        println("workssss $pesticide")
+                        DropdownMenuItem(onClick = {
+                            println("line138 $pesticide")
+                            selectedPesticide = pesticide
+                            println("line140, selectedPesticide: $selectedPesticide")
+                            showPesticideDropdown = false
+                        }, text = {
+                            Text(pesticide.name)
+                        })
+                    }
+                }
+            }
+
+            if (selectedPesticide != null) {
+                val searchCoroutine = rememberCoroutineScope()
+                var commodities : List<Commodity> by remember { mutableStateOf(emptyList()) }
+                println("works till line 152 ${selectedPesticide!!.id}")
+                searchCoroutine.launch {
+                    withContext(Dispatchers.IO){
+                        commodities = sharedViewModel.repository.mrlDao.getMRLs(selectedPesticide!!.id)
+                            .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodity) }
+                        println(commodities)
+                    }
+                }
+                println("works till line 157 $commodities")
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = { showCommodityDropdown = true}) {
+                        Text(selectedCommodity?.name ?: "Select Commodity")
+                    }
+                    DropdownMenu(
+                        expanded = showCommodityDropdown,
+                        onDismissRequest = { showCommodityDropdown = false }
+                    ) {
+                        if (commodities.isEmpty()){
+                            searchCoroutine.launch {
+                                withContext(Dispatchers.IO){
+                                    commodities = sharedViewModel.repository.mrlDao.getMRLs(selectedPesticide!!.id)
+                                        .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodity) }
+                                    println(commodities)
+                                }
+                            }
+                        }
+                        commodities.forEach { commodity ->
+                            DropdownMenuItem(onClick = {
+                                selectedCommodity = commodity
+                                showCommodityDropdown = false
+                            }, text = {
+                                Text(commodity.name)
+                            })
+                        }
+                    }
+                }
+            }
+
+            if (selectedCommodity != null) {
+                val mrlSearchCoroutine = rememberCoroutineScope()
+                var mrl by remember { mutableStateOf(MRL(0,0,0.0)) }
+                mrlSearchCoroutine.launch {
+                    withContext(Dispatchers.IO){
+                        mrl = sharedViewModel.repository.mrlDao.getMRL(
+                            selectedPesticide!!.id,
+                            selectedCommodity!!.id
+                        )
+                    }
+                }
+                Card(modifier = Modifier.padding(10.dp)){
+                    Text("MRL: ${mrl.mrl}")
+                    if (allData.value.isNotEmpty()){
+                        if (allData.value.last().concentration > mrl.mrl){
+                            Text("${allData.value.last().concentration} exceeds MRL.", color = Color.Red)
+                        }
+                        else {
+                            Text("${allData.value.last().concentration} is within MRL.", color = Color(
+                                0xFF1D3A1D
+                            )
+                            )
+                        }
+                    }
+                }
+            }
+
+
 
         val formatButtonText = remember{ mutableStateOf("Choose Format") }
         val openDialog = remember { mutableStateOf(false)  }
@@ -152,7 +272,12 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
         Row {
             Button(enabled = (formatButtonText.value in options), onClick = {
                 when (chosenFormat.value) {
-                    in listOf("CSV","JSON") -> downloadFile(context,"data.${chosenFormat.value.lowercase()}", allData.value.toTypedArray(), chosenFormat.value)
+                    in listOf("CSV","JSON") -> downloadFile(
+                        context,
+                        "data.${chosenFormat.value.lowercase()}",
+                        allData.value.toTypedArray(),
+                        chosenFormat.value
+                    )
                     "Excel" -> Toast.makeText(context, "Not available yet", Toast.LENGTH_SHORT).show()
                 }
             }) {

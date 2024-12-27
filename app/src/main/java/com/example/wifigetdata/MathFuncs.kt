@@ -3,6 +3,9 @@ package com.example.wifigetdata
 import kotlin.math.sqrt
 
 fun linearRegression(X: List<Double>, Y: List<Double>): Pair<Double, Double> {
+    /**
+     * Calculate the linear regression of two lists of numbers.
+     */
     if (X.size != Y.size) {
         throw IllegalArgumentException("Lists must have the same size")
     }
@@ -30,18 +33,22 @@ fun calcSlopeIntercept(x1: Double, y1: Double, x2: Double, y2: Double): Pair<Dou
 }
 
 fun calculateRSquared(array1: DoubleArray, array2: DoubleArray): Double {
+    /**
+     * Calculate the R-squared value of two arrays of numbers.
+     */
     if (array1.size != array2.size) {
         throw IllegalArgumentException("Arrays must have the same size")
     }
 
-    val n = array1.size
-    val mean1 = array1.average()
-    val mean2 = array2.average()
+    val n = array1.size // number of elements in the array
+    val mean1 = array1.average() // mean of the first array
+    val mean2 = array2.average() // mean of the second array
 
-    var numerator = 0.0
-    var denominator1 = 0.0
-    var denominator2 = 0.0
+    var numerator = 0.0 // numerator of the correlation coefficient
+    var denominator1 = 0.0 // denominator of the correlation coefficient for array1
+    var denominator2 = 0.0 // denominator of the correlation coefficient for array2
 
+    // Calculate the correlation coefficient
     for (i in 0 until n) {
         val diff1 = array1[i] - mean1
         val diff2 = array2[i] - mean2
