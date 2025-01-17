@@ -1,4 +1,4 @@
-package com.example.wifigetdata.v1
+package com.example.pestisafe.v1
 
 import android.content.Context
 import android.content.Intent
@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import com.example.wifigetdata.DataValue
-import com.example.wifigetdata.Formats
+import com.example.pestisafe.DataValue
+import com.example.pestisafe.Formats
 import com.google.gson.Gson
 import java.io.File
 import java.io.FileOutputStream

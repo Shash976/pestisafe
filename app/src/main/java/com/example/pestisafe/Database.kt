@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import androidx.lifecycle.LiveData
 import androidx.room.ColumnInfo
@@ -76,6 +76,21 @@ data class MRL(
 )
 
 /**
+ * The data class for the user
+ * @property username the username of the user
+ * @property email the email of the user
+ */
+@Entity(tableName = "User")
+data class User(
+    val name: String,
+    val username: String,
+    val email: String,
+    var password: String,
+    val dob: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0
+)
+
+/**
  * The data access object for the data values
  */
 @Dao
@@ -121,6 +136,9 @@ interface PesticideDao {
 
     @Query("SELECT * FROM Pesticide WHERE id = :id")
     fun getPesticide(id: Int): Pesticide
+
+    @Query("DELETE FROM Pesticide")
+    fun deleteAll()
 }
 
 /**
@@ -159,15 +177,28 @@ interface MRLDao {
     fun getMRL(pesticide: Int, commodity: Int): MRL
 }
 
+@Dao
+interface UserDao {
+    @Insert
+    suspend fun insert(vararg users: User)
+
+    @Query("SELECT * FROM User WHERE username = :username")
+    suspend fun getUser(username: String): User
+
+    @Query("UPDATE User SET password = :password WHERE username = :username")
+    suspend fun resetPassword(username: String, password: String)
+}
+
 /**
  * The database class
  */
-@Database(entities = [DataValue::class, Pesticide::class, Commodity::class, MRL::class], version = 1, exportSchema = true)
+@Database(entities = [DataValue::class, Pesticide::class, Commodity::class, MRL::class, User::class], version = 1, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dataValueDao(): DataValueDao
     abstract fun pesticideDao(): PesticideDao
     abstract fun commodityDao(): CommodityDao
     abstract fun mrlDao(): MRLDao
+    abstract fun userDao(): UserDao
 
 }
 
@@ -180,6 +211,7 @@ class Repository(private val appDatabase: AppDatabase){
     val pesticideDao = appDatabase.pesticideDao()
     val commodityDao = appDatabase.commodityDao()
     val mrlDao = appDatabase.mrlDao()
+    val userDao = appDatabase.userDao()
 
     suspend fun deleteAll() {
         dataValueDao.deleteAll()

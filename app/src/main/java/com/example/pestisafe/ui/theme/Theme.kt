@@ -1,4 +1,4 @@
-package com.example.wifigetdata.ui.theme
+package com.example.pestisafe.ui.theme
 
 import android.app.Activity
 import android.os.Build

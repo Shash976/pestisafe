@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -30,7 +30,7 @@ import kotlin.math.round
  */
 class MainViewModel(val repository: Repository) :ViewModel() {
 
-    val url = mutableStateOf("")
+    var url = mutableStateOf("")
     val theValue = MutableStateFlow(0.0)
     val r2score = MutableStateFlow(0.0)
     val calibrationConcentration = doubleArrayOf(1.0, 10.0, 5.0, 7.5, 6.0, 2.5, 4.0, 1.25)
@@ -40,6 +40,14 @@ class MainViewModel(val repository: Repository) :ViewModel() {
     private val updateTiming: MutableState<Long> = mutableLongStateOf(3000)
     var screen :Routes = Routes.MAIN
     private val viewModelJob = SupervisorJob()
+    var pesticides = emptyList<Pesticide>()
+    var user :User? = null
+
+    fun deleteAllPesticides(){
+        viewModelScope.launch {
+            repository.pesticideDao.deleteAll()
+        }
+    }
 
     private fun insert(dataValue: DataValue)  {
         viewModelScope.launch {
@@ -63,6 +71,10 @@ class MainViewModel(val repository: Repository) :ViewModel() {
 //        println(repository.dataValueDao.getAll().asLiveData().value)
 //        println(repository.dataValueDao.getConcentrationArray().asLiveData().value)
 //        println(repository.dataValueDao.getAll().asLiveData().value)
+    }
+
+    fun resetURL() {
+        url.value = ""
     }
 
     fun updateData(newVoltage: Double, newConcentration: Double) = viewModelScope.launch{
@@ -112,7 +124,7 @@ class MainViewModel(val repository: Repository) :ViewModel() {
     fun fetchData() {
         println("Function called")
         viewModelScope.launch(viewModelJob) {
-            while (true) {
+            while (url.value.isNotEmpty()) {
                 withContext(Dispatchers.IO) {
                     theValue.value  = updateReceivedValue()
                     println("${ theValue.value} , ${url.value }")
@@ -140,14 +152,10 @@ class MainViewModel(val repository: Repository) :ViewModel() {
     /**
      * Function to get the pesticide data
      * @see Pesticide
-     * @see Detail
-     * @see MRL
-     * @see Commodity
      */
-    fun getPesticideData() {
-        println("Retrieving data")
-        viewModelScope.launch(viewModelJob) {
-            withContext(Dispatchers.IO) {
+    fun getPesticideData(){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
                 val apiUrl = "https://www.fao.org/jsoncodexpest/jsonrequest/pesticides/index.html"
                 val response = getRequest(apiUrl)
                 val gson = GsonBuilder().registerTypeAdapter(
@@ -155,9 +163,26 @@ class MainViewModel(val repository: Repository) :ViewModel() {
                     PesticideDeserializer()
                 ).create()
                 val pesticideL = gson.fromJson(response, PesticidesResponse::class.java)
-                val pesticides: List<Pesticide> = pesticideL.pesticides
+                pesticides = pesticideL.pesticides
+                pesticides.forEach { repository.pesticideDao.insert(it) }
+                println(pesticides.lastIndex)
+                println("Added to database")
+            }
+        }
+    }
+
+    /**
+     * Function to get the pesticide data
+     * @see Pesticide
+     * @see Detail
+     * @see MRL
+     * @see Commodity
+     */
+    fun getMRLData() {
+        println("Retrieving data")
+        viewModelScope.launch(viewModelJob) {
+            withContext(Dispatchers.IO) {
                 pesticides.forEach {
-                    if (it.id in arrayOf(49, 27, 17)) {
                         val pesticideApi =
                             "https://www.fao.org/jsoncodexpest/jsonrequest/pesticides/details.html?id=${it.id}&lang=en"
                         val pesticideResponse = getRequest(pesticideApi)
@@ -184,7 +209,6 @@ class MainViewModel(val repository: Repository) :ViewModel() {
                             )
                             repository.mrlDao.insert(mrl)
                         }
-                    }
                 }
             }
 

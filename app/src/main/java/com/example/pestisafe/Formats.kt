@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 enum class Formats {
     CSV {

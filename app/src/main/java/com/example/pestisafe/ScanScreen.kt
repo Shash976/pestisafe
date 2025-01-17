@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import android.content.Context
 import android.net.wifi.WifiManager
@@ -47,6 +47,8 @@ fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity,
     suspend fun checkHosts() = coroutineScope {
         isScanning.value = true
         val timeout = 1000
+        sharedViewModel.resetURL()
+        println("URL HAS BEEN RESET")
         // Get Wifi service
         val wifiManager =
             applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -101,7 +103,7 @@ fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity,
                     isScanning.value = false
                     println("Clicked on ${ipAddresses.value[index]}")
                     sharedViewModel.url.value = "http://${ipAddresses.value[index].substringBefore("(").trim()}"
-                    sharedViewModel.getPesticideData()
+                    sharedViewModel.getMRLData()
                     sharedViewModel.fetchData()
                     sharedViewModel.resetValues()
                     println("fetch data function called")

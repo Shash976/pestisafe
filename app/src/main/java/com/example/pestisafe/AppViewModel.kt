@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

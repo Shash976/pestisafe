@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import android.content.Context
 import android.content.Intent
@@ -101,5 +101,5 @@ fun downloadFile(context: Context, fileName:String, array: Array<DataValue>, for
     outputStream.write(content.toByteArray())
     outputStream.close()
     Toast.makeText(context, "File downloaded successfully", Toast.LENGTH_SHORT).show()
-    com.example.wifigetdata.v1.openDownloadedFile(context, file.absolutePath)
+    com.example.pestisafe.v1.openDownloadedFile(context, file.absolutePath)
 }

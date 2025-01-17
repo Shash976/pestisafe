@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer

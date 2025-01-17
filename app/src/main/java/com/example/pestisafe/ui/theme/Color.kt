@@ -1,4 +1,4 @@
-package com.example.wifigetdata.ui.theme
+package com.example.pestisafe.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package com.example.wifigetdata.v1
+package com.example.pestisafe.v1
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape

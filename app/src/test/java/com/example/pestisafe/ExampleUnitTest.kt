@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

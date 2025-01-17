@@ -1,4 +1,4 @@
-package com.example.wifigetdata.v1
+package com.example.pestisafe.v1
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableDoubleStateOf

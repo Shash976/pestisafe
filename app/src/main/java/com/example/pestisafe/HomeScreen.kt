@@ -1,4 +1,4 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
 import android.annotation.SuppressLint
 import android.widget.Toast
@@ -23,7 +23,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -125,11 +124,11 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
         )*/
         MainChart(modelProducer2, modifier = Modifier.padding(15.dp), chartColors = listOf(Color.Black))
 
-        Card(modifier = Modifier.padding(10.dp)){
+        Card(modifier = Modifier.padding(20.dp)){
             if (allData.value.isNotEmpty()){ Text("Voltage: ${allData.value.last().voltage} V \nConcentration: ${allData.value.last().concentration} ppm") }
         }
 
-        val pesticides by sharedViewModel.repository.pesticideDao.getAll().observeAsState(emptyList())
+        val pesticides = sharedViewModel.pesticides
         println("works till line 121 $pesticides")
         var selectedPesticide by remember { mutableStateOf<Pesticide?>(null) }
         var selectedCommodity by remember { mutableStateOf<Commodity?>(null) }
@@ -218,10 +217,7 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                             Text("${allData.value.last().concentration} exceeds MRL.", color = Color.Red)
                         }
                         else {
-                            Text("${allData.value.last().concentration} is within MRL.", color = Color(
-                                0xFF1D3A1D
-                            )
-                            )
+                            Text("${allData.value.last().concentration} is within MRL.", color = Color.Green)
                         }
                     }
                 }

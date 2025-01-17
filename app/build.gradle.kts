@@ -56,7 +56,7 @@ android {
 }
 
 tasks.dokkaHtml {
-    outputDirectory.set(file(System.getProperty("user.home")).resolve("Downloads/dokka"))
+    outputDirectory.set(file(System.getProperty("user.home")).resolve("Desktop/Code/IA_dokka"))
 //    dokkaSourceSets {
 //        configureEach {
 //            includes.from("README.md")
@@ -97,6 +97,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:2.7.7")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.6")
     implementation("com.patrykandpatrick.vico:compose:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.19")

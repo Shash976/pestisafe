@@ -1,8 +1,11 @@
-package com.example.wifigetdata
+package com.example.pestisafe
 
+import LoginSignUpScreen
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,7 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.example.wifigetdata.ui.theme.WifigetdataTheme
+import com.example.pestisafe.ui.theme.WifigetdataTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,6 +55,7 @@ open class MainActivity : ComponentActivity() {
     }
     private lateinit var sharedViewModel : MainViewModel
     private lateinit var repository : Repository
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
@@ -83,7 +87,7 @@ open class MainActivity : ComponentActivity() {
                         bottomBar = {
                             BottomAppBar {
                                 val showMenu = remember { mutableStateOf(false) }
-                                val navOptions = listOf(Routes.MAIN, Routes.IP_SCANNER, Routes.CALIBRATION, Routes.HOME)
+                                val navOptions = listOf(Routes.LOGIN, Routes.PESTICIDE_SELECTION, Routes.MAIN, Routes.IP_SCANNER, Routes.CALIBRATION, Routes.HOME)
 
                                 IconButton(onClick = { showMenu.value = true }) {
                                     Icon(Icons.Default.Menu, contentDescription = "Navigation Menu")
@@ -118,8 +122,16 @@ open class MainActivity : ComponentActivity() {
                             Column(modifier = Modifier.padding(innerPadding)){
                                 NavHost(
                                     navController = navController,
-                                    startDestination = Routes.MAIN.toString()
+                                    startDestination = Routes.LOGIN.toString()
                                 ) {
+                                    composable(Routes.LOGIN.toString()) {
+                                        LoginSignUpScreen(sharedViewModel, navController)
+                                        sharedViewModel.screen = Routes.LOGIN
+                                    }
+                                    composable(Routes.PESTICIDE_SELECTION.toString()) {
+                                        PesticideSelectionScreen(sharedViewModel, navController)
+                                        sharedViewModel.screen = Routes.PESTICIDE_SELECTION
+                                    }
                                     composable(Routes.MAIN.toString()) {
                                         MainScreen(sharedViewModel, navController)
                                         sharedViewModel.screen = Routes.MAIN
@@ -183,7 +195,9 @@ open class MainActivity : ComponentActivity() {
                                             sharedViewModel.allData.value = it
                                         }
                                         Routes.MAIN -> {}
-                                        Routes.IP_SCANNER -> TODO()
+                                        Routes.IP_SCANNER -> {}
+                                        Routes.LOGIN -> {}
+                                        Routes.PESTICIDE_SELECTION -> {}
                                     }
                                 }
                             }
