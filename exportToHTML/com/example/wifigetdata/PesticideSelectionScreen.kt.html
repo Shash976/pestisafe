@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>PesticideSelectionScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+PesticideSelectionScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Arrangement</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Box</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Column</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxWidth</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">DropdownMenu</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">DropdownMenuItem</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">OutlinedButton</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">LaunchedEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">livedata</span><span class="s2">.</span><span class="s1">observeAsState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">NavController</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">PesticideSelectionScreen</span><span class="s2">(</span><span class="s1">sharedViewModel: MainViewModel</span><span class="s2">, </span><span class="s1">navController: NavController</span><span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">pesticides </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">pesticideDao</span><span class="s2">.</span><span class="s1">getAll</span><span class="s2">().</span><span class="s1">observeAsState</span><span class="s2">(</span><span class="s1">initial </span><span class="s2">= </span><span class="s1">emptyList</span><span class="s2">())</span>
+    <span class="s0">val </span><span class="s1">isLoading </span><span class="s2">= </span><span class="s1">pesticides</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() </span><span class="s3">// Check if the list is still loading</span>
+    <span class="s0">val </span><span class="s1">selectedPesticide </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">&lt;</span><span class="s1">Pesticide?</span><span class="s2">&gt;(</span><span class="s0">null</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">expanded </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+
+    <span class="s3">// Debugging logs</span>
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">pesticides</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Pesticides observed: </span><span class="s0">${</span><span class="s1">pesticides</span><span class="s2">.</span><span class="s1">value</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">Column</span><span class="s2">(</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s5">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+        <span class="s1">horizontalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterHorizontally</span><span class="s2">,</span>
+        <span class="s1">verticalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span>
+    <span class="s2">) {</span>
+        <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s4">&quot;Select a Pesticide&quot;</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isLoading</span><span class="s2">) {</span>
+            <span class="s1">Text</span><span class="s2">(</span><span class="s4">&quot;Loading pesticides...&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Box</span><span class="s2">(</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                    <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s5">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+            <span class="s2">) {</span>
+                <span class="s1">OutlinedButton</span><span class="s2">(</span>
+                    <span class="s1">onClick </span><span class="s2">= { </span><span class="s1">expanded</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true </span><span class="s2">},</span>
+                <span class="s2">) {</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s1">selectedPesticide</span><span class="s2">.</span><span class="s1">value?</span><span class="s2">.</span><span class="s1">name ?: </span><span class="s4">&quot;Choose a pesticide&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">DropdownMenu</span><span class="s2">(</span>
+                    <span class="s1">expanded </span><span class="s2">= </span><span class="s1">expanded</span><span class="s2">.</span><span class="s1">value</span><span class="s2">,</span>
+                    <span class="s1">onDismissRequest </span><span class="s2">= { </span><span class="s1">expanded</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false </span><span class="s2">}</span>
+                <span class="s2">) {</span>
+                    <span class="s1">pesticides</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">pesticide </span><span class="s2">-&gt;</span>
+                        <span class="s1">DropdownMenuItem</span><span class="s2">(</span>
+                            <span class="s1">text </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s1">pesticide</span><span class="s2">.</span><span class="s1">name</span><span class="s2">) },</span>
+                            <span class="s1">onClick </span><span class="s2">= {</span>
+                                <span class="s1">selectedPesticide</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">pesticide</span>
+                                <span class="s1">expanded</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+                            <span class="s2">}</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s1">Button</span><span class="s2">(</span>
+                <span class="s1">onClick </span><span class="s2">= {</span>
+                    <span class="s1">selectedPesticide</span><span class="s2">.</span><span class="s1">value?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{</span>
+                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">pesticides </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s1">it</span><span class="s2">)</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Selected pesticide: </span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">name</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s2">)</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">IP_SCANNER</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                    <span class="s2">}</span>
+                <span class="s2">},</span>
+                <span class="s1">enabled </span><span class="s2">= </span><span class="s1">selectedPesticide</span><span class="s2">.</span><span class="s1">value </span><span class="s2">!= </span><span class="s0">null </span><span class="s3">// Disable button if no selection</span>
+            <span class="s2">) {</span>
+                <span class="s1">Text</span><span class="s2">(</span><span class="s4">&quot;Confirm&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+</pre>
+</body>
+</html>

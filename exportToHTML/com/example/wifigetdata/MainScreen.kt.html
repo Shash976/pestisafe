@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>MainScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">ConnectivityManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">NetworkCapabilities</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Arrangement</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Column</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">LaunchedEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">livedata</span><span class="s2">.</span><span class="s1">observeAsState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalContext</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">NavController</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">MainScreen</span><span class="s2">(</span><span class="s1">sharedViewModel: MainViewModel</span><span class="s2">, </span><span class="s1">navController: NavController</span><span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">context </span><span class="s2">= </span><span class="s1">LocalContext</span><span class="s2">.</span><span class="s1">current</span>
+    <span class="s0">val </span><span class="s1">connectionState </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">isWifiConnected</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) }</span>
+    <span class="s0">val </span><span class="s1">labelText </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s3">&quot;Not connected&quot;</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">buttonText </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s3">&quot;Connect&quot;</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">pesticides </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">pesticideDao</span><span class="s2">.</span><span class="s1">getAll</span><span class="s2">().</span><span class="s1">observeAsState</span><span class="s2">(</span><span class="s1">initial </span><span class="s2">= </span><span class="s1">emptyList</span><span class="s2">()) </span><span class="s4">// Observe LiveData</span>
+    <span class="s0">val </span><span class="s1">isLoading </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">connectionState</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">connectionState</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Please connect to a Wi-Fi network&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Handle navigation when data is available</span>
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">pesticides</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Current Pesticides List: </span><span class="s0">${</span><span class="s1">pesticides</span><span class="s2">.</span><span class="s1">value</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isLoading</span><span class="s2">.</span><span class="s1">value </span><span class="s2">&amp;&amp; </span><span class="s1">pesticides</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+            <span class="s1">isLoading</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">PESTICIDE_SELECTION</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">onButtonClick: </span><span class="s2">() -&gt; </span><span class="s1">Unit </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+        <span class="s2">{</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s3">&quot;&quot;</span>
+            <span class="s1">connectionState</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+        <span class="s2">}</span>
+    <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+        <span class="s2">{</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">getPesticideData</span><span class="s2">()</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">resetValues</span><span class="s2">()</span>
+            <span class="s1">isLoading</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true </span><span class="s4">// Start loading when fetching data</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">Column</span><span class="s2">(</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s5">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+        <span class="s1">horizontalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterHorizontally</span><span class="s2">,</span>
+        <span class="s1">verticalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span>
+    <span class="s2">) {</span>
+        <span class="s1">Text</span><span class="s2">(</span><span class="s0">if </span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) </span><span class="s3">&quot;Connected to: </span><span class="s0">${</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s0">}</span><span class="s3">&quot; </span><span class="s0">else </span><span class="s3">&quot;Not connected&quot;</span><span class="s2">)</span>
+        <span class="s1">Button</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= </span><span class="s1">onButtonClick</span><span class="s2">, </span><span class="s1">enabled </span><span class="s2">= </span><span class="s1">connectionState</span><span class="s2">.</span><span class="s1">value </span><span class="s2">&amp;&amp; !</span><span class="s1">isLoading</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+            <span class="s1">Text</span><span class="s2">(</span><span class="s0">if </span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) </span><span class="s3">&quot;Disconnect&quot; </span><span class="s0">else </span><span class="s3">&quot;Connect&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+
+
+<span class="s0">fun </span><span class="s1">isWifiConnected</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+    <span class="s0">val </span><span class="s1">connectivityManager </span><span class="s2">=</span>
+        <span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">CONNECTIVITY_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">ConnectivityManager</span>
+    <span class="s0">val </span><span class="s1">network </span><span class="s2">= </span><span class="s1">connectivityManager</span><span class="s2">.</span><span class="s1">activeNetwork ?: </span><span class="s0">return false</span>
+    <span class="s0">val </span><span class="s1">capabilities </span><span class="s2">= </span><span class="s1">connectivityManager</span><span class="s2">.</span><span class="s1">getNetworkCapabilities</span><span class="s2">(</span><span class="s1">network</span><span class="s2">) </span><span class="s1">?: </span><span class="s0">return false</span>
+    <span class="s0">return </span><span class="s1">capabilities</span><span class="s2">.</span><span class="s1">hasTransport</span><span class="s2">(</span><span class="s1">NetworkCapabilities</span><span class="s2">.</span><span class="s1">TRANSPORT_WIFI</span><span class="s2">)</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

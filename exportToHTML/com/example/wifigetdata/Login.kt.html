@@ -1,0 +1,313 @@
+<html>
+<head>
+<title>Login.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Login.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">import android</span><span class="s1">.</span><span class="s0">os</span><span class="s1">.</span><span class="s0">Build</span>
+<span class="s0">import android</span><span class="s1">.</span><span class="s0">os</span><span class="s1">.</span><span class="s0">Bundle</span>
+<span class="s0">import android</span><span class="s1">.</span><span class="s0">widget</span><span class="s1">.</span><span class="s0">Toast</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">activity</span><span class="s1">.</span><span class="s0">ComponentActivity</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">activity</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">setContent</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">annotation</span><span class="s1">.</span><span class="s0">RequiresApi</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">foundation</span><span class="s1">.</span><span class="s0">layout</span><span class="s1">.*</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">material3</span><span class="s1">.*</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">runtime</span><span class="s1">.*</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">Alignment</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">Modifier</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">text</span><span class="s1">.</span><span class="s0">input</span><span class="s1">.</span><span class="s0">PasswordVisualTransformation</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">text</span><span class="s1">.</span><span class="s0">input</span><span class="s1">.</span><span class="s0">VisualTransformation</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">tooling</span><span class="s1">.</span><span class="s0">preview</span><span class="s1">.</span><span class="s0">Preview</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">unit</span><span class="s1">.</span><span class="s0">dp</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">unit</span><span class="s1">.</span><span class="s0">sp</span>
+<span class="s0">import java</span><span class="s1">.</span><span class="s0">time</span><span class="s1">.</span><span class="s0">LocalDate</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">material</span><span class="s1">.</span><span class="s0">icons</span><span class="s1">.</span><span class="s0">Icons</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">material</span><span class="s1">.</span><span class="s0">icons</span><span class="s1">.</span><span class="s0">filled</span><span class="s1">.</span><span class="s0">DateRange</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">material</span><span class="s1">.</span><span class="s0">icons</span><span class="s1">.</span><span class="s0">filled</span><span class="s1">.</span><span class="s0">Visibility</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">material</span><span class="s1">.</span><span class="s0">icons</span><span class="s1">.</span><span class="s0">filled</span><span class="s1">.</span><span class="s0">VisibilityOff</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">platform</span><span class="s1">.</span><span class="s0">LocalContext</span>
+<span class="s0">import androidx</span><span class="s1">.</span><span class="s0">navigation</span><span class="s1">.</span><span class="s0">NavController</span>
+<span class="s0">import com</span><span class="s1">.</span><span class="s0">example</span><span class="s1">.</span><span class="s0">wifigetdata</span><span class="s1">.</span><span class="s0">MainViewModel</span>
+<span class="s0">import com</span><span class="s1">.</span><span class="s0">example</span><span class="s1">.</span><span class="s0">wifigetdata</span><span class="s1">.</span><span class="s0">Routes</span>
+<span class="s0">import com</span><span class="s1">.</span><span class="s0">example</span><span class="s1">.</span><span class="s0">wifigetdata</span><span class="s1">.</span><span class="s0">User</span>
+<span class="s0">import kotlinx</span><span class="s1">.</span><span class="s0">coroutines</span><span class="s1">.</span><span class="s0">launch</span>
+<span class="s0">import java</span><span class="s1">.</span><span class="s0">sql</span><span class="s1">.</span><span class="s0">Date</span>
+<span class="s0">import java</span><span class="s1">.</span><span class="s0">util</span><span class="s1">.</span><span class="s0">Calendar</span>
+
+<span class="s0">@RequiresApi</span><span class="s1">(</span><span class="s0">Build</span><span class="s1">.</span><span class="s0">VERSION_CODES</span><span class="s1">.</span><span class="s0">O</span><span class="s1">)</span>
+<span class="s0">@Composable</span>
+<span class="s2">fun </span><span class="s0">LoginSignUpScreen</span><span class="s1">(</span><span class="s0">sharedViewModel :MainViewModel</span><span class="s1">, </span><span class="s0">navController: NavController</span><span class="s1">) {</span>
+    <span class="s2">var </span><span class="s0">name by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
+    <span class="s2">var </span><span class="s0">username by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
+    <span class="s2">var </span><span class="s0">email by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
+    <span class="s2">var </span><span class="s0">password by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
+    <span class="s2">var </span><span class="s0">dob by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">&lt;</span><span class="s0">LocalDate?</span><span class="s1">&gt;(</span><span class="s2">null</span><span class="s1">) } </span><span class="s4">// Date of Birth field</span>
+    <span class="s2">var </span><span class="s0">showPassword by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s2">false</span><span class="s1">) }</span>
+    <span class="s2">var </span><span class="s0">isLogin by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s2">true</span><span class="s1">) } </span><span class="s4">// Toggle between Login and Sign-Up</span>
+
+    <span class="s0">Surface</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxSize</span><span class="s1">()) {</span>
+        <span class="s0">Column</span><span class="s1">(</span>
+            <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span>
+                <span class="s1">.</span><span class="s0">fillMaxSize</span><span class="s1">()</span>
+                <span class="s1">.</span><span class="s0">padding</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">),</span>
+            <span class="s0">verticalArrangement </span><span class="s1">= </span><span class="s0">Arrangement</span><span class="s1">.</span><span class="s0">Center</span><span class="s1">,</span>
+            <span class="s0">horizontalAlignment </span><span class="s1">= </span><span class="s0">Alignment</span><span class="s1">.</span><span class="s0">CenterHorizontally</span>
+        <span class="s1">) {</span>
+            <span class="s0">Text</span><span class="s1">(</span>
+                <span class="s0">text </span><span class="s1">= </span><span class="s2">if </span><span class="s1">(</span><span class="s0">isLogin</span><span class="s1">) </span><span class="s3">&quot;Login&quot; </span><span class="s2">else </span><span class="s3">&quot;Sign Up&quot;</span><span class="s1">,</span>
+                <span class="s0">style </span><span class="s1">= </span><span class="s0">MaterialTheme</span><span class="s1">.</span><span class="s0">typography</span><span class="s1">.</span><span class="s0">headlineMedium</span><span class="s1">,</span>
+                <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">padding</span><span class="s1">(</span><span class="s0">bottom </span><span class="s1">= </span><span class="s5">32</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">)</span>
+            <span class="s1">)</span>
+
+            <span class="s2">if </span><span class="s1">(!</span><span class="s0">isLogin</span><span class="s1">) {</span>
+                <span class="s0">OutlinedTextField</span><span class="s1">(</span>
+                    <span class="s0">value </span><span class="s1">= </span><span class="s0">name</span><span class="s1">,</span>
+                    <span class="s0">onValueChange </span><span class="s1">= { </span><span class="s0">name </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
+                    <span class="s0">label </span><span class="s1">= { </span><span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Name&quot;</span><span class="s1">) },</span>
+                    <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxWidth</span><span class="s1">(),</span>
+                    <span class="s0">singleLine </span><span class="s1">= </span><span class="s2">true</span>
+                <span class="s1">)</span>
+
+                <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+                <span class="s0">OutlinedTextField</span><span class="s1">(</span>
+                    <span class="s0">value </span><span class="s1">= </span><span class="s0">email</span><span class="s1">,</span>
+                    <span class="s0">onValueChange </span><span class="s1">= { </span><span class="s0">email </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
+                    <span class="s0">label </span><span class="s1">= { </span><span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Email&quot;</span><span class="s1">) },</span>
+                    <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxWidth</span><span class="s1">(),</span>
+                    <span class="s0">singleLine </span><span class="s1">= </span><span class="s2">true</span>
+                <span class="s1">)</span>
+
+                <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+
+                <span class="s0">DatePickerField</span><span class="s1">(</span>
+                    <span class="s0">selectedDate </span><span class="s1">= </span><span class="s0">dob</span><span class="s1">,</span>
+                    <span class="s0">onDateChange </span><span class="s1">= { </span><span class="s0">dob </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
+                    <span class="s0">label </span><span class="s1">= </span><span class="s3">&quot;Date of Birth&quot;</span>
+                <span class="s1">)</span>
+
+
+
+                <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+            <span class="s1">}</span>
+
+            <span class="s0">OutlinedTextField</span><span class="s1">(</span>
+                <span class="s0">value </span><span class="s1">= </span><span class="s0">username</span><span class="s1">,</span>
+                <span class="s0">onValueChange </span><span class="s1">= { </span><span class="s0">username </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
+                <span class="s0">label </span><span class="s1">= { </span><span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Username&quot;</span><span class="s1">) },</span>
+                <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxWidth</span><span class="s1">(),</span>
+                <span class="s0">singleLine </span><span class="s1">= </span><span class="s2">true</span>
+            <span class="s1">)</span>
+
+            <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+
+            <span class="s0">OutlinedTextField</span><span class="s1">(</span>
+                <span class="s0">value </span><span class="s1">= </span><span class="s0">password</span><span class="s1">,</span>
+                <span class="s0">onValueChange </span><span class="s1">= { </span><span class="s0">password </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
+                <span class="s0">label </span><span class="s1">= { </span><span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Password&quot;</span><span class="s1">) },</span>
+                <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxWidth</span><span class="s1">(),</span>
+                <span class="s0">visualTransformation </span><span class="s1">= </span><span class="s2">if </span><span class="s1">(</span><span class="s0">showPassword</span><span class="s1">) </span><span class="s0">VisualTransformation</span><span class="s1">.</span><span class="s0">None </span><span class="s2">else </span><span class="s0">PasswordVisualTransformation</span><span class="s1">(),</span>
+                <span class="s0">trailingIcon </span><span class="s1">= {</span>
+                    <span class="s0">IconButton</span><span class="s1">(</span><span class="s0">onClick </span><span class="s1">= { </span><span class="s0">showPassword </span><span class="s1">= !</span><span class="s0">showPassword </span><span class="s1">}) {</span>
+                        <span class="s0">Icon</span><span class="s1">(</span>
+                            <span class="s0">imageVector </span><span class="s1">= </span><span class="s2">if </span><span class="s1">(</span><span class="s0">showPassword</span><span class="s1">) </span><span class="s0">Icons</span><span class="s1">.</span><span class="s0">Default</span><span class="s1">.</span><span class="s0">Visibility </span><span class="s2">else </span><span class="s0">Icons</span><span class="s1">.</span><span class="s0">Default</span><span class="s1">.</span><span class="s0">VisibilityOff</span><span class="s1">,</span>
+                            <span class="s0">contentDescription </span><span class="s1">= </span><span class="s2">if </span><span class="s1">(</span><span class="s0">showPassword</span><span class="s1">) </span><span class="s3">&quot;Hide Password&quot; </span><span class="s2">else </span><span class="s3">&quot;Show Password&quot;</span>
+                        <span class="s1">)</span>
+                    <span class="s1">}</span>
+                <span class="s1">},</span>
+                <span class="s0">singleLine </span><span class="s1">= </span><span class="s2">true</span>
+            <span class="s1">)</span>
+
+            <span class="s2">if </span><span class="s1">(</span><span class="s0">isLogin</span><span class="s1">) {</span>
+                <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">8</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+                <span class="s2">val </span><span class="s0">forgotPasswordCoroutine </span><span class="s1">= </span><span class="s0">rememberCoroutineScope</span><span class="s1">()</span>
+                <span class="s2">val </span><span class="s0">context </span><span class="s1">= </span><span class="s0">LocalContext</span><span class="s1">.</span><span class="s0">current</span>
+                <span class="s2">var </span><span class="s0">forgotPassword by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s2">false</span><span class="s1">) }</span>
+
+                <span class="s2">if </span><span class="s1">(</span><span class="s0">forgotPassword</span><span class="s1">){</span>
+                    <span class="s0">DatePickerField</span><span class="s1">(</span>
+                        <span class="s0">selectedDate </span><span class="s1">= </span><span class="s0">dob</span><span class="s1">,</span>
+                        <span class="s0">onDateChange </span><span class="s1">= { </span><span class="s0">dob </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
+                        <span class="s0">label </span><span class="s1">= </span><span class="s3">&quot;Date of Birth&quot;</span>
+                    <span class="s1">)</span>
+                <span class="s1">}</span>
+                <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+                <span class="s0">TextButton</span><span class="s1">(</span><span class="s0">onClick </span><span class="s1">= {</span>
+                    <span class="s0">forgotPasswordCoroutine</span><span class="s1">.</span><span class="s0">launch </span><span class="s1">{</span>
+                        <span class="s2">try </span><span class="s1">{</span>
+                            <span class="s2">val </span><span class="s0">user </span><span class="s1">= </span><span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">repository</span><span class="s1">.</span><span class="s0">userDao</span><span class="s1">.</span><span class="s0">getUser</span><span class="s1">(</span><span class="s0">username </span><span class="s1">= </span><span class="s0">username</span><span class="s1">)</span>
+                            <span class="s2">if </span><span class="s1">(</span><span class="s0">user</span><span class="s1">.</span><span class="s0">dob</span><span class="s1">.</span><span class="s0">uppercase</span><span class="s1">().</span><span class="s0">strip</span><span class="s1">() == </span><span class="s0">dob</span><span class="s1">.</span><span class="s0">toString</span><span class="s1">().</span><span class="s0">uppercase</span><span class="s1">()) {</span>
+                                <span class="s4">// DOB matches, proceed to reset password</span>
+                                <span class="s4">// Show reset password dialog or navigate to a reset password screen</span>
+                                <span class="s0">forgotPassword </span><span class="s1">= </span><span class="s2">true</span>
+
+                            <span class="s1">} </span><span class="s2">else </span><span class="s1">{</span>
+                                <span class="s0">Toast</span><span class="s1">.</span><span class="s0">makeText</span><span class="s1">(</span><span class="s0">context</span><span class="s1">, </span><span class="s3">&quot;Incorrect Date of Birth&quot;</span><span class="s1">, </span><span class="s0">Toast</span><span class="s1">.</span><span class="s0">LENGTH_SHORT</span><span class="s1">).</span><span class="s0">show</span><span class="s1">()</span>
+                            <span class="s1">}</span>
+                        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(</span><span class="s0">e: Exception</span><span class="s1">) {</span>
+                            <span class="s4">// Handle user not found</span>
+                            <span class="s4">// Show error message</span>
+                            <span class="s0">Toast</span><span class="s1">.</span><span class="s0">makeText</span><span class="s1">(</span><span class="s0">context</span><span class="s1">, </span><span class="s3">&quot;User not found&quot;</span><span class="s1">, </span><span class="s0">Toast</span><span class="s1">.</span><span class="s0">LENGTH_SHORT</span><span class="s1">).</span><span class="s0">show</span><span class="s1">()</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">}) {</span>
+                    <span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Forgot Password?&quot;</span><span class="s1">, </span><span class="s0">fontSize </span><span class="s1">= </span><span class="s5">14</span><span class="s1">.</span><span class="s0">sp</span><span class="s1">)</span>
+                <span class="s1">}</span>
+                <span class="s2">if </span><span class="s1">(</span><span class="s0">forgotPassword</span><span class="s1">) {</span>
+                    <span class="s0">ShowResetPasswordDialog</span><span class="s1">(</span><span class="s0">sharedViewModel</span><span class="s1">, </span><span class="s0">username</span><span class="s1">)</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+
+            <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">24</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+            <span class="s2">val </span><span class="s0">getUsernameCoroutine </span><span class="s1">= </span><span class="s0">rememberCoroutineScope</span><span class="s1">()</span>
+            <span class="s2">val </span><span class="s0">context </span><span class="s1">= </span><span class="s0">LocalContext</span><span class="s1">.</span><span class="s0">current</span>
+            <span class="s0">Button</span><span class="s1">(</span>
+                <span class="s0">onClick </span><span class="s1">= {</span>
+                    <span class="s4">// Handle Login or Sign-Up logic here</span>
+                    <span class="s2">if </span><span class="s1">(</span><span class="s0">isLogin</span><span class="s1">){</span>
+                        <span class="s0">getUsernameCoroutine</span><span class="s1">.</span><span class="s0">launch</span><span class="s1">{</span>
+                            <span class="s2">try </span><span class="s1">{</span>
+                                <span class="s2">val </span><span class="s0">user </span><span class="s1">= </span><span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">repository</span><span class="s1">.</span><span class="s0">userDao</span><span class="s1">.</span><span class="s0">getUser</span><span class="s1">(</span><span class="s0">username </span><span class="s1">= </span><span class="s0">username</span><span class="s1">)</span>
+                                <span class="s2">if </span><span class="s1">(</span><span class="s0">user</span><span class="s1">.</span><span class="s0">password </span><span class="s1">== </span><span class="s0">password</span><span class="s1">){</span>
+                                    <span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">user </span><span class="s1">= </span><span class="s0">user</span>
+                                    <span class="s0">navController</span><span class="s1">.</span><span class="s0">navigate</span><span class="s1">(</span><span class="s0">Routes</span><span class="s1">.</span><span class="s0">MAIN</span><span class="s1">.</span><span class="s0">toString</span><span class="s1">())</span>
+                                <span class="s1">} </span><span class="s2">else </span><span class="s1">{</span>
+                                    <span class="s4">// Handle incorrect password</span>
+                                    <span class="s4">// Show error message</span>
+                                    <span class="s0">Toast</span><span class="s1">.</span><span class="s0">makeText</span><span class="s1">(</span><span class="s0">context</span><span class="s1">, </span><span class="s3">&quot;Incorrect Password&quot;</span><span class="s1">, </span><span class="s0">Toast</span><span class="s1">.</span><span class="s0">LENGTH_SHORT</span><span class="s1">).</span><span class="s0">show</span><span class="s1">()</span>
+                                <span class="s1">}</span>
+                            <span class="s1">} </span><span class="s0">catch </span><span class="s1">(</span><span class="s0">e: Exception</span><span class="s1">) {</span>
+                                <span class="s4">// Handle user not found</span>
+                                <span class="s4">// Show error message</span>
+                                <span class="s0">Toast</span><span class="s1">.</span><span class="s0">makeText</span><span class="s1">(</span><span class="s0">context</span><span class="s1">, </span><span class="s3">&quot;User not found&quot;</span><span class="s1">, </span><span class="s0">Toast</span><span class="s1">.</span><span class="s0">LENGTH_SHORT</span><span class="s1">).</span><span class="s0">show</span><span class="s1">()</span>
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                    <span class="s2">else </span><span class="s1">{</span>
+                        <span class="s0">getUsernameCoroutine</span><span class="s1">.</span><span class="s0">launch</span><span class="s1">{</span>
+                            <span class="s2">val </span><span class="s0">user </span><span class="s1">= </span><span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">repository</span><span class="s1">.</span><span class="s0">userDao</span><span class="s1">.</span><span class="s0">getUser</span><span class="s1">(</span><span class="s0">username </span><span class="s1">= </span><span class="s0">username</span><span class="s1">)</span>
+                            <span class="s2">if </span><span class="s1">(</span><span class="s0">user </span><span class="s1">!= </span><span class="s2">null</span><span class="s1">) {</span>
+                                <span class="s0">Toast</span><span class="s1">.</span><span class="s0">makeText</span><span class="s1">(</span>
+                                    <span class="s0">context</span><span class="s1">,</span>
+                                    <span class="s3">&quot;Username already exists&quot;</span><span class="s1">,</span>
+                                    <span class="s0">Toast</span><span class="s1">.</span><span class="s0">LENGTH_SHORT</span>
+                                <span class="s1">).</span><span class="s0">show</span><span class="s1">()</span>
+                            <span class="s1">}</span>
+                            <span class="s2">else</span><span class="s1">{</span>
+                                <span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">repository</span><span class="s1">.</span><span class="s0">userDao</span><span class="s1">.</span><span class="s0">insert</span><span class="s1">(</span><span class="s0">User</span><span class="s1">(</span><span class="s0">name </span><span class="s1">= </span><span class="s0">name</span><span class="s1">, </span><span class="s0">username </span><span class="s1">= </span><span class="s0">username</span><span class="s1">, </span><span class="s0">password </span><span class="s1">= </span><span class="s0">password</span><span class="s1">, </span><span class="s0">email </span><span class="s1">= </span><span class="s0">email</span><span class="s1">, </span><span class="s0">dob </span><span class="s1">= </span><span class="s0">dob</span><span class="s1">.</span><span class="s0">toString</span><span class="s1">()))</span>
+                                <span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">user </span><span class="s1">= </span><span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">repository</span><span class="s1">.</span><span class="s0">userDao</span><span class="s1">.</span><span class="s0">getUser</span><span class="s1">(</span><span class="s0">username </span><span class="s1">= </span><span class="s0">username</span><span class="s1">)</span>
+                                <span class="s0">println</span><span class="s1">(</span><span class="s3">&quot;User: </span><span class="s2">${</span><span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">user</span><span class="s1">!!.</span><span class="s0">username</span><span class="s2">}</span><span class="s3">, Logging in&quot;</span><span class="s1">)</span>
+                                <span class="s0">navController</span><span class="s1">.</span><span class="s0">navigate</span><span class="s1">(</span><span class="s0">Routes</span><span class="s1">.</span><span class="s0">MAIN</span><span class="s1">.</span><span class="s0">toString</span><span class="s1">())</span>
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">},</span>
+                <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxWidth</span><span class="s1">()</span>
+            <span class="s1">) {</span>
+                <span class="s0">Text</span><span class="s1">(</span><span class="s0">text </span><span class="s1">= </span><span class="s2">if </span><span class="s1">(</span><span class="s0">isLogin</span><span class="s1">) </span><span class="s3">&quot;Login&quot; </span><span class="s2">else </span><span class="s3">&quot;Sign Up&quot;</span><span class="s1">)</span>
+            <span class="s1">}</span>
+
+            <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+
+
+            <span class="s0">TextButton</span><span class="s1">(</span><span class="s0">onClick </span><span class="s1">= { </span><span class="s0">isLogin </span><span class="s1">= !</span><span class="s0">isLogin </span><span class="s1">}) {</span>
+                <span class="s0">Text</span><span class="s1">(</span>
+                    <span class="s0">text </span><span class="s1">= </span><span class="s2">if </span><span class="s1">(</span><span class="s0">isLogin</span><span class="s1">) </span><span class="s3">&quot;Don't have an account? Sign Up&quot; </span><span class="s2">else </span><span class="s3">&quot;Already have an account? Login&quot;</span><span class="s1">,</span>
+                    <span class="s0">fontSize </span><span class="s1">= </span><span class="s5">14</span><span class="s1">.</span><span class="s0">sp</span>
+                <span class="s1">)</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">@RequiresApi</span><span class="s1">(</span><span class="s0">Build</span><span class="s1">.</span><span class="s0">VERSION_CODES</span><span class="s1">.</span><span class="s0">O</span><span class="s1">)</span>
+<span class="s0">@OptIn</span><span class="s1">(</span><span class="s0">ExperimentalMaterial3Api::</span><span class="s2">class</span><span class="s1">)</span>
+<span class="s0">@Composable</span>
+<span class="s2">fun </span><span class="s0">DatePickerField</span><span class="s1">(</span><span class="s0">selectedDate: LocalDate?</span><span class="s1">, </span><span class="s0">onDateChange: </span><span class="s1">(</span><span class="s0">LocalDate</span><span class="s1">) -&gt; </span><span class="s0">Unit</span><span class="s1">, </span><span class="s0">label: String</span><span class="s1">) {</span>
+    <span class="s2">var </span><span class="s0">isDialogOpen by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s2">false</span><span class="s1">) }</span>
+
+    <span class="s0">OutlinedTextField</span><span class="s1">(</span>
+        <span class="s0">value </span><span class="s1">= </span><span class="s0">selectedDate?</span><span class="s1">.</span><span class="s0">toString</span><span class="s1">() </span><span class="s0">?: </span><span class="s3">&quot;&quot;</span><span class="s1">,</span>
+        <span class="s0">onValueChange </span><span class="s1">= {},</span>
+        <span class="s0">label </span><span class="s1">= { </span><span class="s0">Text</span><span class="s1">(</span><span class="s0">label</span><span class="s1">) },</span>
+        <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxWidth</span><span class="s1">(),</span>
+        <span class="s0">readOnly </span><span class="s1">= </span><span class="s2">true</span><span class="s1">,</span>
+        <span class="s0">singleLine </span><span class="s1">= </span><span class="s2">true</span><span class="s1">,</span>
+        <span class="s0">trailingIcon </span><span class="s1">= {</span>
+            <span class="s0">IconButton</span><span class="s1">(</span><span class="s0">onClick </span><span class="s1">= { </span><span class="s0">isDialogOpen </span><span class="s1">= </span><span class="s2">true </span><span class="s1">}) {</span>
+                <span class="s0">Icon</span><span class="s1">(</span><span class="s0">Icons</span><span class="s1">.</span><span class="s0">Default</span><span class="s1">.</span><span class="s0">DateRange</span><span class="s1">, </span><span class="s0">contentDescription </span><span class="s1">= </span><span class="s3">&quot;Select Date&quot;</span><span class="s1">)</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">)</span>
+
+    <span class="s2">if </span><span class="s1">(</span><span class="s0">isDialogOpen</span><span class="s1">) {</span>
+        <span class="s2">val </span><span class="s0">context </span><span class="s1">= </span><span class="s0">LocalContext</span><span class="s1">.</span><span class="s0">current</span>
+        <span class="s2">val </span><span class="s0">calendar </span><span class="s1">= </span><span class="s0">Calendar</span><span class="s1">.</span><span class="s0">getInstance</span><span class="s1">()</span>
+        <span class="s2">val </span><span class="s0">year </span><span class="s1">= </span><span class="s0">calendar</span><span class="s1">.</span><span class="s0">get</span><span class="s1">(</span><span class="s0">Calendar</span><span class="s1">.</span><span class="s0">YEAR</span><span class="s1">)</span>
+        <span class="s2">val </span><span class="s0">month </span><span class="s1">= </span><span class="s0">calendar</span><span class="s1">.</span><span class="s0">get</span><span class="s1">(</span><span class="s0">Calendar</span><span class="s1">.</span><span class="s0">MONTH</span><span class="s1">)</span>
+        <span class="s2">val </span><span class="s0">day </span><span class="s1">= </span><span class="s0">calendar</span><span class="s1">.</span><span class="s0">get</span><span class="s1">(</span><span class="s0">Calendar</span><span class="s1">.</span><span class="s0">DAY_OF_MONTH</span><span class="s1">)</span>
+
+        <span class="s0">android</span><span class="s1">.</span><span class="s0">app</span><span class="s1">.</span><span class="s0">DatePickerDialog</span><span class="s1">(</span>
+            <span class="s0">context</span><span class="s1">,</span>
+            <span class="s1">{ </span><span class="s0">_</span><span class="s1">, </span><span class="s0">selectedYear</span><span class="s1">, </span><span class="s0">selectedMonth</span><span class="s1">, </span><span class="s0">selectedDay </span><span class="s1">-&gt;</span>
+                <span class="s0">onDateChange</span><span class="s1">(</span><span class="s0">LocalDate</span><span class="s1">.</span><span class="s0">of</span><span class="s1">(</span><span class="s0">selectedYear</span><span class="s1">, </span><span class="s0">selectedMonth </span><span class="s1">+ </span><span class="s5">1</span><span class="s1">, </span><span class="s0">selectedDay</span><span class="s1">))</span>
+                <span class="s0">isDialogOpen </span><span class="s1">= </span><span class="s2">false</span>
+            <span class="s1">},</span>
+            <span class="s0">year</span><span class="s1">,</span>
+            <span class="s0">month</span><span class="s1">,</span>
+            <span class="s0">day</span>
+        <span class="s1">).</span><span class="s0">show</span><span class="s1">()</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">@Composable</span>
+<span class="s2">fun </span><span class="s0">ShowResetPasswordDialog</span><span class="s1">(</span><span class="s0">sharedViewModel: MainViewModel</span><span class="s1">, </span><span class="s0">username: String</span><span class="s1">) {</span>
+    <span class="s2">var </span><span class="s0">newPassword by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
+    <span class="s2">val </span><span class="s0">forgotPasswordCoroutine </span><span class="s1">= </span><span class="s0">rememberCoroutineScope</span><span class="s1">()</span>
+    <span class="s0">AlertDialog</span><span class="s1">(</span>
+        <span class="s0">onDismissRequest </span><span class="s1">= { },</span>
+        <span class="s0">title </span><span class="s1">= { </span><span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Reset Password&quot;</span><span class="s1">) },</span>
+        <span class="s0">text </span><span class="s1">= {</span>
+            <span class="s0">Column </span><span class="s1">{</span>
+                <span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Enter your new password&quot;</span><span class="s1">)</span>
+                <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">8</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
+                <span class="s0">OutlinedTextField</span><span class="s1">(</span>
+                    <span class="s0">value </span><span class="s1">= </span><span class="s0">newPassword</span><span class="s1">,</span>
+                    <span class="s0">onValueChange </span><span class="s1">= { </span><span class="s0">newPassword </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
+                    <span class="s0">label </span><span class="s1">= { </span><span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;New Password&quot;</span><span class="s1">) },</span>
+                    <span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">fillMaxWidth</span><span class="s1">(),</span>
+                    <span class="s0">singleLine </span><span class="s1">= </span><span class="s2">true</span>
+                <span class="s1">)</span>
+            <span class="s1">}</span>
+        <span class="s1">},</span>
+        <span class="s0">confirmButton </span><span class="s1">= {</span>
+            <span class="s0">TextButton</span><span class="s1">(</span><span class="s0">onClick </span><span class="s1">= {</span>
+                <span class="s0">forgotPasswordCoroutine</span><span class="s1">.</span><span class="s0">launch</span><span class="s1">{</span>
+                    <span class="s0">sharedViewModel</span><span class="s1">.</span><span class="s0">repository</span><span class="s1">.</span><span class="s0">userDao</span><span class="s1">.</span><span class="s0">resetPassword</span><span class="s1">(</span><span class="s0">username</span><span class="s1">, </span><span class="s0">newPassword</span><span class="s1">)</span>
+                <span class="s1">}</span>
+            <span class="s1">}) {</span>
+                <span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Reset&quot;</span><span class="s1">)</span>
+            <span class="s1">}</span>
+        <span class="s1">},</span>
+        <span class="s0">dismissButton </span><span class="s1">= {</span>
+            <span class="s0">TextButton</span><span class="s1">(</span><span class="s0">onClick </span><span class="s1">= { }) {</span>
+                <span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Cancel&quot;</span><span class="s1">)</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">)</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

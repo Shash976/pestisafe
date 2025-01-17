@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>ChartActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ChartActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span><span class="s2">.</span><span class="s1">v1</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">RoundedCornerShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Surface</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">tooling</span><span class="s2">.</span><span class="s1">preview</span><span class="s2">.</span><span class="s1">Preview</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">CartesianChartHost</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">axis</span><span class="s2">.</span><span class="s1">rememberStartAxis</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">layer</span><span class="s2">.</span><span class="s1">rememberLineCartesianLayer</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">layer</span><span class="s2">.</span><span class="s1">rememberLineSpec</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">rememberCartesianChart</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">common</span><span class="s2">.</span><span class="s1">shader</span><span class="s2">.</span><span class="s1">color</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">common</span><span class="s2">.</span><span class="s1">shader</span><span class="s2">.</span><span class="s1">verticalGradient</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">AxisValueOverrider</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">CartesianChartModel</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">CartesianChartModelProducer</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">LineCartesianLayerModel</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">common</span><span class="s2">.</span><span class="s1">shader</span><span class="s2">.</span><span class="s1">DynamicShader</span>
+
+<span class="s1">private </span><span class="s0">val </span><span class="s1">model1 </span><span class="s2">= </span><span class="s1">CartesianChartModel</span><span class="s2">(</span><span class="s1">LineCartesianLayerModel</span><span class="s2">.</span><span class="s1">build </span><span class="s2">{ </span><span class="s1">series</span><span class="s2">(</span><span class="s3">0</span><span class="s2">, </span><span class="s3">2</span><span class="s2">, </span><span class="s3">4.5</span><span class="s2">, </span><span class="s3">0.123</span><span class="s2">, </span><span class="s3">2</span><span class="s2">) })</span>
+
+<span class="s1">private </span><span class="s0">val </span><span class="s1">model2 </span><span class="s2">=</span>
+    <span class="s1">CartesianChartModel</span><span class="s2">(</span>
+        <span class="s1">LineCartesianLayerModel</span><span class="s2">.</span><span class="s1">build </span><span class="s2">{ </span><span class="s1">series</span><span class="s2">(</span><span class="s3">0.0</span><span class="s2">, </span><span class="s3">2.5</span><span class="s2">, </span><span class="s3">4.8</span><span class="s2">, </span><span class="s3">0.1</span><span class="s2">, </span><span class="s3">2.78</span><span class="s2">) },</span>
+        <span class="s1">LineCartesianLayerModel</span><span class="s2">.</span><span class="s1">build </span><span class="s2">{ </span><span class="s1">series</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">3</span><span class="s2">, </span><span class="s3">4</span><span class="s2">, </span><span class="s3">1</span><span class="s2">, </span><span class="s3">3</span><span class="s2">) },</span>
+    <span class="s2">)</span>
+
+<span class="s1">private </span><span class="s0">val </span><span class="s1">model3 </span><span class="s2">=</span>
+    <span class="s1">CartesianChartModel</span><span class="s2">(</span>
+        <span class="s1">LineCartesianLayerModel</span><span class="s2">.</span><span class="s1">build </span><span class="s2">{</span>
+            <span class="s1">series</span><span class="s2">(</span><span class="s3">3</span><span class="s2">, </span><span class="s3">2</span><span class="s2">, </span><span class="s3">2</span><span class="s2">, </span><span class="s3">3</span><span class="s2">, </span><span class="s3">1</span><span class="s2">)</span>
+            <span class="s1">series</span><span class="s2">(</span><span class="s3">1</span><span class="s2">, </span><span class="s3">3</span><span class="s2">, </span><span class="s3">1</span><span class="s2">, </span><span class="s3">2</span><span class="s2">, </span><span class="s3">3</span><span class="s2">)</span>
+        <span class="s2">},</span>
+    <span class="s2">)</span>
+
+<span class="s1">@Preview</span><span class="s2">(</span><span class="s4">&quot;Line Chart Dark&quot;</span><span class="s2">, </span><span class="s1">widthDp </span><span class="s2">= </span><span class="s3">200</span><span class="s2">, </span><span class="s1">showBackground </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">LineChartDark</span><span class="s2">() {</span>
+    <span class="s0">val </span><span class="s1">modelProducer1 </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">{ </span><span class="s1">CartesianChartModelProducer</span><span class="s2">.</span><span class="s1">build</span><span class="s2">()}</span>
+    <span class="s5">//val model4 = CartesianChartHost(modelProducer = modelProducer1)</span>
+    <span class="s1">Surface</span><span class="s2">(</span>
+        <span class="s1">shape </span><span class="s2">= </span><span class="s1">RoundedCornerShape</span><span class="s2">(</span><span class="s3">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+        <span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">,</span>
+    <span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">yellow </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">(</span><span class="s3">0xFFFFAA4A</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">pink </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">(</span><span class="s3">0xFFFF4AAA</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">x </span><span class="s2">= </span><span class="s1">model1</span><span class="s2">.</span><span class="s1">models</span>
+        <span class="s0">val </span><span class="s1">y </span><span class="s2">= </span><span class="s1">x</span><span class="s2">[</span><span class="s3">0</span><span class="s2">]</span>
+
+
+        <span class="s1">CartesianChartHost</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s3">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+            <span class="s1">chart </span><span class="s2">=</span>
+            <span class="s1">rememberCartesianChart</span><span class="s2">(</span>
+                <span class="s1">rememberLineCartesianLayer</span><span class="s2">(</span>
+                    <span class="s1">listOf</span><span class="s2">(</span>
+                        <span class="s1">rememberLineSpec</span><span class="s2">(</span>
+                            <span class="s1">shader </span><span class="s2">= </span><span class="s1">DynamicShader</span><span class="s2">.</span><span class="s1">color</span><span class="s2">(</span><span class="s1">yellow</span><span class="s2">),</span>
+                            <span class="s1">backgroundShader </span><span class="s2">=</span>
+                            <span class="s1">DynamicShader</span><span class="s2">.</span><span class="s1">verticalGradient</span><span class="s2">(</span>
+                                <span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">yellow</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0.5f</span><span class="s2">), </span><span class="s1">yellow</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0f</span><span class="s2">)),</span>
+                            <span class="s2">),</span>
+                        <span class="s2">),</span>
+                        <span class="s1">rememberLineSpec</span><span class="s2">(</span>
+                            <span class="s1">shader </span><span class="s2">= </span><span class="s1">DynamicShader</span><span class="s2">.</span><span class="s1">color</span><span class="s2">(</span><span class="s1">pink</span><span class="s2">),</span>
+                            <span class="s1">backgroundShader </span><span class="s2">=</span>
+                            <span class="s1">DynamicShader</span><span class="s2">.</span><span class="s1">verticalGradient</span><span class="s2">(</span>
+                                <span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">pink</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0.5f</span><span class="s2">), </span><span class="s1">pink</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0f</span><span class="s2">)),</span>
+                            <span class="s2">),</span>
+                        <span class="s2">),</span>
+                    <span class="s2">),</span>
+                    <span class="s1">axisValueOverrider </span><span class="s2">= </span><span class="s1">AxisValueOverrider</span><span class="s2">.</span><span class="s1">fixed</span><span class="s2">(</span><span class="s1">maxY </span><span class="s2">= </span><span class="s3">4f</span><span class="s2">),</span>
+                <span class="s2">),</span>
+            <span class="s2">),</span>
+            <span class="s1">model </span><span class="s2">= </span><span class="s1">model3</span><span class="s2">,</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">@Preview</span><span class="s2">(</span><span class="s4">&quot;Line Chart&quot;</span><span class="s2">, </span><span class="s1">widthDp </span><span class="s2">= </span><span class="s3">200</span><span class="s2">, </span><span class="s1">showBackground </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">RegularLineChart</span><span class="s2">() {</span>
+    <span class="s1">CartesianChartHost</span><span class="s2">(</span>
+        <span class="s1">chart </span><span class="s2">= </span><span class="s1">rememberCartesianChart</span><span class="s2">(</span><span class="s1">rememberLineCartesianLayer</span><span class="s2">(), </span><span class="s1">startAxis </span><span class="s2">= </span><span class="s1">rememberStartAxis</span><span class="s2">()),</span>
+        <span class="s1">model </span><span class="s2">= </span><span class="s1">model1</span><span class="s2">,</span>
+    <span class="s2">)</span>
+<span class="s2">}</span>
+
+<span class="s1">@Preview</span><span class="s2">(</span><span class="s4">&quot;Line Chart Expanded&quot;</span><span class="s2">, </span><span class="s1">widthDp </span><span class="s2">= </span><span class="s3">200</span><span class="s2">, </span><span class="s1">showBackground </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">RegularLineChartExpanded</span><span class="s2">() {</span>
+    <span class="s1">CartesianChartHost</span><span class="s2">(</span>
+        <span class="s1">chart </span><span class="s2">=</span>
+        <span class="s1">rememberCartesianChart</span><span class="s2">(</span>
+            <span class="s1">rememberLineCartesianLayer</span><span class="s2">(</span><span class="s1">axisValueOverrider </span><span class="s2">= </span><span class="s1">AxisValueOverrider</span><span class="s2">.</span><span class="s1">fixed</span><span class="s2">(</span><span class="s1">minY </span><span class="s2">= -</span><span class="s3">1f</span><span class="s2">, </span><span class="s1">maxY </span><span class="s2">= </span><span class="s3">5f</span><span class="s2">)),</span>
+            <span class="s1">startAxis </span><span class="s2">= </span><span class="s1">rememberStartAxis</span><span class="s2">(),</span>
+        <span class="s2">),</span>
+        <span class="s1">model </span><span class="s2">= </span><span class="s1">model1</span><span class="s2">,</span>
+    <span class="s2">)</span>
+<span class="s2">}</span>
+
+<span class="s1">@Preview</span><span class="s2">(</span><span class="s4">&quot;Line Chart Collapsed&quot;</span><span class="s2">, </span><span class="s1">widthDp </span><span class="s2">= </span><span class="s3">200</span><span class="s2">, </span><span class="s1">showBackground </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">RegularLineChartCollapsed</span><span class="s2">() {</span>
+    <span class="s1">CartesianChartHost</span><span class="s2">(</span>
+        <span class="s1">chart </span><span class="s2">=</span>
+        <span class="s1">rememberCartesianChart</span><span class="s2">(</span>
+            <span class="s1">rememberLineCartesianLayer</span><span class="s2">(</span><span class="s1">axisValueOverrider </span><span class="s2">= </span><span class="s1">AxisValueOverrider</span><span class="s2">.</span><span class="s1">fixed</span><span class="s2">(</span><span class="s1">minY </span><span class="s2">= </span><span class="s3">1f</span><span class="s2">, </span><span class="s1">maxY </span><span class="s2">= </span><span class="s3">3f</span><span class="s2">)),</span>
+            <span class="s1">startAxis </span><span class="s2">= </span><span class="s1">rememberStartAxis</span><span class="s2">(),</span>
+        <span class="s2">),</span>
+        <span class="s1">model </span><span class="s2">= </span><span class="s1">model1</span><span class="s2">,</span>
+    <span class="s2">)</span>
+<span class="s2">}</span>
+
+<span class="s1">@Preview</span><span class="s2">(</span><span class="s4">&quot;Composed Chart&quot;</span><span class="s2">, </span><span class="s1">widthDp </span><span class="s2">= </span><span class="s3">200</span><span class="s2">, </span><span class="s1">showBackground </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">ComposedLineChart</span><span class="s2">() {</span>
+    <span class="s1">CartesianChartHost</span><span class="s2">(</span>
+        <span class="s1">chart </span><span class="s2">=</span>
+        <span class="s1">rememberCartesianChart</span><span class="s2">(</span>
+            <span class="s1">rememberLineCartesianLayer</span><span class="s2">(),</span>
+            <span class="s1">rememberLineCartesianLayer</span><span class="s2">(</span>
+                <span class="s1">listOf</span><span class="s2">(</span>
+                    <span class="s1">rememberLineSpec</span><span class="s2">(</span>
+                        <span class="s1">shader </span><span class="s2">= </span><span class="s1">DynamicShader</span><span class="s2">.</span><span class="s1">color</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Blue</span><span class="s2">),</span>
+                        <span class="s1">backgroundShader </span><span class="s2">=</span>
+                        <span class="s1">DynamicShader</span><span class="s2">.</span><span class="s1">verticalGradient</span><span class="s2">(</span>
+                            <span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Blue</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0.4f</span><span class="s2">), </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Blue</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0f</span><span class="s2">)),</span>
+                        <span class="s2">),</span>
+                    <span class="s2">),</span>
+                <span class="s2">),</span>
+            <span class="s2">),</span>
+            <span class="s1">startAxis </span><span class="s2">= </span><span class="s1">rememberStartAxis</span><span class="s2">(),</span>
+        <span class="s2">),</span>
+        <span class="s1">model </span><span class="s2">= </span><span class="s1">model2</span><span class="s2">,</span>
+    <span class="s2">)</span>
+<span class="s2">}</span>
+
+<span class="s1">@Preview</span><span class="s2">(</span><span class="s4">&quot;Composed Chart Collapsed&quot;</span><span class="s2">, </span><span class="s1">widthDp </span><span class="s2">= </span><span class="s3">200</span><span class="s2">, </span><span class="s1">showBackground </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">ComposedLineChartCollapsed</span><span class="s2">() {</span>
+    <span class="s1">CartesianChartHost</span><span class="s2">(</span>
+        <span class="s1">chart </span><span class="s2">=</span>
+        <span class="s1">rememberCartesianChart</span><span class="s2">(</span>
+            <span class="s1">rememberLineCartesianLayer</span><span class="s2">(</span><span class="s1">axisValueOverrider </span><span class="s2">= </span><span class="s1">AxisValueOverrider</span><span class="s2">.</span><span class="s1">fixed</span><span class="s2">(</span><span class="s1">minY </span><span class="s2">= </span><span class="s3">1f</span><span class="s2">, </span><span class="s1">maxY </span><span class="s2">= </span><span class="s3">3f</span><span class="s2">)),</span>
+            <span class="s1">rememberLineCartesianLayer</span><span class="s2">(</span><span class="s1">axisValueOverrider </span><span class="s2">= </span><span class="s1">AxisValueOverrider</span><span class="s2">.</span><span class="s1">fixed</span><span class="s2">(</span><span class="s1">minY </span><span class="s2">= </span><span class="s3">1f</span><span class="s2">, </span><span class="s1">maxY </span><span class="s2">= </span><span class="s3">3f</span><span class="s2">)),</span>
+            <span class="s1">startAxis </span><span class="s2">= </span><span class="s1">rememberStartAxis</span><span class="s2">(),</span>
+        <span class="s2">),</span>
+        <span class="s1">model </span><span class="s2">= </span><span class="s1">model2</span><span class="s2">,</span>
+    <span class="s2">)</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

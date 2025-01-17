@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>SetURLActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SetURLActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">//package com.example.pestisafe.misc</span>
+<span class="s0">//</span>
+<span class="s0">//import android.annotation.SuppressLint</span>
+<span class="s0">//import android.content.Intent</span>
+<span class="s0">//import android.os.Bundle</span>
+<span class="s0">//import androidx.activity.ComponentActivity</span>
+<span class="s0">//import androidx.activity.compose.setContent</span>
+<span class="s0">//import androidx.compose.foundation.layout.Arrangement</span>
+<span class="s0">//import androidx.compose.foundation.layout.Column</span>
+<span class="s0">//import androidx.compose.foundation.layout.padding</span>
+<span class="s0">//import androidx.compose.foundation.text.KeyboardOptions</span>
+<span class="s0">//import androidx.compose.material3.Button</span>
+<span class="s0">//import androidx.compose.material3.OutlinedTextField</span>
+<span class="s0">//import androidx.compose.material3.Text</span>
+<span class="s0">//import androidx.compose.runtime.Composable</span>
+<span class="s0">//import androidx.compose.runtime.mutableStateOf</span>
+<span class="s0">//import androidx.compose.runtime.remember</span>
+<span class="s0">//import androidx.compose.runtime.rememberCoroutineScope</span>
+<span class="s0">//import androidx.compose.ui.Alignment</span>
+<span class="s0">//import androidx.compose.ui.Modifier</span>
+<span class="s0">//import androidx.compose.ui.graphics.Color</span>
+<span class="s0">//import androidx.compose.ui.text.font.FontWeight</span>
+<span class="s0">//import androidx.compose.ui.text.input.KeyboardType</span>
+<span class="s0">//import androidx.compose.ui.tooling.preview.Preview</span>
+<span class="s0">//import androidx.compose.ui.unit.dp</span>
+<span class="s0">//import androidx.compose.ui.unit.sp</span>
+<span class="s0">//import androidx.lifecycle.ViewModelProvider</span>
+<span class="s0">//import com.example.pestisafe.AppViewModel</span>
+<span class="s0">//import com.example.pestisafe.CalibrationActivity</span>
+<span class="s0">//import com.example.pestisafe.MainViewModel</span>
+<span class="s0">//import com.example.pestisafe.ui.theme.WifigetdataTheme</span>
+<span class="s0">//</span>
+<span class="s0">//class SetURLActivity : ComponentActivity() {</span>
+<span class="s0">//    private lateinit var sharedViewModel: MainViewModel</span>
+<span class="s0">//    override fun onCreate(savedInstanceState: Bundle?) {</span>
+<span class="s0">//        super.onCreate(savedInstanceState)</span>
+<span class="s0">//        setContent{</span>
+<span class="s0">//            WifigetdataTheme {</span>
+<span class="s0">//                SetURLScreen()</span>
+<span class="s0">//            }</span>
+<span class="s0">//        }</span>
+<span class="s0">//        sharedViewModel = ViewModelProvider((applicationContext as AppViewModel))[MainViewModel::class.java]</span>
+<span class="s0">//    }</span>
+<span class="s0">//</span>
+<span class="s0">//    @SuppressLint(&quot;NotConstructor&quot;)</span>
+<span class="s0">//    @Composable</span>
+<span class="s0">//    fun SetURLScreen(){</span>
+<span class="s0">//        val (url, setURL) = remember {</span>
+<span class="s0">//            mutableStateOf(&quot;&quot;)</span>
+<span class="s0">//        }</span>
+<span class="s0">//        val intent = Intent(this@SetURLActivity, CalibrationActivity::class.java)</span>
+<span class="s0">//        val coroutineScope = rememberCoroutineScope()</span>
+<span class="s0">//        val (receivedValue, setReceivedValue) = remember { mutableStateOf&lt;String&gt;(&quot;&quot;) }</span>
+<span class="s0">//        Column(</span>
+<span class="s0">//            modifier= Modifier.padding(5.dp),</span>
+<span class="s0">//            horizontalAlignment = Alignment.CenterHorizontally,</span>
+<span class="s0">//            verticalArrangement = Arrangement.Center) {</span>
+<span class="s0">//            OutlinedTextField(value = url,</span>
+<span class="s0">//                placeholder = { Text(text=&quot;Enter IP Address&quot;) }, label = { Text(text=&quot;URL / IP Address&quot;) },</span>
+<span class="s0">//                keyboardOptions =  KeyboardOptions(keyboardType = KeyboardType.Uri),</span>
+<span class="s0">//                onValueChange = {</span>
+<span class="s0">//                    setURL(it.trim())</span>
+<span class="s0">//                })</span>
+<span class="s0">//            Button(</span>
+<span class="s0">//                onClick = {</span>
+<span class="s0">//                    println(&quot;\t\t\t BUTTON CLICKED&quot;)</span>
+<span class="s0">//                    if (url.isNotEmpty()) {</span>
+<span class="s0">//                        sharedViewModel.url.value = url</span>
+<span class="s0">//                        sharedViewModel.fetchData()</span>
+<span class="s0">//                        println(&quot;fetch data function called&quot;)</span>
+<span class="s0">//                        startActivity(intent)</span>
+<span class="s0">//                    }</span>
+<span class="s0">//                          }, modifier = Modifier</span>
+<span class="s0">//                    .padding(5.dp)</span>
+<span class="s0">//            ) {</span>
+<span class="s0">//                Text(text = &quot;Click to set URL&quot;, fontWeight = FontWeight.ExtraBold, fontSize=20.sp,color= Color.White)</span>
+<span class="s0">//            }</span>
+<span class="s0">//        }</span>
+<span class="s0">//    }</span>
+<span class="s0">//</span>
+<span class="s0">//    @Preview(showBackground = true)</span>
+<span class="s0">//    @Composable</span>
+<span class="s0">//    fun SetURLScreenPreview(){</span>
+<span class="s0">//        WifigetdataTheme {</span>
+<span class="s0">//            SetURLScreen()</span>
+<span class="s0">//        }</span>
+<span class="s0">//    }</span>
+<span class="s0">//}</span>
+</pre>
+</body>
+</html>

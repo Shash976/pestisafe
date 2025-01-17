@@ -1,0 +1,275 @@
+<html>
+<head>
+<title>MainViewModel.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #6aab73;}
+.s6 { color: #2aacb8;}
+.s7 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainViewModel.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">MutableState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableDoubleStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableLongStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">ViewModel</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">viewModelScope</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">GsonBuilder</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">SupervisorJob</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">delay</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">flow</span><span class="s2">.</span><span class="s1">MutableStateFlow</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">BufferedReader</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">InputStreamReader</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">HttpURLConnection</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URI</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URL</span>
+<span class="s1">import kotlin</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">round</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* The ViewModel class for the main screen</span>
+ <span class="s3">* </span><span class="s4">@param </span><span class="s3">repository the repository to use</span>
+ <span class="s3">* </span><span class="s4">@property </span><span class="s3">url the url to get the data from</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">Repository</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">DataValue</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">Pesticide</span>
+ <span class="s3">*/</span>
+<span class="s0">class </span><span class="s1">MainViewModel</span><span class="s2">(</span><span class="s0">val </span><span class="s1">repository: Repository</span><span class="s2">) </span><span class="s1">:ViewModel</span><span class="s2">() {</span>
+
+    <span class="s0">var </span><span class="s1">url </span><span class="s2">= </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s5">&quot;&quot;</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">theValue </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s6">0.0</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">r2score </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s6">0.0</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">calibrationConcentration </span><span class="s2">= </span><span class="s1">doubleArrayOf</span><span class="s2">(</span><span class="s6">1.0</span><span class="s2">, </span><span class="s6">10.0</span><span class="s2">, </span><span class="s6">5.0</span><span class="s2">, </span><span class="s6">7.5</span><span class="s2">, </span><span class="s6">6.0</span><span class="s2">, </span><span class="s6">2.5</span><span class="s2">, </span><span class="s6">4.0</span><span class="s2">, </span><span class="s6">1.25</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">allData </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s1">emptyList</span><span class="s2">&lt;</span><span class="s1">DataValue</span><span class="s2">&gt;())</span>
+    <span class="s0">val </span><span class="s1">gradient </span><span class="s2">= </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s6">0.0</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">intercept </span><span class="s2">= </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s6">0.0</span><span class="s2">)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">updateTiming: MutableState</span><span class="s2">&lt;</span><span class="s1">Long</span><span class="s2">&gt; = </span><span class="s1">mutableLongStateOf</span><span class="s2">(</span><span class="s6">3000</span><span class="s2">)</span>
+    <span class="s0">var </span><span class="s1">screen :Routes </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">MAIN</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">viewModelJob </span><span class="s2">= </span><span class="s1">SupervisorJob</span><span class="s2">()</span>
+    <span class="s0">var </span><span class="s1">pesticides </span><span class="s2">= </span><span class="s1">emptyList</span><span class="s2">&lt;</span><span class="s1">Pesticide</span><span class="s2">&gt;()</span>
+    <span class="s0">var </span><span class="s1">user :User? </span><span class="s2">= </span><span class="s0">null</span>
+
+    <span class="s0">fun </span><span class="s1">deleteAllPesticides</span><span class="s2">(){</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">repository</span><span class="s2">.</span><span class="s1">pesticideDao</span><span class="s2">.</span><span class="s1">deleteAll</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">insert</span><span class="s2">(</span><span class="s1">dataValue: DataValue</span><span class="s2">)  {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">repository</span><span class="s2">.</span><span class="s1">insert</span><span class="s2">(</span><span class="s1">dataValue</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">getFromVoltage</span><span class="s2">(</span><span class="s1">voltage: Double</span><span class="s2">)</span><span class="s1">: DataValue </span><span class="s2">= </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">getFromVoltage</span><span class="s2">(</span><span class="s1">voltage</span><span class="s2">)</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">deleteAll</span><span class="s2">() = </span><span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+        <span class="s1">repository</span><span class="s2">.</span><span class="s1">dataValueDao</span><span class="s2">.</span><span class="s1">deleteAll</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">resetValues</span><span class="s2">() {</span>
+        <span class="s1">gradient</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s6">0.0</span>
+        <span class="s1">intercept</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s6">0.0</span>
+        <span class="s1">r2score</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s6">0.0</span>
+
+        <span class="s7">//url.value = &quot;&quot;</span>
+        <span class="s1">deleteAll</span><span class="s2">()</span>
+<span class="s7">//        println(repository.dataValueDao.getAll().asLiveData().value)</span>
+<span class="s7">//        println(repository.dataValueDao.getConcentrationArray().asLiveData().value)</span>
+<span class="s7">//        println(repository.dataValueDao.getAll().asLiveData().value)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">resetURL</span><span class="s2">() {</span>
+        <span class="s1">url</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s5">&quot;&quot;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">updateData</span><span class="s2">(</span><span class="s1">newVoltage: Double</span><span class="s2">, </span><span class="s1">newConcentration: Double</span><span class="s2">) = </span><span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">{</span>
+        <span class="s1">insert</span><span class="s2">(</span><span class="s1">DataValue</span><span class="s2">(</span><span class="s1">voltage </span><span class="s2">= </span><span class="s1">newVoltage</span><span class="s2">, </span><span class="s1">concentration </span><span class="s2">= </span><span class="s1">newConcentration</span><span class="s2">))</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">updateGradientIntercept</span><span class="s2">(</span><span class="s1">data: List</span><span class="s2">&lt;</span><span class="s1">DataValue</span><span class="s2">&gt;) = </span><span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">voltageArray </span><span class="s2">= </span><span class="s1">data</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">}</span>
+        <span class="s0">val </span><span class="s1">concentrationArray </span><span class="s2">= </span><span class="s1">data</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">concentration </span><span class="s2">}</span>
+        <span class="s0">val </span><span class="s2">(</span><span class="s1">slope</span><span class="s2">, </span><span class="s1">c</span><span class="s2">) = </span><span class="s1">linearRegression</span><span class="s2">( </span><span class="s1">concentrationArray</span><span class="s2">, </span><span class="s1">voltageArray</span><span class="s2">)</span>
+        <span class="s1">gradient</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s1">slope</span>
+        <span class="s1">intercept</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s1">c</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">updateConcentration</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">voltage </span><span class="s2">= </span><span class="s1">theValue</span><span class="s2">.</span><span class="s1">value</span>
+        <span class="s0">val </span><span class="s1">concentration </span><span class="s2">= </span><span class="s1">calculateConcentration</span><span class="s2">(</span><span class="s1">voltage</span><span class="s2">)</span>
+        <span class="s1">updateData</span><span class="s2">(</span><span class="s1">voltage</span><span class="s2">, </span><span class="s1">concentration</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">calculateConcentration</span><span class="s2">(</span><span class="s1">voltage: Double</span><span class="s2">)</span><span class="s1">: Double </span><span class="s2">{</span>
+        <span class="s7">// Y = MX + C -&gt; X = Y-C / M</span>
+        <span class="s0">var </span><span class="s1">concentration </span><span class="s2">=  (</span><span class="s1">voltage </span><span class="s2">- </span><span class="s1">intercept</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s2">) / </span><span class="s1">gradient</span><span class="s2">.</span><span class="s1">doubleValue</span>
+        <span class="s1">concentration </span><span class="s2">= </span><span class="s1">round</span><span class="s2">(</span><span class="s1">concentration</span><span class="s2">*</span><span class="s6">1000</span><span class="s2">)/</span><span class="s6">1000</span>
+        <span class="s0">return </span><span class="s1">concentration</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Function to update the R2 score</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">updateR2Score</span><span class="s2">(</span><span class="s1">dataArray:List</span><span class="s2">&lt;</span><span class="s1">DataValue</span><span class="s2">&gt;) = </span><span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+        <span class="s1">r2score</span><span class="s2">.</span><span class="s1">value</span><span class="s2">= </span><span class="s1">calculateRSquared</span><span class="s2">(</span>
+            <span class="s1">dataArray</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">}.</span><span class="s1">orEmpty</span><span class="s2">().</span><span class="s1">toDoubleArray</span><span class="s2">(),</span>
+            <span class="s1">dataArray</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">concentration </span><span class="s2">}.</span><span class="s1">orEmpty</span><span class="s2">().</span><span class="s1">toDoubleArray</span><span class="s2">()</span>
+        <span class="s2">)</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">value</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCleared</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCleared</span><span class="s2">()</span>
+        <span class="s1">viewModelJob</span><span class="s2">.</span><span class="s1">cancel</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Function to start data fetching</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">fetchData</span><span class="s2">() {</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Function called&quot;</span><span class="s2">)</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">viewModelJob</span><span class="s2">) {</span>
+            <span class="s0">while </span><span class="s2">(</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+                <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+                    <span class="s1">theValue</span><span class="s2">.</span><span class="s1">value  </span><span class="s2">= </span><span class="s1">updateReceivedValue</span><span class="s2">()</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;</span><span class="s0">${ </span><span class="s1">theValue</span><span class="s2">.</span><span class="s1">value</span><span class="s0">} </span><span class="s5">, </span><span class="s0">${</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value </span><span class="s0">}</span><span class="s5">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">delay</span><span class="s2">(</span><span class="s1">updateTiming</span><span class="s2">.</span><span class="s1">value</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Function to update the received value</span>
+     <span class="s3">* </span><span class="s4">@return </span><span class="s3">the received value</span>
+     <span class="s3">*/</span>
+    <span class="s1">private suspend </span><span class="s0">fun </span><span class="s1">updateReceivedValue</span><span class="s2">() </span><span class="s1">:Double</span><span class="s2">{</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">received </span><span class="s2">= </span><span class="s1">getRequest</span><span class="s2">(</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s2">).</span><span class="s1">toDouble</span><span class="s2">()</span>
+            <span class="s0">return </span><span class="s1">received</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;OOPS THIS IS THE ERROR </span><span class="s0">$</span><span class="s1">e</span><span class="s5">&quot;</span><span class="s2">)</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;URL IS </span><span class="s0">${</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s0">}</span><span class="s5">&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s6">0.0</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Function to get the pesticide data</span>
+     <span class="s3">* </span><span class="s4">@see </span><span class="s3">Pesticide</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getPesticideData</span><span class="s2">(){</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">){</span>
+                <span class="s0">val </span><span class="s1">apiUrl </span><span class="s2">= </span><span class="s5">&quot;https://www.fao.org/jsoncodexpest/jsonrequest/pesticides/index.html&quot;</span>
+                <span class="s0">val </span><span class="s1">response </span><span class="s2">= </span><span class="s1">getRequest</span><span class="s2">(</span><span class="s1">apiUrl</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">gson </span><span class="s2">= </span><span class="s1">GsonBuilder</span><span class="s2">().</span><span class="s1">registerTypeAdapter</span><span class="s2">(</span>
+                    <span class="s1">PesticidesResponse::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">,</span>
+                    <span class="s1">PesticideDeserializer</span><span class="s2">()</span>
+                <span class="s2">).</span><span class="s1">create</span><span class="s2">()</span>
+                <span class="s0">val </span><span class="s1">pesticideL </span><span class="s2">= </span><span class="s1">gson</span><span class="s2">.</span><span class="s1">fromJson</span><span class="s2">(</span><span class="s1">response</span><span class="s2">, </span><span class="s1">PesticidesResponse::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">)</span>
+                <span class="s1">pesticides </span><span class="s2">= </span><span class="s1">pesticideL</span><span class="s2">.</span><span class="s1">pesticides</span>
+                <span class="s1">pesticides</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">pesticideDao</span><span class="s2">.</span><span class="s1">insert</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) }</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s1">pesticides</span><span class="s2">.</span><span class="s1">lastIndex</span><span class="s2">)</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Added to database&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Function to get the pesticide data</span>
+     <span class="s3">* </span><span class="s4">@see </span><span class="s3">Pesticide</span>
+     <span class="s3">* </span><span class="s4">@see </span><span class="s3">Detail</span>
+     <span class="s3">* </span><span class="s4">@see </span><span class="s3">MRL</span>
+     <span class="s3">* </span><span class="s4">@see </span><span class="s3">Commodity</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getMRLData</span><span class="s2">() {</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Retrieving data&quot;</span><span class="s2">)</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">viewModelJob</span><span class="s2">) {</span>
+            <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+                <span class="s1">pesticides</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{</span>
+                        <span class="s0">val </span><span class="s1">pesticideApi </span><span class="s2">=</span>
+                            <span class="s5">&quot;https://www.fao.org/jsoncodexpest/jsonrequest/pesticides/details.html?id=</span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">id</span><span class="s0">}</span><span class="s5">&amp;lang=en&quot;</span>
+                        <span class="s0">val </span><span class="s1">pesticideResponse </span><span class="s2">= </span><span class="s1">getRequest</span><span class="s2">(</span><span class="s1">pesticideApi</span><span class="s2">)</span>
+                        <span class="s0">val </span><span class="s1">detailGson </span><span class="s2">=</span>
+                            <span class="s1">GsonBuilder</span><span class="s2">().</span><span class="s1">registerTypeAdapter</span><span class="s2">(</span><span class="s1">Detail::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">, </span><span class="s1">DetailDeserializer</span><span class="s2">())</span>
+                                <span class="s2">.</span><span class="s1">create</span><span class="s2">()</span>
+                        <span class="s0">val </span><span class="s1">detail: Detail </span><span class="s2">= </span><span class="s1">detailGson</span><span class="s2">.</span><span class="s1">fromJson</span><span class="s2">(</span><span class="s1">pesticideResponse</span><span class="s2">, </span><span class="s1">Detail::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">)</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">pesticideDao</span><span class="s2">.</span><span class="s1">getAll</span><span class="s2">().</span><span class="s1">value</span><span class="s2">.</span><span class="s1">orEmpty</span><span class="s2">().</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">})</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">id</span><span class="s2">)</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s0">!in </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">pesticideDao</span><span class="s2">.</span><span class="s1">getAll</span><span class="s2">().</span><span class="s1">value</span><span class="s2">.</span><span class="s1">orEmpty</span><span class="s2">().</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}) {</span>
+                            <span class="s1">repository</span><span class="s2">.</span><span class="s1">pesticideDao</span><span class="s2">.</span><span class="s1">insert</span><span class="s2">(</span><span class="s1">it</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+
+                        <span class="s1">detail</span><span class="s2">.</span><span class="s1">mrls</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">mrlDetail </span><span class="s2">-&gt;</span>
+                            <span class="s0">if </span><span class="s2">(</span><span class="s1">mrlDetail</span><span class="s2">.</span><span class="s1">commodity</span><span class="s2">.</span><span class="s1">id </span><span class="s0">!in </span><span class="s1">repository</span><span class="s2">.</span><span class="s1">commodityDao</span><span class="s2">.</span><span class="s1">getAll</span><span class="s2">()</span>
+                                    <span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span>
+                            <span class="s2">) {</span>
+                                <span class="s1">repository</span><span class="s2">.</span><span class="s1">commodityDao</span><span class="s2">.</span><span class="s1">insert</span><span class="s2">(</span><span class="s1">mrlDetail</span><span class="s2">.</span><span class="s1">commodity</span><span class="s2">)</span>
+                            <span class="s2">}</span>
+                            <span class="s0">val </span><span class="s1">mrl </span><span class="s2">= </span><span class="s1">MRL</span><span class="s2">(</span>
+                                <span class="s1">mrlDetail</span><span class="s2">.</span><span class="s1">pesticide</span><span class="s2">.</span><span class="s1">id</span><span class="s2">,</span>
+                                <span class="s1">mrlDetail</span><span class="s2">.</span><span class="s1">commodity</span><span class="s2">.</span><span class="s1">id</span><span class="s2">,</span>
+                                <span class="s1">mrlDetail</span><span class="s2">.</span><span class="s1">mrl</span>
+                            <span class="s2">)</span>
+                            <span class="s1">repository</span><span class="s2">.</span><span class="s1">mrlDao</span><span class="s2">.</span><span class="s1">insert</span><span class="s2">(</span><span class="s1">mrl</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Function to get the request from the API</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">apiUrl the url to get the request from</span>
+     <span class="s3">* </span><span class="s4">@return </span><span class="s3">the response from the API</span>
+     <span class="s3">*/</span>
+    <span class="s1">private suspend </span><span class="s0">fun </span><span class="s1">getRequest</span><span class="s2">(</span><span class="s1">apiUrl: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">url: URL </span><span class="s2">= </span><span class="s1">URI</span><span class="s2">.</span><span class="s1">create</span><span class="s2">(</span><span class="s1">apiUrl</span><span class="s2">).</span><span class="s1">toURL</span><span class="s2">()</span>
+        <span class="s0">var </span><span class="s1">response: StringBuilder? </span><span class="s2">= </span><span class="s0">null</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">connection: HttpURLConnection </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">openConnection</span><span class="s2">() </span><span class="s0">as </span><span class="s1">HttpURLConnection</span>
+            <span class="s1">connection</span><span class="s2">.</span><span class="s1">requestMethod </span><span class="s2">= </span><span class="s5">&quot;GET&quot;</span>
+            <span class="s0">val </span><span class="s1">responseCode </span><span class="s2">= </span><span class="s1">connection</span><span class="s2">.</span><span class="s1">responseCode</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">responseCode </span><span class="s2">== </span><span class="s1">HttpURLConnection</span><span class="s2">.</span><span class="s1">HTTP_OK</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">reader </span><span class="s2">= </span><span class="s1">BufferedReader</span><span class="s2">(</span><span class="s1">InputStreamReader</span><span class="s2">(</span><span class="s1">connection</span><span class="s2">.</span><span class="s1">inputStream</span><span class="s2">))</span>
+                <span class="s0">var </span><span class="s1">line: String?</span>
+                <span class="s1">response </span><span class="s2">= </span><span class="s1">StringBuilder</span><span class="s2">()</span>
+
+                <span class="s0">while </span><span class="s2">(</span><span class="s1">reader</span><span class="s2">.</span><span class="s1">readLine</span><span class="s2">().</span><span class="s1">also </span><span class="s2">{ </span><span class="s1">line </span><span class="s2">= </span><span class="s1">it </span><span class="s2">} != </span><span class="s0">null</span><span class="s2">) {</span>
+                    <span class="s1">response</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">line</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">reader</span><span class="s2">.</span><span class="s1">close</span><span class="s2">()</span>
+
+                <span class="s1">connection</span><span class="s2">.</span><span class="s1">disconnect</span><span class="s2">()</span>
+
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">err: Exception</span><span class="s2">) {</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;</span><span class="s0">$</span><span class="s1">err </span><span class="s0">\n\t</span><span class="s5">...is the error&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">response?</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">() </span><span class="s1">?: </span><span class="s5">&quot;&quot;</span>
+    <span class="s2">}</span>
+
+
+<span class="s2">}</span>
+
+</pre>
+</body>
+</html>

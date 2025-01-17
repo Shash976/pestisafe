@@ -1,0 +1,237 @@
+<html>
+<head>
+<title>MainActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #6aab73;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import LoginSignUpScreen</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">ComponentActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">setContent</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">RequiresApi</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Column</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Menu</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">BottomAppBar</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">DropdownMenu</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">DropdownMenuItem</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Icon</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">IconButton</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">MaterialTheme</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Scaffold</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Surface</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">LaunchedEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">ViewModelProvider</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">lifecycleScope</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">NavHost</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">rememberNavController</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">room</span><span class="s2">.</span><span class="s1">Room</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">theme</span><span class="s2">.</span><span class="s1">WifigetdataTheme</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* The main activity for the app</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">ComponentActivity</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">MainViewModel</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">Repository</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">AppDatabase</span>
+ <span class="s3">* </span><span class="s4">@see </span><span class="s3">MainViewModelFactory</span>
+ <span class="s3">* </span><span class="s4">@constructor </span><span class="s3">Create empty Main activity</span>
+ <span class="s3">* </span><span class="s4">@property </span><span class="s3">database the database to use</span>
+ <span class="s3">*/</span>
+<span class="s1">open </span><span class="s0">class </span><span class="s1">MainActivity : ComponentActivity</span><span class="s2">() {</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">database by lazy </span><span class="s2">{</span>
+        <span class="s1">Room</span><span class="s2">.</span><span class="s1">databaseBuilder</span><span class="s2">(</span>
+            <span class="s1">applicationContext</span><span class="s2">,</span>
+            <span class="s1">AppDatabase::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">,</span>
+            <span class="s5">&quot;dataValues.db&quot;</span>
+        <span class="s2">).</span><span class="s1">build</span><span class="s2">()</span>
+    <span class="s2">}</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">sharedViewModel : MainViewModel</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">repository : Repository</span>
+    <span class="s1">@RequiresApi</span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">O</span><span class="s2">)</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+        <span class="s1">lifecycleScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">){</span>
+                <span class="s1">repository </span><span class="s2">= </span><span class="s1">Repository</span><span class="s2">(</span><span class="s1">database</span><span class="s2">)</span>
+                <span class="s1">sharedViewModel </span><span class="s2">= </span><span class="s1">ViewModelProvider</span><span class="s2">(</span>
+                    <span class="s0">this</span><span class="s1">@MainActivity</span><span class="s2">,</span>
+                    <span class="s1">MainViewModelFactory</span><span class="s2">(</span><span class="s1">repository</span><span class="s2">)</span>
+                <span class="s2">)[</span><span class="s1">MainViewModel::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">]</span>
+
+            <span class="s2">}</span>
+
+        <span class="s2">}</span>
+
+        <span class="s1">setContent </span><span class="s2">{</span>
+            <span class="s1">WifigetdataTheme </span><span class="s2">{</span>
+                <span class="s1">Surface</span><span class="s2">(</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+                    <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span>
+                <span class="s2">) {</span>
+                    <span class="s3">/**</span>
+                     <span class="s3">* Navigation</span>
+                     <span class="s3">* </span><span class="s4">@see </span><span class="s3">rememberNavController</span>
+                     <span class="s3">* </span><span class="s4">@see </span><span class="s3">NavHost</span>
+                     <span class="s3">*/</span>
+                    <span class="s0">val </span><span class="s1">navController </span><span class="s2">= </span><span class="s1">rememberNavController</span><span class="s2">()</span>
+
+                    <span class="s1">Scaffold</span><span class="s2">(</span>
+                        <span class="s1">bottomBar </span><span class="s2">= {</span>
+                            <span class="s1">BottomAppBar </span><span class="s2">{</span>
+                                <span class="s0">val </span><span class="s1">showMenu </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+                                <span class="s0">val </span><span class="s1">navOptions </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN</span><span class="s2">, </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">PESTICIDE_SELECTION</span><span class="s2">, </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">MAIN</span><span class="s2">, </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">IP_SCANNER</span><span class="s2">, </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">CALIBRATION</span><span class="s2">, </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">HOME</span><span class="s2">)</span>
+
+                                <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">showMenu</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true </span><span class="s2">}) {</span>
+                                    <span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Menu</span><span class="s2">, </span><span class="s1">contentDescription </span><span class="s2">= </span><span class="s5">&quot;Navigation Menu&quot;</span><span class="s2">)</span>
+                                <span class="s2">}</span>
+
+                                <span class="s1">DropdownMenu</span><span class="s2">(</span>
+                                    <span class="s1">expanded </span><span class="s2">= </span><span class="s1">showMenu</span><span class="s2">.</span><span class="s1">value</span><span class="s2">,</span>
+                                    <span class="s1">onDismissRequest </span><span class="s2">= { </span><span class="s1">showMenu</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false </span><span class="s2">}</span>
+                                <span class="s2">) {</span>
+                                    <span class="s3">/**</span>
+                                     <span class="s3">* Dropdown menu</span>
+                                     <span class="s3">* </span><span class="s4">@see </span><span class="s3">DropdownMenuItem</span>
+                                     <span class="s3">*/</span>
+                                    <span class="s1">navOptions</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">route </span><span class="s2">-&gt;</span>
+                                        <span class="s1">DropdownMenuItem</span><span class="s2">(</span>
+                                            <span class="s1">text </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s1">route</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) },</span>
+                                            <span class="s1">onClick </span><span class="s2">= {</span>
+                                                <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">route</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                                                <span class="s1">showMenu</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+                                            <span class="s2">}</span>
+                                        <span class="s2">)</span>
+                                    <span class="s2">}</span>
+                                <span class="s2">}</span>
+                            <span class="s2">}</span>
+                                    <span class="s2">},</span>
+                        <span class="s1">content </span><span class="s2">= { </span><span class="s1">innerPadding </span><span class="s2">-&gt;</span>
+                            <span class="s3">/**</span>
+                             <span class="s3">* Main Column</span>
+                             <span class="s3">* </span><span class="s4">@see </span><span class="s3">Column</span>
+                             <span class="s3">* </span><span class="s4">@see </span><span class="s3">MainScreen</span>
+                             <span class="s3">*/</span>
+                            <span class="s1">Column</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">innerPadding</span><span class="s2">)){</span>
+                                <span class="s1">NavHost</span><span class="s2">(</span>
+                                    <span class="s1">navController </span><span class="s2">= </span><span class="s1">navController</span><span class="s2">,</span>
+                                    <span class="s1">startDestination </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span>
+                                <span class="s2">) {</span>
+                                    <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>
+                                        <span class="s1">LoginSignUpScreen</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">, </span><span class="s1">navController</span><span class="s2">)</span>
+                                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN</span>
+                                    <span class="s2">}</span>
+                                    <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">PESTICIDE_SELECTION</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>
+                                        <span class="s1">PesticideSelectionScreen</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">, </span><span class="s1">navController</span><span class="s2">)</span>
+                                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">PESTICIDE_SELECTION</span>
+                                    <span class="s2">}</span>
+                                    <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">MAIN</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>
+                                        <span class="s1">MainScreen</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">, </span><span class="s1">navController</span><span class="s2">)</span>
+                                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">MAIN</span>
+                                    <span class="s2">}</span>
+                                    <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">IP_SCANNER</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>
+                                        <span class="s1">ScanScreen</span><span class="s2">(</span>
+                                            <span class="s1">sharedViewModel </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">,</span>
+                                            <span class="s1">applicationContext </span><span class="s2">= </span><span class="s0">this</span><span class="s1">@MainActivity</span><span class="s2">,</span>
+                                            <span class="s1">navController </span><span class="s2">= </span><span class="s1">navController</span>
+                                        <span class="s2">)</span>
+                                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">IP_SCANNER</span>
+                                    <span class="s2">}</span>
+                                    <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">CALIBRATION</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>
+                                        <span class="s1">CalibrationScreen</span><span class="s2">(</span>
+                                            <span class="s1">sharedViewModel </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">,</span>
+                                            <span class="s1">navController </span><span class="s2">= </span><span class="s1">navController</span>
+                                        <span class="s2">)</span>
+                                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">CALIBRATION</span>
+                                    <span class="s2">}</span>
+                                    <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">HOME</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>
+                                        <span class="s1">HomeScreen</span><span class="s2">(</span>
+                                            <span class="s1">sharedViewModel </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">,</span>
+                                            <span class="s1">navController </span><span class="s2">= </span><span class="s1">navController</span><span class="s2">,</span>
+                                            <span class="s1">context </span><span class="s2">= </span><span class="s0">this</span><span class="s1">@MainActivity</span>
+                                        <span class="s2">)</span>
+                                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">HOME</span>
+                                    <span class="s2">}</span>
+                                <span class="s2">}</span>
+                            <span class="s2">}</span>
+                    <span class="s2">})</span>
+                    <span class="s3">/**</span>
+                     <span class="s3">* Launched effect</span>
+                     <span class="s3">* </span><span class="s4">@see </span><span class="s3">LaunchedEffect</span>
+                     <span class="s3">*/</span>
+                    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">Unit</span><span class="s2">) {</span>
+                        <span class="s1">lifecycleScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+                            <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">){</span>
+                                <span class="s3">/**</span>
+                                 <span class="s3">* Collect data</span>
+                                 <span class="s3">* Updates data every time new value is emitted</span>
+                                 <span class="s3">* </span><span class="s4">@see </span><span class="s3">DataValueDao</span>
+                                 <span class="s3">* </span><span class="s4">@see </span><span class="s3">collect</span>
+                                 <span class="s3">*/</span>
+                                <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">dataValueDao</span><span class="s2">.</span><span class="s1">getAll</span><span class="s2">().</span><span class="s1">collect </span><span class="s2">{</span>
+                                    <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()){</span>
+                                        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;New Data </span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">voltage</span><span class="s0">} </span><span class="s5">V, </span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">concentration</span><span class="s0">} </span><span class="s5">ppm&quot;</span><span class="s2">)</span>
+                                    <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                                        <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Data is empty&quot;</span><span class="s2">)</span>
+                                    <span class="s2">}</span>
+                                    <span class="s0">when </span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen</span><span class="s2">) {</span>
+                                        <span class="s1">Routes</span><span class="s2">.</span><span class="s1">CALIBRATION </span><span class="s2">-&gt; {</span>
+                                            <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&gt;= </span><span class="s6">2</span><span class="s2">) {</span>
+                                                <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">updateR2Score</span><span class="s2">(</span><span class="s1">it</span><span class="s2">)</span>
+                                                <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&gt; </span><span class="s6">2</span><span class="s2">) {</span>
+                                                    <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">updateGradientIntercept</span><span class="s2">(</span><span class="s1">it</span><span class="s2">)</span>
+                                                <span class="s2">}</span>
+                                            <span class="s2">}</span>
+                                        <span class="s2">}</span>
+                                        <span class="s1">Routes</span><span class="s2">.</span><span class="s1">HOME </span><span class="s2">-&gt; {</span>
+                                            <span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Updated to </span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">voltage</span><span class="s0">} </span><span class="s5">V, </span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">concentration</span><span class="s0">} </span><span class="s5">ppm&quot;</span><span class="s2">)</span>
+                                            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">it</span>
+                                        <span class="s2">}</span>
+                                        <span class="s1">Routes</span><span class="s2">.</span><span class="s1">MAIN </span><span class="s2">-&gt; {}</span>
+                                        <span class="s1">Routes</span><span class="s2">.</span><span class="s1">IP_SCANNER </span><span class="s2">-&gt; {}</span>
+                                        <span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN </span><span class="s2">-&gt; {}</span>
+                                        <span class="s1">Routes</span><span class="s2">.</span><span class="s1">PESTICIDE_SELECTION </span><span class="s2">-&gt; {}</span>
+                                    <span class="s2">}</span>
+                                <span class="s2">}</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen</span><span class="s2">) {</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+</pre>
+</body>
+</html>

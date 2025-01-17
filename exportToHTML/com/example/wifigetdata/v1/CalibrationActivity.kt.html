@@ -1,0 +1,233 @@
+<html>
+<head>
+<title>CalibrationActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CalibrationActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">//package com.example.pestisafe</span>
+<span class="s0">//</span>
+<span class="s0">//import android.annotation.SuppressLint</span>
+<span class="s0">//import android.content.Intent</span>
+<span class="s0">//import android.os.Bundle</span>
+<span class="s0">//import androidx.activity.ComponentActivity</span>
+<span class="s0">//import androidx.activity.compose.setContent</span>
+<span class="s0">//import androidx.compose.foundation.layout.Arrangement</span>
+<span class="s0">//import androidx.compose.foundation.layout.Box</span>
+<span class="s0">//import androidx.compose.foundation.layout.Column</span>
+<span class="s0">//import androidx.compose.foundation.layout.fillMaxSize</span>
+<span class="s0">//import androidx.compose.foundation.layout.padding</span>
+<span class="s0">//import androidx.compose.foundation.lazy.grid.GridCells</span>
+<span class="s0">//import androidx.compose.foundation.lazy.grid.LazyVerticalGrid</span>
+<span class="s0">//import androidx.compose.foundation.shape.RoundedCornerShape</span>
+<span class="s0">//import androidx.compose.material.icons.Icons</span>
+<span class="s0">//import androidx.compose.material.icons.filled.Refresh</span>
+<span class="s0">//import androidx.compose.material3.Button</span>
+<span class="s0">//import androidx.compose.material3.Card</span>
+<span class="s0">//import androidx.compose.material3.CardDefaults</span>
+<span class="s0">//import androidx.compose.material3.FloatingActionButton</span>
+<span class="s0">//import androidx.compose.material3.Icon</span>
+<span class="s0">//import androidx.compose.material3.Text</span>
+<span class="s0">//import androidx.compose.runtime.Composable</span>
+<span class="s0">//import androidx.compose.runtime.LaunchedEffect</span>
+<span class="s0">//import androidx.compose.runtime.derivedStateOf</span>
+<span class="s0">//import androidx.compose.runtime.getValue</span>
+<span class="s0">//import androidx.compose.runtime.mutableDoubleStateOf</span>
+<span class="s0">//import androidx.compose.runtime.mutableIntStateOf</span>
+<span class="s0">//import androidx.compose.runtime.remember</span>
+<span class="s0">//import androidx.compose.runtime.rememberCoroutineScope</span>
+<span class="s0">//import androidx.compose.ui.Alignment</span>
+<span class="s0">//import androidx.compose.ui.Modifier</span>
+<span class="s0">//import androidx.compose.ui.platform.LocalContext</span>
+<span class="s0">//import androidx.compose.ui.tooling.preview.Preview</span>
+<span class="s0">//import androidx.compose.ui.unit.dp</span>
+<span class="s0">//import com.example.pestisafe.ui.theme.WifigetdataTheme</span>
+<span class="s0">//import kotlinx.coroutines.CoroutineScope</span>
+<span class="s0">//import kotlinx.coroutines.Dispatchers</span>
+<span class="s0">//import kotlinx.coroutines.delay</span>
+<span class="s0">//import kotlinx.coroutines.launch</span>
+<span class="s0">//import kotlinx.coroutines.withContext</span>
+<span class="s0">//</span>
+<span class="s0">//class CalibrationActivity : MainActivity() {</span>
+<span class="s0">//</span>
+<span class="s0">//    override fun onCreate(savedInstanceState: Bundle?) {</span>
+<span class="s0">//        super.onCreate(savedInstanceState)</span>
+<span class="s0">//        setContent{</span>
+<span class="s0">//            WifigetdataTheme {</span>
+<span class="s0">//                CalibrationScreen()</span>
+<span class="s0">//            }</span>
+<span class="s0">//        }</span>
+<span class="s0">//    }</span>
+<span class="s0">//</span>
+<span class="s0">//</span>
+<span class="s0">//    @SuppressLint(&quot;CoroutineCreationDuringComposition&quot;)</span>
+<span class="s0">//    @Composable</span>
+<span class="s0">//    fun CalibrationScreen() {</span>
+<span class="s0">//        val counter = remember { mutableIntStateOf(0) }</span>
+<span class="s0">//        val r2score = remember { mutableDoubleStateOf(0.0) }</span>
+<span class="s0">//        val r2CoroutineScope = rememberCoroutineScope()</span>
+<span class="s0">//</span>
+<span class="s0">//        val shownAdditionalCards = remember { mutableIntStateOf(0) }</span>
+<span class="s0">//        val startR2Math = remember{ mutableIntStateOf(0) }</span>
+<span class="s0">//</span>
+<span class="s0">//</span>
+<span class="s0">//        @Composable</span>
+<span class="s0">//        fun CalibrateCard(index: Int) {</span>
+<span class="s0">//            val labelText = remember { mutableDoubleStateOf(0.0) }</span>
+<span class="s0">//            val concentration = sharedViewModel.calibrationConcentration[index]</span>
+<span class="s0">//            val textFixed by remember(counter) { derivedStateOf { counter.intValue != index } }</span>
+<span class="s0">//            val coroutineScope = rememberCoroutineScope()</span>
+<span class="s0">//            val mathCoroutineScope = rememberCoroutineScope()</span>
+<span class="s0">//</span>
+<span class="s0">//            Card(</span>
+<span class="s0">//                modifier = Modifier.padding(10.dp),</span>
+<span class="s0">//                shape = CardDefaults.elevatedShape,</span>
+<span class="s0">//                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)</span>
+<span class="s0">//            ) {</span>
+<span class="s0">//                Column(</span>
+<span class="s0">//                    horizontalAlignment = Alignment.CenterHorizontally,</span>
+<span class="s0">//                    verticalArrangement = Arrangement.Center,</span>
+<span class="s0">//                    modifier = Modifier.padding(10.dp)</span>
+<span class="s0">//                ) {</span>
+<span class="s0">//</span>
+<span class="s0">//                    coroutineScope.launch {</span>
+<span class="s0">//                        withContext(Dispatchers.IO) {</span>
+<span class="s0">//                            println(&quot;starting while loop, textFixed is $textFixed, url is ${sharedViewModel.url.value} , val ${sharedViewModel.theValue.value} and label text is ${labelText.doubleValue}, counter is ${counter.intValue}&quot;)</span>
+<span class="s0">//                            while (sharedViewModel.url.value.isNotEmpty() &amp;&amp; !textFixed) {</span>
+<span class="s0">//                                println(&quot;url is not empty, received value is ${sharedViewModel.theValue.value}, label text is ${labelText.doubleValue}&quot;)</span>
+<span class="s0">//                                if (sharedViewModel.theValue.value != labelText.doubleValue) {</span>
+<span class="s0">//                                    println(&quot;Received value is not equal to label text&quot;)</span>
+<span class="s0">//                                    labelText.doubleValue = sharedViewModel.theValue.value</span>
+<span class="s0">//                                }</span>
+<span class="s0">//                            }</span>
+<span class="s0">//                        }</span>
+<span class="s0">//                    }</span>
+<span class="s0">//                    Text(text = &quot;${labelText.doubleValue} V&quot;)</span>
+<span class="s0">//                    Text(text = &quot;$concentration μm&quot;)</span>
+<span class="s0">//                    Button(shape = RoundedCornerShape(10.dp), enabled = !textFixed, onClick = {</span>
+<span class="s0">//                        println(&quot;Counter ${counter.intValue}&quot;)</span>
+<span class="s0">//                        val newDataValue = DataValue(labelText.doubleValue, concentration)</span>
+<span class="s0">//                        sharedViewModel.updateData(labelText.doubleValue, concentration)</span>
+<span class="s0">//                        println(&quot;${labelText.doubleValue}, $concentration&quot;)</span>
+<span class="s0">//                        val arraySize = sharedViewModel.concentrationDataArray.size</span>
+<span class="s0">//</span>
+<span class="s0">//                        if (arraySize &gt;= 2) {</span>
+<span class="s0">//                            mathCoroutineScope.launch {</span>
+<span class="s0">//                                withContext(Dispatchers.Default) {</span>
+<span class="s0">//                                    sharedViewModel.insert(newDataValue)</span>
+<span class="s0">//                                    sharedViewModel.updateR2Score()</span>
+<span class="s0">//                                    println(&quot;This is the r2score ${sharedViewModel.r2score.doubleValue}&quot;)</span>
+<span class="s0">//                                    sharedViewModel.updateGradientIntercept()</span>
+<span class="s0">//                                    startR2Math.intValue++</span>
+<span class="s0">//                                    if (arraySize&gt;2){</span>
+<span class="s0">//                                        if (arraySize==counter.intValue+1 || sharedViewModel.r2score.doubleValue&gt;=0.9){</span>
+<span class="s0">//                                            if (arraySize==counter.intValue+1) {</span>
+<span class="s0">//                                                println(&quot;All calibration values calibrated. Switching to main screen&quot;)</span>
+<span class="s0">//                                            } else if ( sharedViewModel.r2score.doubleValue&gt;=0.9){</span>
+<span class="s0">//                                                println(&quot;R2score is sufficient. Switching to main screen&quot;)</span>
+<span class="s0">//                                            }</span>
+<span class="s0">//                                            val intent = Intent(</span>
+<span class="s0">//                                                    this@CalibrationActivity,</span>
+<span class="s0">//                                                    HomeActivity::class.java</span>
+<span class="s0">//                                                )</span>
+<span class="s0">//                                            startActivity(intent)</span>
+<span class="s0">//                                        }</span>
+<span class="s0">//                                    }</span>
+<span class="s0">//                                }</span>
+<span class="s0">//                            }</span>
+<span class="s0">//</span>
+<span class="s0">//                        }</span>
+<span class="s0">//</span>
+<span class="s0">//                        println(&quot;${sharedViewModel.concentrationDataArray} : Concentration&quot;)</span>
+<span class="s0">//                        println(&quot;${sharedViewModel.voltageDataArray} : Voltage&quot;)</span>
+<span class="s0">//                        counter.intValue = index + 1</span>
+<span class="s0">//                    }) {</span>
+<span class="s0">//                        Text(text = &quot;Set Voltage&quot;)</span>
+<span class="s0">//                    }</span>
+<span class="s0">//                }</span>
+<span class="s0">//            }</span>
+<span class="s0">//        }</span>
+<span class="s0">//</span>
+<span class="s0">//        LaunchedEffect((startR2Math.intValue&gt;0)) {</span>
+<span class="s0">//            r2CoroutineScope.launch {</span>
+<span class="s0">//                withContext(Dispatchers.Default) {</span>
+<span class="s0">//                        r2score.doubleValue = sharedViewModel.r2score.doubleValue</span>
+<span class="s0">//                        val isR2less = counter.intValue &gt; 2 &amp;&amp; counter.intValue &lt; sharedViewModel.concentrationDataArray.size &amp;&amp; r2score.doubleValue &lt; 0.9</span>
+<span class="s0">//                        println(&quot;\t is r2 (${r2score.doubleValue} less? $isR2less | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} &quot;)</span>
+<span class="s0">//                        if (isR2less &amp;&amp; shownAdditionalCards.intValue &lt; sharedViewModel.calibrationConcentration.size - 3) {</span>
+<span class="s0">//                            shownAdditionalCards.intValue++ // Show one additional card</span>
+<span class="s0">//                        }</span>
+<span class="s0">//                        delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards</span>
+<span class="s0">//                }</span>
+<span class="s0">//            }</span>
+<span class="s0">//        }</span>
+<span class="s0">//</span>
+<span class="s0">//        Box(modifier=Modifier.fillMaxSize()){</span>
+<span class="s0">//            Column(</span>
+<span class="s0">//                modifier = Modifier.padding(10.dp),</span>
+<span class="s0">//                horizontalAlignment = Alignment.CenterHorizontally,</span>
+<span class="s0">//                verticalArrangement = Arrangement.Center</span>
+<span class="s0">//            ) {</span>
+<span class="s0">//</span>
+<span class="s0">//                Text(</span>
+<span class="s0">//                    text = &quot;R-Square score: ${r2score.doubleValue}&quot;,</span>
+<span class="s0">//                    modifier = Modifier.padding(10.dp)</span>
+<span class="s0">//                )</span>
+<span class="s0">//                LazyVerticalGrid(</span>
+<span class="s0">//                    columns = GridCells.FixedSize(165.dp),</span>
+<span class="s0">//                    modifier = Modifier.padding(1.dp),</span>
+<span class="s0">//                    verticalArrangement = Arrangement.Center,</span>
+<span class="s0">//                    horizontalArrangement = Arrangement.Center</span>
+<span class="s0">//                ) {</span>
+<span class="s0">//</span>
+<span class="s0">//                    repeat(sharedViewModel.calibrationConcentration.size) {</span>
+<span class="s0">//                        val isVisible = it &lt; 3 + shownAdditionalCards.intValue</span>
+<span class="s0">//                        if (isVisible) {</span>
+<span class="s0">//                            println(&quot;Showing Card number ${it + 1}&quot;)</span>
+<span class="s0">//                            item {</span>
+<span class="s0">//                                CalibrateCard(index = it)</span>
+<span class="s0">//                            }</span>
+<span class="s0">//                        }</span>
+<span class="s0">//                    }</span>
+<span class="s0">//                }</span>
+<span class="s0">//            }</span>
+<span class="s0">//            val context = LocalContext.current</span>
+<span class="s0">//            val databaseCoroutineScope = rememberCoroutineScope()</span>
+<span class="s0">//            FloatingActionButton(onClick = {</span>
+<span class="s0">//                sharedViewModel.resetValues()</span>
+<span class="s0">//                (context as ComponentActivity).recreate()</span>
+<span class="s0">//            },modifier = Modifier</span>
+<span class="s0">//                .align(Alignment.BottomEnd)</span>
+<span class="s0">//                .padding(16.dp)) {</span>
+<span class="s0">//                Icon(Icons.Filled.Refresh, contentDescription = &quot;Reset&quot;)</span>
+<span class="s0">//</span>
+<span class="s0">//            }</span>
+<span class="s0">//        }</span>
+<span class="s0">//    }</span>
+<span class="s0">//</span>
+<span class="s0">//    @Preview(showBackground = true)</span>
+<span class="s0">//    @Composable</span>
+<span class="s0">//    fun CalibrationScreenPreview(){</span>
+<span class="s0">//        CalibrationScreen()</span>
+<span class="s0">//    }</span>
+<span class="s0">//</span>
+<span class="s0">//    @Preview(showBackground = true)</span>
+<span class="s0">//    @Composable</span>
+<span class="s0">//    fun CalibrateCardPreview(){</span>
+<span class="s0">//        WifigetdataTheme {</span>
+<span class="s0">//            //CalibrateCard(0)</span>
+<span class="s0">//        }</span>
+<span class="s0">//    }</span>
+<span class="s0">//}</span>
+<span class="s0">//</span>
+</pre>
+</body>
+</html>

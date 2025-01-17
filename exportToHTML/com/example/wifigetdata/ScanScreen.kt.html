@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>ScanScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #67a37c; font-style: italic;}
+.s6 { color: #2aacb8;}
+.s7 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ScanScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">wifi</span><span class="s2">.</span><span class="s1">WifiManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">format</span><span class="s2">.</span><span class="s1">Formatter</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Arrangement</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Column</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Row</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">LazyColumn</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Check</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Card</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">CircularProgressIndicator</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Icon</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">rememberCoroutineScope</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">NavController</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">async</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">coroutineScope</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">delay</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">InetAddress</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">ScanScreen</span><span class="s2">(</span><span class="s1">sharedViewModel: MainViewModel</span><span class="s2">, </span><span class="s1">applicationContext: MainActivity</span><span class="s2">, </span><span class="s1">navController: NavController</span><span class="s2">){</span>
+    <span class="s3">//TODO ScanScreen</span>
+    <span class="s0">val </span><span class="s1">coroutineScope </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">ipAddresses </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">listOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()) }</span>
+    <span class="s0">val </span><span class="s1">isScanning </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">scanComplete </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Check the hosts on the network</span>
+     <span class="s4">* </span><span class="s5">@return </span><span class="s4">the list of IP addresses of the hosts</span>
+     <span class="s4">*/</span>
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">checkHosts</span><span class="s2">() = </span><span class="s1">coroutineScope </span><span class="s2">{</span>
+        <span class="s1">isScanning</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span>
+        <span class="s0">val </span><span class="s1">timeout </span><span class="s2">= </span><span class="s6">1000</span>
+        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">resetURL</span><span class="s2">()</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;URL HAS BEEN RESET&quot;</span><span class="s2">)</span>
+        <span class="s3">// Get Wifi service</span>
+        <span class="s0">val </span><span class="s1">wifiManager </span><span class="s2">=</span>
+            <span class="s1">applicationContext</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">WIFI_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">WifiManager</span>
+        <span class="s3">// Get the IP address of the device and format it as a string</span>
+        <span class="s0">val </span><span class="s1">ipAddress </span><span class="s2">= </span><span class="s1">Formatter</span><span class="s2">.</span><span class="s1">formatIpAddress</span><span class="s2">(</span><span class="s1">wifiManager</span><span class="s2">.</span><span class="s1">connectionInfo</span><span class="s2">.</span><span class="s1">ipAddress</span><span class="s2">)</span>
+        <span class="s3">// Extract the subnet from the IP address</span>
+        <span class="s0">val </span><span class="s1">subnet </span><span class="s2">= </span><span class="s1">ipAddress</span><span class="s2">.</span><span class="s1">substringBeforeLast</span><span class="s2">(</span><span class="s7">&quot;.&quot;</span><span class="s2">)</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s7">&quot; Scanning subnet </span><span class="s0">$</span><span class="s1">subnet</span><span class="s7">&quot;</span><span class="s2">)</span>
+        <span class="s1">ipAddresses</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">()</span>
+        <span class="s4">/**</span>
+         <span class="s4">* Check the hosts on the network</span>
+         <span class="s4">*/</span>
+        <span class="s0">val </span><span class="s1">jobs </span><span class="s2">= </span><span class="s1">List</span><span class="s2">(</span><span class="s6">254</span><span class="s2">) { </span><span class="s1">i </span><span class="s2">-&gt;</span>
+            <span class="s1">async </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">host </span><span class="s2">= </span><span class="s7">&quot;</span><span class="s0">$</span><span class="s1">subnet</span><span class="s7">.</span><span class="s0">$</span><span class="s1">i</span><span class="s7">&quot;</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;Checking host </span><span class="s0">$</span><span class="s1">host</span><span class="s7">&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">inetAddress </span><span class="s2">= </span><span class="s1">InetAddress</span><span class="s2">.</span><span class="s1">getByName</span><span class="s2">(</span><span class="s1">host</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">inetAddress</span><span class="s2">.</span><span class="s1">isReachable</span><span class="s2">(</span><span class="s1">timeout</span><span class="s2">)) {</span>
+                    <span class="s0">val </span><span class="s1">hostName </span><span class="s2">= </span><span class="s1">inetAddress</span><span class="s2">.</span><span class="s1">hostName</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;</span><span class="s0">$</span><span class="s1">host </span><span class="s7">is reachable with host name </span><span class="s0">$</span><span class="s1">hostName</span><span class="s7">&quot;</span><span class="s2">)</span>
+                    <span class="s1">ipAddresses</span><span class="s2">.</span><span class="s1">value </span><span class="s2">+= </span><span class="s7">&quot;</span><span class="s0">$</span><span class="s1">host </span><span class="s7">(</span><span class="s0">$</span><span class="s1">hostName</span><span class="s7">)&quot;</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s1">ipAddresses</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isScanning</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+            <span class="s1">jobs</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">await</span><span class="s2">() }</span>
+        <span class="s2">}</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;All hosts checked. &quot;</span><span class="s2">)</span>
+        <span class="s1">isScanning</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+        <span class="s1">scanComplete</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span>
+        <span class="s1">delay</span><span class="s2">(</span><span class="s6">5000</span><span class="s2">)</span>
+        <span class="s1">scanComplete</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+    <span class="s2">}</span>
+    <span class="s3">//val intent = Intent(this@IPScanner, CalibrationActivity::class.java)</span>
+    <span class="s1">Column </span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">().</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">20</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)){</span>
+        <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s7">&quot;Scan for Devices&quot;</span><span class="s2">)</span>
+        <span class="s1">Row </span><span class="s2">(</span><span class="s1">horizontalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">){</span>
+            <span class="s1">Button</span><span class="s2">(</span><span class="s1">enabled </span><span class="s2">= (!</span><span class="s1">isScanning</span><span class="s2">.</span><span class="s1">value</span><span class="s2">), </span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">coroutineScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{ </span><span class="s1">withContext</span><span class="s2">(</span>
+                <span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) { </span><span class="s1">checkHosts</span><span class="s2">() } } }, </span><span class="s1">modifier</span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)) {</span>
+                <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s7">&quot;Scan&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">isScanning</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+                <span class="s1">CircularProgressIndicator</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">scanComplete</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+                <span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Filled</span><span class="s2">.</span><span class="s1">Check</span><span class="s2">, </span><span class="s1">contentDescription </span><span class="s2">= </span><span class="s7">&quot;Scan complete&quot;</span><span class="s2">, </span><span class="s1">tint </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Green</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">LazyColumn</span><span class="s2">(</span><span class="s1">userScrollEnabled </span><span class="s2">= </span><span class="s0">true</span><span class="s2">) {</span>
+            <span class="s1">items</span><span class="s2">(</span><span class="s1">ipAddresses</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) { </span><span class="s1">index </span><span class="s2">-&gt;</span>
+                <span class="s1">Card</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">), </span><span class="s1">onClick </span><span class="s2">= {</span>
+                    <span class="s1">isScanning</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;Clicked on </span><span class="s0">${</span><span class="s1">ipAddresses</span><span class="s2">.</span><span class="s1">value</span><span class="s2">[</span><span class="s1">index</span><span class="s2">]</span><span class="s0">}</span><span class="s7">&quot;</span><span class="s2">)</span>
+                    <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s7">&quot;http://</span><span class="s0">${</span><span class="s1">ipAddresses</span><span class="s2">.</span><span class="s1">value</span><span class="s2">[</span><span class="s1">index</span><span class="s2">].</span><span class="s1">substringBefore</span><span class="s2">(</span><span class="s7">&quot;(&quot;</span><span class="s2">).</span><span class="s1">trim</span><span class="s2">()</span><span class="s0">}</span><span class="s7">&quot;</span>
+                    <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">getMRLData</span><span class="s2">()</span>
+                    <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">fetchData</span><span class="s2">()</span>
+                    <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">resetValues</span><span class="s2">()</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;fetch data function called&quot;</span><span class="s2">)</span>
+                    <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">CALIBRATION</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                <span class="s2">}){</span>
+                    <span class="s1">Text</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= </span><span class="s1">ipAddresses</span><span class="s2">.</span><span class="s1">value</span><span class="s2">[</span><span class="s1">index</span><span class="s2">],</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>
