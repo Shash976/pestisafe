@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Wifigetdata"
+        android:theme="@style/Theme.Pestisafe"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <provider
@@ -32,7 +32,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Wifigetdata">
+            android:theme="@style/Theme.Pestisafe">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

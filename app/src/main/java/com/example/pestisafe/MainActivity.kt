@@ -30,7 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.example.pestisafe.ui.theme.WifigetdataTheme
+import com.example.pestisafe.ui.theme.PestisafeTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,11 +71,16 @@ open class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            WifigetdataTheme {
+            PestisafeTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    /**
+                     * Navigation
+                     * @see rememberNavController
+                     * @see NavHost
+                     */
                     /**
                      * Navigation
                      * @see rememberNavController
@@ -101,6 +106,10 @@ open class MainActivity : ComponentActivity() {
                                      * Dropdown menu
                                      * @see DropdownMenuItem
                                      */
+                                    /**
+                                     * Dropdown menu
+                                     * @see DropdownMenuItem
+                                     */
                                     navOptions.forEach { route ->
                                         DropdownMenuItem(
                                             text = { Text(route.toString()) },
@@ -119,7 +128,10 @@ open class MainActivity : ComponentActivity() {
                              * @see Column
                              * @see MainScreen
                              */
+
                             Column(modifier = Modifier.padding(innerPadding)){
+                                // Navigation Setup
+                                // @see NavHost
                                 NavHost(
                                     navController = navController,
                                     startDestination = Routes.LOGIN.toString()

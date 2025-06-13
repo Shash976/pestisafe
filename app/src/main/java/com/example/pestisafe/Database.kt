@@ -55,8 +55,8 @@ data class Commodity(
 
 /**
  * The data class for the maximum residue limits
- * @property pesticide the id of the pesticide
- * @property commodity the id of the commodity
+ * @property pesticideID the id of the pesticide
+ * @property commodityID the id of the commodity
  * @property mrl the maximum residue limit
  * @property mrlID the id of the mrl
  */
@@ -69,8 +69,8 @@ data class Commodity(
     indices = [Index(value = ["pesticide"]), Index(value = ["commodity"])],
     )
 data class MRL(
-    val pesticide: Int,
-    val commodity: Int,
+    val pesticideID: Int,
+    val commodityID: Int,
     val mrl: Double,
     @PrimaryKey(autoGenerate = true) val mrlID :Int = 0
 )
@@ -170,10 +170,10 @@ interface MRLDao {
     @Insert
     fun insert(vararg items: MRL)
 
-    @Query("SELECT * FROM MRL WHERE pesticide = :pesticideID")
+    @Query("SELECT * FROM MRL WHERE pesticideID = :pesticideID")
     fun getMRLs(pesticideID: Int): List<MRL>
 
-    @Query ("SELECT * FROM MRL WHERE pesticide = :pesticide AND commodity = :commodity")
+    @Query ("SELECT * FROM MRL WHERE pesticideID = :pesticide AND commodityID = :commodity")
     fun getMRL(pesticide: Int, commodity: Int): MRL
 }
 

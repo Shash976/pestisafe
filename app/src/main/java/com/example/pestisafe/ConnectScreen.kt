@@ -30,6 +30,7 @@ fun MainScreen(sharedViewModel: MainViewModel, navController: NavController) {
     val pesticides = sharedViewModel.repository.pesticideDao.getAll().observeAsState(initial = emptyList()) // Observe LiveData
     val isLoading = remember { mutableStateOf(false) }
 
+    // Show toast when not connected to Wi-Fi
     LaunchedEffect(connectionState.value) {
         if (!connectionState.value) {
             Toast.makeText(context, "Please connect to a Wi-Fi network", Toast.LENGTH_SHORT).show()

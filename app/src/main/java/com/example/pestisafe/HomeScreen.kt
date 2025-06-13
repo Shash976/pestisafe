@@ -6,17 +6,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AssignmentLate
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -165,7 +172,7 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                 searchCoroutine.launch {
                     withContext(Dispatchers.IO){
                         commodities = sharedViewModel.repository.mrlDao.getMRLs(selectedPesticide!!.id)
-                            .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodity) }
+                            .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodityID) }
                         println(commodities)
                     }
                 }
@@ -182,7 +189,7 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                             searchCoroutine.launch {
                                 withContext(Dispatchers.IO){
                                     commodities = sharedViewModel.repository.mrlDao.getMRLs(selectedPesticide!!.id)
-                                        .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodity) }
+                                        .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodityID) }
                                     println(commodities)
                                 }
                             }
@@ -210,14 +217,29 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                         )
                     }
                 }
-                Card(modifier = Modifier.padding(10.dp)){
-                    Text("MRL: ${mrl.mrl}")
-                    if (allData.value.isNotEmpty()){
-                        if (allData.value.last().concentration > mrl.mrl){
-                            Text("${allData.value.last().concentration} exceeds MRL.", color = Color.Red)
-                        }
-                        else {
-                            Text("${allData.value.last().concentration} is within MRL.", color = Color.Green)
+                Card(modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)){
+                    Column(modifier = Modifier.padding(10.dp).fillMaxSize().align(Alignment.CenterHorizontally)) {
+                        Text("Maximum Residue Limit: ${mrl.mrl}")
+                        val textValue = remember { mutableStateOf("") }
+                        val textColor = remember { mutableStateOf(Color.Black)    }
+                        Text(text=textValue.value, color=textColor.value, modifier = Modifier.padding(5.dp), fontSize = 25.sp, textAlign = TextAlign.Center)
+                        if (allData.value.isNotEmpty()){
+                            if (allData.value.last().concentration > mrl.mrl){
+                                textValue.value = "${allData.value.last().concentration} exceeds the residue limit. \nThis is not safe for consumption"
+                                textColor.value = Color.Red
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Icon(Icons.Filled.AssignmentLate, contentDescription = "Scan complete", tint = Color.Red, modifier = Modifier.size(30.dp).align(Alignment.CenterHorizontally))
+
+                            }
+                            else {
+                                textValue.value = "${allData.value.last().concentration} is within the residue limit. \nThis is safe for consumption"
+                                textColor.value = Color.Green
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Icon(Icons.Filled.Check, contentDescription = "Scan complete", tint = Color.Green, modifier = Modifier.size(30.dp).align(Alignment.CenterHorizontally))
+                            }
                         }
                     }
                 }
@@ -270,7 +292,7 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                 when (chosenFormat.value) {
                     in listOf("CSV","JSON") -> downloadFile(
                         context,
-                        "data.${chosenFormat.value.lowercase()}",
+                        "${sharedViewModel.user?.username}_${selectedPesticide?.name}_${selectedCommodity?.name}_data.${chosenFormat.value.lowercase()}",
                         allData.value.toTypedArray(),
                         chosenFormat.value
                     )

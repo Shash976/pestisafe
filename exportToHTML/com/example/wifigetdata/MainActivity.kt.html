@@ -20,7 +20,7 @@ MainActivity.kt</font>
 </center></td></tr></table>
 <pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
 
-<span class="s1">import LoginSignUpScreen</span>
+<span class="s1">import com.example.pestisafe.LoginSignUpScreen</span>
 <span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span>
 <span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
 <span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">ComponentActivity</span>
@@ -145,7 +145,7 @@ MainActivity.kt</font>
                                     <span class="s1">startDestination </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span>
                                 <span class="s2">) {</span>
                                     <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>
-                                        <span class="s1">LoginSignUpScreen</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">, </span><span class="s1">navController</span><span class="s2">)</span>
+                                        <span class="s1">com.example.pestisafe.LoginSignUpScreen</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">, </span><span class="s1">navController</span><span class="s2">)</span>
                                         <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">screen </span><span class="s2">= </span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">LOGIN</span>
                                     <span class="s2">}</span>
                                     <span class="s1">composable</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">PESTICIDE_SELECTION</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()) {</span>

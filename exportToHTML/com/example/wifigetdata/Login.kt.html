@@ -49,7 +49,7 @@ Login.kt</font>
 
 <span class="s0">@RequiresApi</span><span class="s1">(</span><span class="s0">Build</span><span class="s1">.</span><span class="s0">VERSION_CODES</span><span class="s1">.</span><span class="s0">O</span><span class="s1">)</span>
 <span class="s0">@Composable</span>
-<span class="s2">fun </span><span class="s0">LoginSignUpScreen</span><span class="s1">(</span><span class="s0">sharedViewModel :MainViewModel</span><span class="s1">, </span><span class="s0">navController: NavController</span><span class="s1">) {</span>
+<span class="s2">fun </span><span class="s0">com.example.pestisafe.LoginSignUpScreen</span><span class="s1">(</span><span class="s0">sharedViewModel :MainViewModel</span><span class="s1">, </span><span class="s0">navController: NavController</span><span class="s1">) {</span>
     <span class="s2">var </span><span class="s0">name by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
     <span class="s2">var </span><span class="s0">username by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
     <span class="s2">var </span><span class="s0">email by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
@@ -92,7 +92,7 @@ Login.kt</font>
 
                 <span class="s0">Spacer</span><span class="s1">(</span><span class="s0">modifier </span><span class="s1">= </span><span class="s0">Modifier</span><span class="s1">.</span><span class="s0">height</span><span class="s1">(</span><span class="s5">16</span><span class="s1">.</span><span class="s0">dp</span><span class="s1">))</span>
 
-                <span class="s0">DatePickerField</span><span class="s1">(</span>
+                <span class="s0">com.example.pestisafe.DatePickerField</span><span class="s1">(</span>
                     <span class="s0">selectedDate </span><span class="s1">= </span><span class="s0">dob</span><span class="s1">,</span>
                     <span class="s0">onDateChange </span><span class="s1">= { </span><span class="s0">dob </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
                     <span class="s0">label </span><span class="s1">= </span><span class="s3">&quot;Date of Birth&quot;</span>
@@ -137,7 +137,7 @@ Login.kt</font>
                 <span class="s2">var </span><span class="s0">forgotPassword by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s2">false</span><span class="s1">) }</span>
 
                 <span class="s2">if </span><span class="s1">(</span><span class="s0">forgotPassword</span><span class="s1">){</span>
-                    <span class="s0">DatePickerField</span><span class="s1">(</span>
+                    <span class="s0">com.example.pestisafe.DatePickerField</span><span class="s1">(</span>
                         <span class="s0">selectedDate </span><span class="s1">= </span><span class="s0">dob</span><span class="s1">,</span>
                         <span class="s0">onDateChange </span><span class="s1">= { </span><span class="s0">dob </span><span class="s1">= </span><span class="s0">it </span><span class="s1">},</span>
                         <span class="s0">label </span><span class="s1">= </span><span class="s3">&quot;Date of Birth&quot;</span>
@@ -166,7 +166,7 @@ Login.kt</font>
                     <span class="s0">Text</span><span class="s1">(</span><span class="s3">&quot;Forgot Password?&quot;</span><span class="s1">, </span><span class="s0">fontSize </span><span class="s1">= </span><span class="s5">14</span><span class="s1">.</span><span class="s0">sp</span><span class="s1">)</span>
                 <span class="s1">}</span>
                 <span class="s2">if </span><span class="s1">(</span><span class="s0">forgotPassword</span><span class="s1">) {</span>
-                    <span class="s0">ShowResetPasswordDialog</span><span class="s1">(</span><span class="s0">sharedViewModel</span><span class="s1">, </span><span class="s0">username</span><span class="s1">)</span>
+                    <span class="s0">com.example.pestisafe.ShowResetPasswordDialog</span><span class="s1">(</span><span class="s0">sharedViewModel</span><span class="s1">, </span><span class="s0">username</span><span class="s1">)</span>
                 <span class="s1">}</span>
             <span class="s1">}</span>
 
@@ -235,7 +235,7 @@ Login.kt</font>
 <span class="s0">@RequiresApi</span><span class="s1">(</span><span class="s0">Build</span><span class="s1">.</span><span class="s0">VERSION_CODES</span><span class="s1">.</span><span class="s0">O</span><span class="s1">)</span>
 <span class="s0">@OptIn</span><span class="s1">(</span><span class="s0">ExperimentalMaterial3Api::</span><span class="s2">class</span><span class="s1">)</span>
 <span class="s0">@Composable</span>
-<span class="s2">fun </span><span class="s0">DatePickerField</span><span class="s1">(</span><span class="s0">selectedDate: LocalDate?</span><span class="s1">, </span><span class="s0">onDateChange: </span><span class="s1">(</span><span class="s0">LocalDate</span><span class="s1">) -&gt; </span><span class="s0">Unit</span><span class="s1">, </span><span class="s0">label: String</span><span class="s1">) {</span>
+<span class="s2">fun </span><span class="s0">com.example.pestisafe.DatePickerField</span><span class="s1">(</span><span class="s0">selectedDate: LocalDate?</span><span class="s1">, </span><span class="s0">onDateChange: </span><span class="s1">(</span><span class="s0">LocalDate</span><span class="s1">) -&gt; </span><span class="s0">Unit</span><span class="s1">, </span><span class="s0">label: String</span><span class="s1">) {</span>
     <span class="s2">var </span><span class="s0">isDialogOpen by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s2">false</span><span class="s1">) }</span>
 
     <span class="s0">OutlinedTextField</span><span class="s1">(</span>
@@ -273,7 +273,7 @@ Login.kt</font>
 <span class="s1">}</span>
 
 <span class="s0">@Composable</span>
-<span class="s2">fun </span><span class="s0">ShowResetPasswordDialog</span><span class="s1">(</span><span class="s0">sharedViewModel: MainViewModel</span><span class="s1">, </span><span class="s0">username: String</span><span class="s1">) {</span>
+<span class="s2">fun </span><span class="s0">com.example.pestisafe.ShowResetPasswordDialog</span><span class="s1">(</span><span class="s0">sharedViewModel: MainViewModel</span><span class="s1">, </span><span class="s0">username: String</span><span class="s1">) {</span>
     <span class="s2">var </span><span class="s0">newPassword by remember </span><span class="s1">{ </span><span class="s0">mutableStateOf</span><span class="s1">(</span><span class="s3">&quot;&quot;</span><span class="s1">) }</span>
     <span class="s2">val </span><span class="s0">forgotPasswordCoroutine </span><span class="s1">= </span><span class="s0">rememberCoroutineScope</span><span class="s1">()</span>
     <span class="s0">AlertDialog</span><span class="s1">(</span>

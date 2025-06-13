@@ -1,6 +1,7 @@
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,8 +17,10 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.example.pestisafe.MainViewModel
+import com.example.pestisafe.R
 import com.example.pestisafe.Routes
 import com.example.pestisafe.User
 import kotlinx.coroutines.launch
@@ -42,6 +45,15 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Add Image here
+            Image(
+                painter = painterResource(id = R.drawable.heading), // Replace with your image resource
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .size(500.dp) // Set desired size
+                    .padding(16.dp)
+            )
+
             Text(
                 text = if (isLogin) "Login" else "Sign Up",
                 style = MaterialTheme.typography.headlineMedium,
@@ -112,37 +124,48 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
                 val context = LocalContext.current
                 var forgotPassword by remember { mutableStateOf(false) }
 
-                if (forgotPassword){
+                val forgotPasswordCheck = remember { mutableStateOf(false) }
+                val dobEntered = remember { mutableStateOf(false)         }
+
+                if (forgotPasswordCheck.value) {
                     DatePickerField(
                         selectedDate = dob,
-                        onDateChange = { dob = it },
+                        onDateChange = { dob = it; dobEntered.value = true },
                         label = "Date of Birth"
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 TextButton(onClick = {
-                    forgotPasswordCoroutine.launch {
-                        try {
-                            val user = sharedViewModel.repository.userDao.getUser(username = username)
-                            if (user.dob.uppercase().strip() == dob.toString().uppercase()) {
-                                // DOB matches, proceed to reset password
-                                // Show reset password dialog or navigate to a reset password screen
-                                forgotPassword = true
+                    forgotPasswordCheck.value = !forgotPasswordCheck.value
+                    if (dobEntered.value) {
+                        forgotPasswordCoroutine.launch {
+                            try {
+                                val user =
+                                    sharedViewModel.repository.userDao.getUser(username = username)
+                                if (user.dob.uppercase().strip() == dob.toString().uppercase()) {
+                                    // DOB matches, proceed to reset password
+                                    // Show reset password dialog or navigate to a reset password screen
+                                    forgotPassword = true
 
-                            } else {
-                                Toast.makeText(context, "Incorrect Date of Birth", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Incorrect Date of Birth",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } catch (e: Exception) {
+                                // Handle user not found
+                                // Show error message
+                                Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
                             }
-                        } catch (e: Exception) {
-                            // Handle user not found
-                            // Show error message
-                            Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }) {
                     Text("Forgot Password?", fontSize = 14.sp)
                 }
                 if (forgotPassword) {
-                    ShowResetPasswordDialog(sharedViewModel, username)
+                    ShowResetPasswordDialog(sharedViewModel, username, navController)
                 }
             }
 
@@ -249,9 +272,10 @@ fun DatePickerField(selectedDate: LocalDate?, onDateChange: (LocalDate) -> Unit,
 }
 
 @Composable
-fun ShowResetPasswordDialog(sharedViewModel: MainViewModel, username: String) {
+fun ShowResetPasswordDialog(sharedViewModel: MainViewModel, username: String, navController: NavController) {
     var newPassword by remember { mutableStateOf("") }
     val forgotPasswordCoroutine = rememberCoroutineScope()
+    val context = LocalContext.current
     AlertDialog(
         onDismissRequest = { },
         title = { Text("Reset Password") },
@@ -270,11 +294,20 @@ fun ShowResetPasswordDialog(sharedViewModel: MainViewModel, username: String) {
         },
         confirmButton = {
             TextButton(onClick = {
+                println("Password reset")
                 forgotPasswordCoroutine.launch{
                     sharedViewModel.repository.userDao.resetPassword(username, newPassword)
+                    sharedViewModel.repository.userDao.getUser(username = username).let {
+                        sharedViewModel.user = it
+                        println("User: ${sharedViewModel.user!!.username}, Logging in")
+                        Toast.makeText(context, "Password reset successfully", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Routes.MAIN.toString())
+                    }
+
                 }
             }) {
                 Text("Reset")
+
             }
         },
         dismissButton = {

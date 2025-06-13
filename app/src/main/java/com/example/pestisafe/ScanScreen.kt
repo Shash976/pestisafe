@@ -34,7 +34,6 @@ import java.net.InetAddress
 
 @Composable
 fun ScanScreen(sharedViewModel: MainViewModel, applicationContext: MainActivity, navController: NavController){
-    //TODO ScanScreen
     val coroutineScope = rememberCoroutineScope()
     val ipAddresses = remember { mutableStateOf(listOf<String>()) }
     val isScanning = remember { mutableStateOf(false) }
