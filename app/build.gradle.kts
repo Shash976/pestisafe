@@ -2,14 +2,14 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.dokka")
 }
 
 android {
-    namespace = "com.example.wifigetdata"
+    namespace = "com.example.pestisafe"
     compileSdk = 34
-
     defaultConfig {
-        applicationId = "com.example.wifigetdata"
+        applicationId = "com.example.pestisafe"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -19,6 +19,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        ksp(){
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+
     }
 
     buildTypes {
@@ -50,6 +55,15 @@ android {
     }
 }
 
+tasks.dokkaHtml {
+    outputDirectory.set(file(System.getProperty("user.home")).resolve("Desktop/Code/IA_dokka"))
+//    dokkaSourceSets {
+//        configureEach {
+//            includes.from("README.md")
+//        }
+//    }
+}
+
 dependencies {
     val roomVersion = "2.6.1"
     val lifecycleVersion = "2.8.0"
@@ -71,6 +85,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.fragment:fragment-ktx:1.7.1")
     implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("at.favre.lib:bcrypt:0.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -83,6 +98,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:2.7.7")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.6")
     implementation("com.patrykandpatrick.vico:compose:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.19")

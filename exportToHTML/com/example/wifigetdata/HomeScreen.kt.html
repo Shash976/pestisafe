@@ -1,0 +1,317 @@
+<html>
+<head>
+<title>HomeScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #67a37c; font-style: italic;}
+.s6 { color: #2aacb8;}
+.s7 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+HomeScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">SuppressLint</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Arrangement</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Box</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Column</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Row</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxWidth</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">height</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">wrapContentSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">rememberScrollState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">RoundedCornerShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">verticalScroll</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Card</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">DropdownMenu</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">DropdownMenuItem</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">RadioButton</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">TextButton</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">LaunchedEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">getValue</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">livedata</span><span class="s2">.</span><span class="s1">observeAsState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">rememberCoroutineScope</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">setValue</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">style</span><span class="s2">.</span><span class="s1">TextAlign</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">sp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">window</span><span class="s2">.</span><span class="s1">Dialog</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">NavController</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">CartesianChartModelProducer</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">patrykandpatrick</span><span class="s2">.</span><span class="s1">vico</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">cartesian</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">lineSeries</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+
+<span class="s1">@SuppressLint</span><span class="s2">(</span><span class="s3">&quot;CoroutineCreationDuringComposition&quot;</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s4">/**</span>
+ <span class="s4">* The home screen of the app</span>
+ <span class="s4">* </span><span class="s5">@param </span><span class="s4">sharedViewModel the view model to use</span>
+ <span class="s4">* </span><span class="s5">@param </span><span class="s4">navController the navigation controller</span>
+ <span class="s4">* </span><span class="s5">@param </span><span class="s4">context the context to use</span>
+ <span class="s4">* </span><span class="s5">@see </span><span class="s4">MainViewModel</span>
+ <span class="s4">* </span><span class="s5">@see </span><span class="s4">NavController</span>
+ <span class="s4">* </span><span class="s5">@see </span><span class="s4">MainActivity</span>
+ <span class="s4">* </span><span class="s5">@see </span><span class="s4">CartesianChartModelProducer</span>
+ <span class="s4">* </span><span class="s5">@see </span><span class="s4">DataValue</span>
+ <span class="s4">* </span><span class="s5">@see </span><span class="s4">Pesticide</span>
+ <span class="s4">* </span><span class="s5">@see </span><span class="s4">Commodity</span>
+ <span class="s4">*/</span>
+<span class="s0">fun </span><span class="s1">HomeScreen</span><span class="s2">(</span><span class="s1">sharedViewModel: MainViewModel</span><span class="s2">, </span><span class="s1">navController: NavController</span><span class="s2">, </span><span class="s1">context: MainActivity</span><span class="s2">){</span>
+    <span class="s0">val </span><span class="s1">modelProducer1 </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">{</span><span class="s1">CartesianChartModelProducer</span><span class="s2">.</span><span class="s1">build</span><span class="s2">()}</span>
+    <span class="s0">val </span><span class="s1">modelProducer2 </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">CartesianChartModelProducer</span><span class="s2">.</span><span class="s1">build</span><span class="s2">()   }</span>
+    <span class="s0">val </span><span class="s1">chartCoroutineScope </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">updateCoroutineScope </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+
+    <span class="s0">val </span><span class="s1">allData </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">emptyList</span><span class="s2">&lt;</span><span class="s1">DataValue</span><span class="s2">&gt;())    }</span>
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">Unit</span><span class="s2">) {</span>
+        <span class="s1">updateCoroutineScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">{</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">theValue</span><span class="s2">.</span><span class="s1">collect </span><span class="s2">{ </span><span class="s1">received </span><span class="s2">-&gt;</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&gt;= </span><span class="s6">2</span><span class="s2">){</span>
+                    <span class="s0">val </span><span class="s1">low </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">}.</span><span class="s1">min</span><span class="s2">()</span>
+                    <span class="s0">val </span><span class="s1">high </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">}.</span><span class="s1">max</span><span class="s2">()</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">received </span><span class="s2">&gt; </span><span class="s1">low </span><span class="s2">&amp;&amp; </span><span class="s1">received </span><span class="s2">&lt; </span><span class="s1">high</span><span class="s2">){</span>
+                        <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">updateConcentration</span><span class="s2">()</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                <span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">updateConcentration</span><span class="s2">()</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">chartCoroutineScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">collect </span><span class="s2">{ </span><span class="s1">data </span><span class="s2">-&gt;</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;collecting.....&quot;</span><span class="s2">)</span>
+                    <span class="s1">allData</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">data</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">size</span><span class="s2">)</span>
+    <span class="s7">//                    modelProducer1.tryRunTransaction {</span>
+    <span class="s7">//                        lineSeries {</span>
+    <span class="s7">//                            series(</span>
+    <span class="s7">//                                y = allData.value.map { it.concentration },</span>
+    <span class="s7">//                            )</span>
+    <span class="s7">//                            series(</span>
+    <span class="s7">//                                y = allData.value.map { it.voltage },</span>
+    <span class="s7">//                            )</span>
+    <span class="s7">//                        }</span>
+    <span class="s7">//                    }</span>
+                        <span class="s7">//println(&quot;\t Added 1&quot;)</span>
+                        <span class="s1">modelProducer2</span><span class="s2">.</span><span class="s1">runTransaction </span><span class="s2">{</span>
+                            <span class="s1">lineSeries </span><span class="s2">{</span>
+                                <span class="s1">series</span><span class="s2">(</span>
+                                    <span class="s1">x </span><span class="s2">= </span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">sortedBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">concentration </span><span class="s2">}</span>
+                                        <span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">concentration </span><span class="s2">},</span>
+                                    <span class="s1">y </span><span class="s2">= </span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">sortedBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">concentration </span><span class="s2">}.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">},</span>
+                                <span class="s2">)</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Added series&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Error: </span><span class="s0">$</span><span class="s1">e</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">Column </span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">verticalScroll</span><span class="s2">(</span><span class="s1">rememberScrollState</span><span class="s2">())){</span>
+        <span class="s7">//MainChart(modelProducer1, modifier = Modifier.padding(10.dp), chartColors = listOf(Color.Black, Color.Cyan))</span>
+<span class="s7">/*        CartesianChartHost( 
+//            rememberCartesianChart( 
+//                rememberLineCartesianLayer(), 
+//                startAxis = rememberStartAxis(), 
+//                bottomAxis = rememberBottomAxis() 
+//            ), 
+//            modelProducer = modelProducer, 
+        )*/</span>
+        <span class="s1">MainChart</span><span class="s2">(</span><span class="s1">modelProducer2</span><span class="s2">, </span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">15</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">), </span><span class="s1">chartColors </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">))</span>
+
+        <span class="s1">Card</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">20</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)){</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()){ </span><span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Voltage: </span><span class="s0">${</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">voltage</span><span class="s0">} </span><span class="s3">V </span><span class="s0">\n</span><span class="s3">Concentration: </span><span class="s0">${</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">concentration</span><span class="s0">} </span><span class="s3">ppm&quot;</span><span class="s2">) }</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">pesticides </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">pesticides</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;works till line 121 </span><span class="s0">$</span><span class="s1">pesticides</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">var </span><span class="s1">selectedPesticide by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">&lt;</span><span class="s1">Pesticide?</span><span class="s2">&gt;(</span><span class="s0">null</span><span class="s2">) }</span>
+        <span class="s0">var </span><span class="s1">selectedCommodity by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">&lt;</span><span class="s1">Commodity?</span><span class="s2">&gt;(</span><span class="s0">null</span><span class="s2">) }</span>
+        <span class="s0">var </span><span class="s1">showPesticideDropdown by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+        <span class="s0">var </span><span class="s1">showCommodityDropdown by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+
+
+            <span class="s1">Box</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()) {</span>
+                <span class="s1">TextButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">showPesticideDropdown </span><span class="s2">= </span><span class="s0">true </span><span class="s2">}) {</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s1">selectedPesticide?</span><span class="s2">.</span><span class="s1">name ?: </span><span class="s3">&quot;Select Pesticide&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">DropdownMenu</span><span class="s2">(</span>
+                    <span class="s1">expanded </span><span class="s2">= </span><span class="s1">showPesticideDropdown</span><span class="s2">,</span>
+                    <span class="s1">onDismissRequest </span><span class="s2">= { </span><span class="s1">showPesticideDropdown </span><span class="s2">= </span><span class="s0">false </span><span class="s2">}</span>
+                <span class="s2">) {</span>
+                    <span class="s1">pesticides</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">pesticide </span><span class="s2">-&gt;</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;workssss </span><span class="s0">$</span><span class="s1">pesticide</span><span class="s3">&quot;</span><span class="s2">)</span>
+                        <span class="s1">DropdownMenuItem</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= {</span>
+                            <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;line138 </span><span class="s0">$</span><span class="s1">pesticide</span><span class="s3">&quot;</span><span class="s2">)</span>
+                            <span class="s1">selectedPesticide </span><span class="s2">= </span><span class="s1">pesticide</span>
+                            <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;line140, selectedPesticide: </span><span class="s0">$</span><span class="s1">selectedPesticide</span><span class="s3">&quot;</span><span class="s2">)</span>
+                            <span class="s1">showPesticideDropdown </span><span class="s2">= </span><span class="s0">false</span>
+                        <span class="s2">}, </span><span class="s1">text </span><span class="s2">= {</span>
+                            <span class="s1">Text</span><span class="s2">(</span><span class="s1">pesticide</span><span class="s2">.</span><span class="s1">name</span><span class="s2">)</span>
+                        <span class="s2">})</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">selectedPesticide </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">searchCoroutine </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+                <span class="s0">var </span><span class="s1">commodities : List</span><span class="s2">&lt;</span><span class="s1">Commodity</span><span class="s2">&gt; </span><span class="s1">by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">emptyList</span><span class="s2">()) }</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;works till line 152 </span><span class="s0">${</span><span class="s1">selectedPesticide</span><span class="s2">!!.</span><span class="s1">id</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s1">searchCoroutine</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+                    <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">){</span>
+                        <span class="s1">commodities </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">mrlDao</span><span class="s2">.</span><span class="s1">getMRLs</span><span class="s2">(</span><span class="s1">selectedPesticide</span><span class="s2">!!.</span><span class="s1">id</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">commodityDao</span><span class="s2">.</span><span class="s1">getCommodity</span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">commodity</span><span class="s2">) }</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s1">commodities</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;works till line 157 </span><span class="s0">$</span><span class="s1">commodities</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s1">Box</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()) {</span>
+                    <span class="s1">TextButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">showCommodityDropdown </span><span class="s2">= </span><span class="s0">true</span><span class="s2">}) {</span>
+                        <span class="s1">Text</span><span class="s2">(</span><span class="s1">selectedCommodity?</span><span class="s2">.</span><span class="s1">name ?: </span><span class="s3">&quot;Select Commodity&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                    <span class="s1">DropdownMenu</span><span class="s2">(</span>
+                        <span class="s1">expanded </span><span class="s2">= </span><span class="s1">showCommodityDropdown</span><span class="s2">,</span>
+                        <span class="s1">onDismissRequest </span><span class="s2">= { </span><span class="s1">showCommodityDropdown </span><span class="s2">= </span><span class="s0">false </span><span class="s2">}</span>
+                    <span class="s2">) {</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">commodities</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()){</span>
+                            <span class="s1">searchCoroutine</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+                                <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">){</span>
+                                    <span class="s1">commodities </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">mrlDao</span><span class="s2">.</span><span class="s1">getMRLs</span><span class="s2">(</span><span class="s1">selectedPesticide</span><span class="s2">!!.</span><span class="s1">id</span><span class="s2">)</span>
+                                        <span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">commodityDao</span><span class="s2">.</span><span class="s1">getCommodity</span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">commodity</span><span class="s2">) }</span>
+                                    <span class="s1">println</span><span class="s2">(</span><span class="s1">commodities</span><span class="s2">)</span>
+                                <span class="s2">}</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}</span>
+                        <span class="s1">commodities</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">commodity </span><span class="s2">-&gt;</span>
+                            <span class="s1">DropdownMenuItem</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= {</span>
+                                <span class="s1">selectedCommodity </span><span class="s2">= </span><span class="s1">commodity</span>
+                                <span class="s1">showCommodityDropdown </span><span class="s2">= </span><span class="s0">false</span>
+                            <span class="s2">}, </span><span class="s1">text </span><span class="s2">= {</span>
+                                <span class="s1">Text</span><span class="s2">(</span><span class="s1">commodity</span><span class="s2">.</span><span class="s1">name</span><span class="s2">)</span>
+                            <span class="s2">})</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">selectedCommodity </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">mrlSearchCoroutine </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+                <span class="s0">var </span><span class="s1">mrl by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">MRL</span><span class="s2">(</span><span class="s6">0</span><span class="s2">,</span><span class="s6">0</span><span class="s2">,</span><span class="s6">0.0</span><span class="s2">)) }</span>
+                <span class="s1">mrlSearchCoroutine</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+                    <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">){</span>
+                        <span class="s1">mrl </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">mrlDao</span><span class="s2">.</span><span class="s1">getMRL</span><span class="s2">(</span>
+                            <span class="s1">selectedPesticide</span><span class="s2">!!.</span><span class="s1">id</span><span class="s2">,</span>
+                            <span class="s1">selectedCommodity</span><span class="s2">!!.</span><span class="s1">id</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                <span class="s1">Card</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)){</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;MRL: </span><span class="s0">${</span><span class="s1">mrl</span><span class="s2">.</span><span class="s1">mrl</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()){</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">concentration </span><span class="s2">&gt; </span><span class="s1">mrl</span><span class="s2">.</span><span class="s1">mrl</span><span class="s2">){</span>
+                            <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">${</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">concentration</span><span class="s0">} </span><span class="s3">exceeds MRL.&quot;</span><span class="s2">, </span><span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Red</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                        <span class="s0">else </span><span class="s2">{</span>
+                            <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">${</span><span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">last</span><span class="s2">().</span><span class="s1">concentration</span><span class="s0">} </span><span class="s3">is within MRL.&quot;</span><span class="s2">, </span><span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Green</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+
+
+        <span class="s0">val </span><span class="s1">formatButtonText </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s3">&quot;Choose Format&quot;</span><span class="s2">) }</span>
+        <span class="s0">val </span><span class="s1">openDialog </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">)  }</span>
+        <span class="s0">val </span><span class="s1">selected </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s3">&quot;&quot;</span><span class="s2">) }</span>
+        <span class="s0">val </span><span class="s1">chosenFormat </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s3">&quot;&quot;</span><span class="s2">)   }</span>
+        <span class="s0">val </span><span class="s1">options </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;CSV&quot;</span><span class="s2">, </span><span class="s3">&quot;JSON&quot;</span><span class="s2">, </span><span class="s3">&quot;Excel&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">openDialog</span><span class="s2">.</span><span class="s1">value</span><span class="s2">){</span>
+            <span class="s1">Dialog</span><span class="s2">(</span><span class="s1">onDismissRequest </span><span class="s2">= { </span><span class="s1">openDialog</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span><span class="s2">}) {</span>
+                <span class="s1">Card </span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                    <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s6">950</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">wrapContentSize</span><span class="s2">(</span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">), </span><span class="s1">shape </span><span class="s2">= </span><span class="s1">RoundedCornerShape</span><span class="s2">(</span><span class="s6">20</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                <span class="s2">){</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s1">text</span><span class="s2">=</span><span class="s3">&quot;Formats&quot;</span><span class="s2">, </span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                        <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">top </span><span class="s2">= </span><span class="s6">2</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">start </span><span class="s2">= </span><span class="s6">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span><span class="s1">textAlign </span><span class="s2">= </span><span class="s1">TextAlign</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">, </span><span class="s1">fontSize </span><span class="s2">= </span><span class="s6">20</span><span class="s2">.</span><span class="s1">sp</span><span class="s2">)</span>
+
+                    <span class="s1">Column </span><span class="s2">{</span>
+                        <span class="s1">options</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{</span>
+                            <span class="s1">Row</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">5</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">), </span><span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span><span class="s2">) {</span>
+                                <span class="s1">RadioButton</span><span class="s2">(</span><span class="s1">selected </span><span class="s2">= (</span><span class="s1">it</span><span class="s2">==</span><span class="s1">selected</span><span class="s2">.</span><span class="s1">value</span><span class="s2">), </span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">selected</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">it </span><span class="s2">})</span>
+                                <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s1">it</span><span class="s2">, </span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                                    <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">1</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                                    <span class="s2">.</span><span class="s1">wrapContentSize</span><span class="s2">(</span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">), </span><span class="s1">textAlign </span><span class="s2">= </span><span class="s1">TextAlign</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">)</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    <span class="s1">Row </span><span class="s2">(</span><span class="s1">horizontalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">End</span><span class="s2">, </span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                        <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                        <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s6">3</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)){</span>
+                        <span class="s1">TextButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">openDialog</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;}, </span><span class="s1">shape</span><span class="s2">= </span><span class="s1">RoundedCornerShape</span><span class="s2">(</span><span class="s6">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)) {</span>
+                            <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Cancel&quot;</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                        <span class="s1">TextButton</span><span class="s2">(</span><span class="s1">enabled </span><span class="s2">= (</span><span class="s1">selected</span><span class="s2">.</span><span class="s1">value </span><span class="s0">in </span><span class="s1">options</span><span class="s2">), </span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">chosenFormat</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">selected</span><span class="s2">.</span><span class="s1">value </span><span class="s2">; </span><span class="s1">openDialog</span><span class="s2">.</span><span class="s1">value</span><span class="s2">=</span><span class="s0">false</span><span class="s2">; </span><span class="s1">formatButtonText</span><span class="s2">.</span><span class="s1">value</span><span class="s2">=</span><span class="s1">chosenFormat</span><span class="s2">.</span><span class="s1">value</span><span class="s2">}) {</span>
+                            <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Set Format&quot;</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">Row </span><span class="s2">{</span>
+            <span class="s1">Button</span><span class="s2">(</span><span class="s1">enabled </span><span class="s2">= (</span><span class="s1">formatButtonText</span><span class="s2">.</span><span class="s1">value </span><span class="s0">in </span><span class="s1">options</span><span class="s2">), </span><span class="s1">onClick </span><span class="s2">= {</span>
+                <span class="s0">when </span><span class="s2">(</span><span class="s1">chosenFormat</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+                    <span class="s0">in </span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;CSV&quot;</span><span class="s2">,</span><span class="s3">&quot;JSON&quot;</span><span class="s2">) -&gt; </span><span class="s1">downloadFile</span><span class="s2">(</span>
+                        <span class="s1">context</span><span class="s2">,</span>
+                        <span class="s3">&quot;data.</span><span class="s0">${</span><span class="s1">chosenFormat</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">,</span>
+                        <span class="s1">allData</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">toTypedArray</span><span class="s2">(),</span>
+                        <span class="s1">chosenFormat</span><span class="s2">.</span><span class="s1">value</span>
+                    <span class="s2">)</span>
+                    <span class="s3">&quot;Excel&quot; </span><span class="s2">-&gt; </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Not available yet&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s2">}</span>
+            <span class="s2">}) {</span>
+                <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Save data as &quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">Button</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">openDialog</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span><span class="s2">}) {</span>
+                <span class="s1">Text</span><span class="s2">(</span><span class="s1">formatButtonText</span><span class="s2">.</span><span class="s1">value</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+
+
+
+</pre>
+</body>
+</html>

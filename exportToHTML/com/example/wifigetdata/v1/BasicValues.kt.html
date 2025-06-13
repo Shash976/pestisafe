@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>BasicValues.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+BasicValues.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span><span class="s2">.</span><span class="s1">v1</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">MutableState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableDoubleStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableLongStateOf</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">flow</span><span class="s2">.</span><span class="s1">MutableStateFlow</span>
+
+
+<span class="s0">object </span><span class="s1">BasicValues </span><span class="s2">{</span>
+    <span class="s0">val </span><span class="s1">receivedVal </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s3">0.0</span><span class="s2">)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">r2score </span><span class="s2">= </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s3">0.0</span><span class="s2">)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">url </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">calibrationConcentration </span><span class="s2">= </span><span class="s1">doubleArrayOf</span><span class="s2">( </span><span class="s3">1.0</span><span class="s2">, </span><span class="s3">10.0</span><span class="s2">, </span><span class="s3">5.0</span><span class="s2">, </span><span class="s3">7.5</span><span class="s2">, </span><span class="s3">6.0</span><span class="s2">, </span><span class="s3">2.5</span><span class="s2">, </span><span class="s3">4.0</span><span class="s2">, </span><span class="s3">1.25</span><span class="s2">)</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">voltageDataArray  </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">concentrationDataArray </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">gradient : MutableState</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">&gt; = </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s3">0.0</span><span class="s2">)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">intercept </span><span class="s2">= </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s3">0.0</span><span class="s2">)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">updateTiming :MutableState</span><span class="s2">&lt;</span><span class="s1">Long</span><span class="s2">&gt; = </span><span class="s1">mutableLongStateOf</span><span class="s2">(</span><span class="s3">3000</span><span class="s2">)</span>
+
+    <span class="s0">fun </span><span class="s1">getGradient</span><span class="s2">() </span><span class="s1">:Double </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">gradient</span><span class="s2">.</span><span class="s1">value</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getIntercept</span><span class="s2">() </span><span class="s1">:Double </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">intercept</span><span class="s2">.</span><span class="s1">doubleValue</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">setGradient</span><span class="s2">(</span><span class="s1">newGradient: Double</span><span class="s2">) {</span>
+        <span class="s1">gradient</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">newGradient</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">setIntercept</span><span class="s2">(</span><span class="s1">newIntercept :Double</span><span class="s2">) {</span>
+        <span class="s1">intercept</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s1">newIntercept</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getCalibrationConcentration</span><span class="s2">()</span><span class="s1">: DoubleArray </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">calibrationConcentration</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">fun </span><span class="s1">getVoltageDataArray</span><span class="s2">() </span><span class="s1">:MutableList</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">&gt; {</span>
+        <span class="s0">return </span><span class="s1">voltageDataArray</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getConcentrationDataArray</span><span class="s2">() </span><span class="s1">:MutableList</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">&gt; {</span>
+        <span class="s0">return </span><span class="s1">concentrationDataArray</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">setURL</span><span class="s2">(</span><span class="s1">newURL:String</span><span class="s2">){</span>
+        <span class="s1">url</span><span class="s2">.</span><span class="s1">value</span><span class="s2">= </span><span class="s1">newURL</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getURL</span><span class="s2">() </span><span class="s1">:String </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">url</span><span class="s2">.</span><span class="s1">value</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getReceivedVal</span><span class="s2">()</span><span class="s1">: Double </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">receivedVal</span><span class="s2">.</span><span class="s1">value</span>
+    <span class="s2">}</span>
+    <span class="s0">fun </span><span class="s1">setReceivedVal</span><span class="s2">(</span><span class="s1">value:Double</span><span class="s2">) {</span>
+        <span class="s1">receivedVal</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">value</span>
+    <span class="s2">}</span>
+    <span class="s0">fun </span><span class="s1">getR2Score</span><span class="s2">() </span><span class="s1">:Double</span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue</span>
+    <span class="s2">}</span>
+    <span class="s0">fun </span><span class="s1">setR2Score</span><span class="s2">(</span><span class="s1">value: Double</span><span class="s2">){</span>
+        <span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s1">value</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getUpdateTiming</span><span class="s2">() </span><span class="s1">:Long </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">updateTiming</span><span class="s2">.</span><span class="s1">value</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">resetValues</span><span class="s2">(){</span>
+        <span class="s1">voltageDataArray</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+        <span class="s1">concentrationDataArray</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+        <span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s3">0.0</span>
+        <span class="s1">gradient</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s3">0.0</span>
+        <span class="s1">intercept</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s3">0.0</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>AppViewModel.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+AppViewModel.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">Application</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">ViewModel</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">ViewModelProvider</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">ViewModelStore</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">ViewModelStoreOwner</span>
+
+<span class="s0">class </span><span class="s1">AppViewModel : Application</span><span class="s2">(), </span><span class="s1">ViewModelStoreOwner </span><span class="s2">{</span>
+
+    <span class="s1">override </span><span class="s0">val </span><span class="s1">viewModelStore </span><span class="s2">= </span><span class="s1">ViewModelStore</span><span class="s2">()</span>
+
+    <span class="s3">// Override getViewModelStore from ViewModelStoreOwner</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">sharedViewModel: MainViewModel</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">()</span>
+        <span class="s1">sharedViewModel </span><span class="s2">= </span><span class="s1">ViewModelProvider</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)[</span><span class="s1">MainViewModel::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">]</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s0">class </span><span class="s1">MainViewModelFactory</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">repository: Repository</span><span class="s2">) </span><span class="s1">: ViewModelProvider</span><span class="s2">.</span><span class="s1">Factory </span><span class="s2">{</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s2">&lt;</span><span class="s1">T : ViewModel</span><span class="s2">&gt; </span><span class="s1">create</span><span class="s2">(</span><span class="s1">modelClass: Class</span><span class="s2">&lt;</span><span class="s1">T</span><span class="s2">&gt;)</span><span class="s1">: T </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">modelClass</span><span class="s2">.</span><span class="s1">isAssignableFrom</span><span class="s2">(</span><span class="s1">MainViewModel::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">)) {</span>
+            <span class="s1">@Suppress</span><span class="s2">(</span><span class="s4">&quot;UNCHECKED_CAST&quot;</span><span class="s2">)</span>
+            <span class="s0">return </span><span class="s1">MainViewModel</span><span class="s2">(</span><span class="s1">repository</span><span class="s2">) </span><span class="s0">as </span><span class="s1">T</span>
+        <span class="s2">}</span>
+        <span class="s0">throw </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s4">&quot;Unknown ViewModel class&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

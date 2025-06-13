@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>MathFuncs.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MathFuncs.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import kotlin</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">sqrt</span>
+
+<span class="s0">fun </span><span class="s1">linearRegression</span><span class="s2">(</span><span class="s1">X: List</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">&gt;, </span><span class="s1">Y: List</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">&gt;)</span><span class="s1">: Pair</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">, </span><span class="s1">Double</span><span class="s2">&gt; {</span>
+    <span class="s3">/**</span>
+     <span class="s3">* Calculate the linear regression of two lists of numbers.</span>
+     <span class="s3">*/</span>
+    <span class="s0">if </span><span class="s2">(</span><span class="s1">X</span><span class="s2">.</span><span class="s1">size </span><span class="s2">!= </span><span class="s1">Y</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) {</span>
+        <span class="s0">throw </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s4">&quot;Lists must have the same size&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+    <span class="s0">val </span><span class="s1">sortedPairs </span><span class="s2">= </span><span class="s1">X</span><span class="s2">.</span><span class="s1">zip</span><span class="s2">(</span><span class="s1">Y</span><span class="s2">).</span><span class="s1">sortedBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">first </span><span class="s2">}</span>
+    <span class="s0">val </span><span class="s1">x </span><span class="s2">= </span><span class="s1">sortedPairs</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">first </span><span class="s2">}</span>
+    <span class="s0">val </span><span class="s1">y </span><span class="s2">= </span><span class="s1">sortedPairs</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">second </span><span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">n </span><span class="s2">= </span><span class="s1">x</span><span class="s2">.</span><span class="s1">size</span>
+    <span class="s0">val </span><span class="s1">sumX </span><span class="s2">= </span><span class="s1">x</span><span class="s2">.</span><span class="s1">sum</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">sumY </span><span class="s2">= </span><span class="s1">y</span><span class="s2">.</span><span class="s1">sum</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">sumXY </span><span class="s2">= </span><span class="s1">x</span><span class="s2">.</span><span class="s1">zip</span><span class="s2">(</span><span class="s1">y</span><span class="s2">) { </span><span class="s1">a</span><span class="s2">, </span><span class="s1">b </span><span class="s2">-&gt; </span><span class="s1">a </span><span class="s2">* </span><span class="s1">b </span><span class="s2">}.</span><span class="s1">sum</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">sumX2 </span><span class="s2">= </span><span class="s1">x</span><span class="s2">.</span><span class="s1">sumOf </span><span class="s2">{ </span><span class="s1">it </span><span class="s2">* </span><span class="s1">it </span><span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">slope </span><span class="s2">= (</span><span class="s1">n </span><span class="s2">* </span><span class="s1">sumXY </span><span class="s2">- </span><span class="s1">sumX </span><span class="s2">* </span><span class="s1">sumY</span><span class="s2">) / (</span><span class="s1">n </span><span class="s2">* </span><span class="s1">sumX2 </span><span class="s2">- </span><span class="s1">sumX </span><span class="s2">* </span><span class="s1">sumX</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">intercept </span><span class="s2">= (</span><span class="s1">sumY </span><span class="s2">- (</span><span class="s1">slope </span><span class="s2">* </span><span class="s1">sumX</span><span class="s2">)) / </span><span class="s1">n</span>
+    <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s1">slope</span><span class="s2">, </span><span class="s1">intercept</span><span class="s2">)</span>
+
+<span class="s2">}</span>
+
+
+<span class="s0">fun </span><span class="s1">calcSlopeIntercept</span><span class="s2">(</span><span class="s1">x1: Double</span><span class="s2">, </span><span class="s1">y1: Double</span><span class="s2">, </span><span class="s1">x2: Double</span><span class="s2">, </span><span class="s1">y2: Double</span><span class="s2">)</span><span class="s1">: Pair</span><span class="s2">&lt;</span><span class="s1">Double</span><span class="s2">, </span><span class="s1">Double</span><span class="s2">&gt; {</span>
+    <span class="s0">val </span><span class="s1">gradient </span><span class="s2">= (</span><span class="s1">y2 </span><span class="s2">- </span><span class="s1">y1</span><span class="s2">) / (</span><span class="s1">x2 </span><span class="s2">- </span><span class="s1">x1</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">intercept </span><span class="s2">= </span><span class="s1">y1 </span><span class="s2">- (</span><span class="s1">gradient </span><span class="s2">* </span><span class="s1">x1</span><span class="s2">)</span>
+    <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s1">gradient</span><span class="s2">,</span><span class="s1">intercept</span><span class="s2">)</span>
+<span class="s2">}</span>
+
+<span class="s0">fun </span><span class="s1">calculateRSquared</span><span class="s2">(</span><span class="s1">array1: DoubleArray</span><span class="s2">, </span><span class="s1">array2: DoubleArray</span><span class="s2">)</span><span class="s1">: Double </span><span class="s2">{</span>
+    <span class="s3">/**</span>
+     <span class="s3">* Calculate the R-squared value of two arrays of numbers.</span>
+     <span class="s3">*/</span>
+    <span class="s0">if </span><span class="s2">(</span><span class="s1">array1</span><span class="s2">.</span><span class="s1">size </span><span class="s2">!= </span><span class="s1">array2</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) {</span>
+        <span class="s0">throw </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s4">&quot;Arrays must have the same size&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">n </span><span class="s2">= </span><span class="s1">array1</span><span class="s2">.</span><span class="s1">size </span><span class="s5">// number of elements in the array</span>
+    <span class="s0">val </span><span class="s1">mean1 </span><span class="s2">= </span><span class="s1">array1</span><span class="s2">.</span><span class="s1">average</span><span class="s2">() </span><span class="s5">// mean of the first array</span>
+    <span class="s0">val </span><span class="s1">mean2 </span><span class="s2">= </span><span class="s1">array2</span><span class="s2">.</span><span class="s1">average</span><span class="s2">() </span><span class="s5">// mean of the second array</span>
+
+    <span class="s0">var </span><span class="s1">numerator </span><span class="s2">= </span><span class="s6">0.0 </span><span class="s5">// numerator of the correlation coefficient</span>
+    <span class="s0">var </span><span class="s1">denominator1 </span><span class="s2">= </span><span class="s6">0.0 </span><span class="s5">// denominator of the correlation coefficient for array1</span>
+    <span class="s0">var </span><span class="s1">denominator2 </span><span class="s2">= </span><span class="s6">0.0 </span><span class="s5">// denominator of the correlation coefficient for array2</span>
+
+    <span class="s5">// Calculate the correlation coefficient</span>
+    <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s6">0 </span><span class="s1">until n</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">diff1 </span><span class="s2">= </span><span class="s1">array1</span><span class="s2">[</span><span class="s1">i</span><span class="s2">] - </span><span class="s1">mean1</span>
+        <span class="s0">val </span><span class="s1">diff2 </span><span class="s2">= </span><span class="s1">array2</span><span class="s2">[</span><span class="s1">i</span><span class="s2">] - </span><span class="s1">mean2</span>
+        <span class="s1">numerator </span><span class="s2">+= </span><span class="s1">diff1 </span><span class="s2">* </span><span class="s1">diff2</span>
+        <span class="s1">denominator1 </span><span class="s2">+= </span><span class="s1">diff1 </span><span class="s2">* </span><span class="s1">diff1</span>
+        <span class="s1">denominator2 </span><span class="s2">+= </span><span class="s1">diff2 </span><span class="s2">* </span><span class="s1">diff2</span>
+    <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">r </span><span class="s2">= </span><span class="s1">numerator </span><span class="s2">/ </span><span class="s1">sqrt</span><span class="s2">(</span><span class="s1">denominator1 </span><span class="s2">* </span><span class="s1">denominator2</span><span class="s2">)</span>
+    <span class="s0">return </span><span class="s1">r </span><span class="s2">* </span><span class="s1">r</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

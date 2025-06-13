@@ -1,0 +1,210 @@
+<html>
+<head>
+<title>CalibrationScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CalibrationScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">SuppressLint</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">ComponentActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Arrangement</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Box</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Column</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">grid</span><span class="s2">.</span><span class="s1">GridCells</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">grid</span><span class="s2">.</span><span class="s1">LazyVerticalGrid</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">RoundedCornerShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Refresh</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Card</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">CardDefaults</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">FloatingActionButton</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Icon</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">LaunchedEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">derivedStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">getValue</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableDoubleStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableIntStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">mutableStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">rememberCoroutineScope</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalContext</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">font</span><span class="s2">.</span><span class="s1">FontWeight</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">sp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">NavController</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+
+<span class="s1">@SuppressLint</span><span class="s2">(</span><span class="s3">&quot;CoroutineCreationDuringComposition&quot;</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">CalibrationScreen</span><span class="s2">( </span><span class="s1">sharedViewModel: MainViewModel</span><span class="s2">, </span><span class="s1">navController: NavController</span><span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">counter </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableIntStateOf</span><span class="s2">(</span><span class="s4">0</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">r2score </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s4">0.0</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">r2CoroutineScope </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">shownAdditionalCards </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableIntStateOf</span><span class="s2">(</span><span class="s4">0</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">calibConcentration </span><span class="s2">= </span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">calibrationConcentration</span>
+    <span class="s0">val </span><span class="s1">idealR2conditions </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">voltageValue </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s4">0.0</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">getValueCoroutineScope </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">Unit</span><span class="s2">) {</span>
+        <span class="s1">getValueCoroutineScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">theValue</span><span class="s2">.</span><span class="s1">collect </span><span class="s2">{</span>
+                <span class="s1">voltageValue</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s1">it</span>
+
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">r2CoroutineScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">collect </span><span class="s2">{ </span><span class="s1">r2 </span><span class="s2">-&gt;</span>
+            <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">) {</span>
+                <span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s1">r2</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">${</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue</span><span class="s0">} </span><span class="s3">: counter&quot;</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue </span><span class="s2">&gt;= </span><span class="s4">3</span><span class="s2">) {</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Counter is more than or equal to 3 at </span><span class="s0">${</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">&gt;= </span><span class="s4">0.9</span><span class="s2">) {</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;R2 score is more than 0.9 at </span><span class="s0">${</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                        <span class="s1">idealR2conditions</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span>
+                    <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                        <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;R2 score is less than 0.9 at </span><span class="s0">${</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Counter is less than 3 at </span><span class="s0">${</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\t </span><span class="s3">is r2 (</span><span class="s0">${</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">}</span><span class="s3">) less? </span><span class="s0">${</span><span class="s1">idealR2conditions</span><span class="s2">.</span><span class="s1">value</span><span class="s0">} </span><span class="s3">(Counter is </span><span class="s0">${</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue</span><span class="s0">}</span><span class="s3">) | Gradient: </span><span class="s0">${</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">gradient</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">}</span><span class="s3">, Intercept: </span><span class="s0">${</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">intercept</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">} </span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s5">//delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards</span>
+            <span class="s2">}</span>
+        <span class="s2">} }</span>
+    <span class="s2">}</span>
+
+    <span class="s0">when</span><span class="s2">(</span><span class="s1">idealR2conditions</span><span class="s2">.</span><span class="s1">value</span><span class="s2">){</span>
+        <span class="s0">true </span><span class="s2">-&gt; {</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;R2score (</span><span class="s0">${</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">}</span><span class="s3">) is sufficient. Switching to main screen&quot;</span><span class="s2">)</span>
+            <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">HOME</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+        <span class="s2">}</span>
+        <span class="s0">false </span><span class="s2">-&gt; {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue </span><span class="s2">&gt; </span><span class="s4">2</span><span class="s2">){</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">shownAdditionalCards</span><span class="s2">.</span><span class="s1">intValue </span><span class="s2">&lt; </span><span class="s1">calibConcentration</span><span class="s2">.</span><span class="s1">size </span><span class="s2">- </span><span class="s4">3</span><span class="s2">) {</span>
+                    <span class="s1">shownAdditionalCards</span><span class="s2">.</span><span class="s1">intValue</span><span class="s2">++ </span><span class="s5">// Show one additional card</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;showing additional card&quot;</span><span class="s2">)</span>
+                <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue </span><span class="s2">+ </span><span class="s4">1 </span><span class="s2">&gt;= </span><span class="s1">calibConcentration</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) {</span>
+                    <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;All calibration values calibrated. Switching to main screen&quot;</span><span class="s2">)</span>
+                    <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">Routes</span><span class="s2">.</span><span class="s1">HOME</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Composable</span>
+    <span class="s0">fun </span><span class="s1">CalibrateCard</span><span class="s2">(</span><span class="s1">index: Int</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">labelText </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{ </span><span class="s1">mutableDoubleStateOf</span><span class="s2">(</span><span class="s4">0.0</span><span class="s2">) }</span>
+        <span class="s0">val </span><span class="s1">concentration </span><span class="s2">= </span><span class="s1">calibConcentration</span><span class="s2">[</span><span class="s1">index</span><span class="s2">]</span>
+        <span class="s0">val </span><span class="s1">textFixed by remember</span><span class="s2">(</span><span class="s1">counter</span><span class="s2">) { </span><span class="s1">derivedStateOf </span><span class="s2">{ </span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue </span><span class="s2">!= </span><span class="s1">index </span><span class="s2">} } </span><span class="s5">// Is text fixed?</span>
+        <span class="s0">val </span><span class="s1">updateLabelCoroutineScope </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">() </span><span class="s5">// Updates Label Text</span>
+        <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">voltageValue</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">textFixed</span><span class="s2">) {</span>
+                <span class="s1">updateLabelCoroutineScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+                    <span class="s1">labelText</span><span class="s2">.</span><span class="s1">doubleValue </span><span class="s2">= </span><span class="s1">voltageValue</span><span class="s2">.</span><span class="s1">doubleValue</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">onButtonClick </span><span class="s2">= {</span>
+            <span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Counter </span><span class="s0">${</span><span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">counter</span><span class="s2">.</span><span class="s1">intValue </span><span class="s2">= </span><span class="s1">index</span><span class="s2">+</span><span class="s4">1</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">updateData</span><span class="s2">(</span><span class="s1">newVoltage </span><span class="s2">= </span><span class="s1">labelText</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s2">, </span><span class="s1">newConcentration </span><span class="s2">= </span><span class="s1">concentration</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Column</span><span class="s2">(</span><span class="s1">horizontalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterHorizontally</span><span class="s2">, </span><span class="s1">verticalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">, </span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)){</span>
+            <span class="s1">Card</span><span class="s2">(</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                <span class="s1">shape </span><span class="s2">= </span><span class="s1">CardDefaults</span><span class="s2">.</span><span class="s1">elevatedShape</span><span class="s2">,</span>
+                <span class="s1">elevation </span><span class="s2">= </span><span class="s1">CardDefaults</span><span class="s2">.</span><span class="s1">cardElevation</span><span class="s2">(</span><span class="s1">defaultElevation </span><span class="s2">= </span><span class="s4">6</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+            <span class="s2">) {</span>
+                <span class="s1">Column</span><span class="s2">(</span>
+                    <span class="s1">horizontalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterHorizontally</span><span class="s2">,</span>
+                    <span class="s1">verticalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">,</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                <span class="s2">) {</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;</span><span class="s0">${</span><span class="s1">labelText</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">} </span><span class="s3">V&quot;</span><span class="s2">)</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">concentration </span><span class="s3">ppm&quot;</span><span class="s2">)</span>
+                    <span class="s1">Button</span><span class="s2">(</span><span class="s1">shape </span><span class="s2">= </span><span class="s1">RoundedCornerShape</span><span class="s2">(</span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">), </span><span class="s1">enabled </span><span class="s2">= !</span><span class="s1">textFixed</span><span class="s2">, </span><span class="s1">onClick </span><span class="s2">= {</span>
+                        <span class="s1">onButtonClick</span><span class="s2">()</span>
+                    <span class="s2">}) {</span>
+                        <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Set Voltage&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+    <span class="s2">}</span>
+
+    <span class="s1">Box</span><span class="s2">(</span><span class="s1">modifier</span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()){</span>
+        <span class="s1">Column</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+            <span class="s1">horizontalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterHorizontally</span><span class="s2">,</span>
+            <span class="s1">verticalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span>
+        <span class="s2">) {</span>
+            <span class="s1">Text</span><span class="s2">(</span>
+                <span class="s1">text</span><span class="s2">=</span><span class="s3">&quot;Calibrate&quot;</span><span class="s2">,</span>
+                <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span><span class="s2">,</span>
+                <span class="s1">fontSize </span><span class="s2">= </span><span class="s4">20</span><span class="s2">.</span><span class="s1">sp</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">15</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+            <span class="s2">)</span>
+            <span class="s1">Text</span><span class="s2">(</span>
+                <span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;R-Square score: </span><span class="s0">${</span><span class="s1">r2score</span><span class="s2">.</span><span class="s1">doubleValue</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+            <span class="s2">)</span>
+            <span class="s1">LazyVerticalGrid</span><span class="s2">(</span>
+                <span class="s1">columns </span><span class="s2">= </span><span class="s1">GridCells</span><span class="s2">.</span><span class="s1">FixedSize</span><span class="s2">(</span><span class="s4">165</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">1</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                <span class="s1">verticalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">,</span>
+                <span class="s1">horizontalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">Center</span>
+            <span class="s2">) {</span>
+                <span class="s1">repeat</span><span class="s2">(</span><span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">calibrationConcentration</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) {</span>
+                    <span class="s0">val </span><span class="s1">isVisible </span><span class="s2">= </span><span class="s1">it </span><span class="s2">&lt; (</span><span class="s4">3 </span><span class="s2">+ </span><span class="s1">shownAdditionalCards</span><span class="s2">.</span><span class="s1">intValue</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">isVisible</span><span class="s2">) {</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">&gt;=</span><span class="s4">3</span><span class="s2">) </span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Showing Card number </span><span class="s0">${</span><span class="s1">it </span><span class="s2">+ </span><span class="s4">1</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                        <span class="s1">item </span><span class="s2">{</span>
+                            <span class="s1">CalibrateCard</span><span class="s2">(</span><span class="s1">index </span><span class="s2">= </span><span class="s1">it</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s0">val </span><span class="s1">context </span><span class="s2">= </span><span class="s1">LocalContext</span><span class="s2">.</span><span class="s1">current</span>
+        <span class="s1">FloatingActionButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= {</span>
+            <span class="s1">sharedViewModel</span><span class="s2">.</span><span class="s1">resetValues</span><span class="s2">()</span>
+            <span class="s2">(</span><span class="s1">context </span><span class="s0">as </span><span class="s1">ComponentActivity</span><span class="s2">).</span><span class="s1">recreate</span><span class="s2">()</span>
+        <span class="s2">},</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+            <span class="s2">.</span><span class="s1">align</span><span class="s2">(</span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">BottomEnd</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)) {</span>
+            <span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Filled</span><span class="s2">.</span><span class="s1">Refresh</span><span class="s2">, </span><span class="s1">contentDescription </span><span class="s2">= </span><span class="s3">&quot;Reset&quot;</span><span class="s2">)</span>
+
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

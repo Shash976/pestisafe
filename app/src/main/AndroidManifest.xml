@@ -11,12 +11,12 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
 
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Wifigetdata"
+        android:theme="@style/Theme.Pestisafe"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <provider
@@ -32,19 +32,12 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Wifigetdata">
+            android:theme="@style/Theme.Pestisafe">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".SetURLActivity"/>
-        <activity android:name=".CalibrationActivity"/>
-        <activity android:name=".Charts"/>
-        <activity android:name=".HomeActivity"/>
-        <activity android:name=".DropdownTest"/>
-        <activity android:name=".IPScanner"/>
     </application>
 
 </manifest>

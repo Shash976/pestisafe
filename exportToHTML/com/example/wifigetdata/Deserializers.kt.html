@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>Deserializers.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Deserializers.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">wifigetdata</span>
+
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">JsonDeserializationContext</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">JsonDeserializer</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">JsonElement</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">lang</span><span class="s2">.</span><span class="s1">reflect</span><span class="s2">.</span><span class="s1">Type</span>
+
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">PesticidesResponse</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">pesticides: List</span><span class="s2">&lt;</span><span class="s1">Pesticide</span><span class="s2">&gt;</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">MRLDetail</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">pesticide: Pesticide</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">commodity: Commodity</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">mrl: Double</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">Detail</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">id: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">pesticide: Pesticide</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">mrls: List</span><span class="s2">&lt;</span><span class="s1">MRLDetail</span><span class="s2">&gt;,</span>
+<span class="s2">)</span>
+
+
+<span class="s0">class </span><span class="s1">PesticideDeserializer : JsonDeserializer</span><span class="s2">&lt;</span><span class="s1">PesticidesResponse</span><span class="s2">&gt; {</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">deserialize</span><span class="s2">(</span><span class="s1">json: JsonElement?</span><span class="s2">, </span><span class="s1">typeOfT: Type?</span><span class="s2">, </span><span class="s1">context: JsonDeserializationContext?</span><span class="s2">)</span><span class="s1">: PesticidesResponse </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">jsonObject </span><span class="s2">= </span><span class="s1">json</span><span class="s2">!!.</span><span class="s1">asJsonObject</span>
+        <span class="s0">val </span><span class="s1">pesticidesArray </span><span class="s2">= </span><span class="s1">jsonObject</span><span class="s2">.</span><span class="s1">getAsJsonObject</span><span class="s2">(</span><span class="s3">&quot;pesticides&quot;</span><span class="s2">).</span><span class="s1">getAsJsonArray</span><span class="s2">(</span><span class="s3">&quot;pesticide&quot;</span><span class="s2">).</span><span class="s1">asJsonArray</span>
+        <span class="s0">val </span><span class="s1">pesticideList </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Pesticide</span><span class="s2">&gt;()</span>
+        <span class="s1">pesticidesArray</span><span class="s2">.</span><span class="s1">forEach</span><span class="s2">{ </span><span class="s1">item </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">id </span><span class="s2">= </span><span class="s1">item</span><span class="s2">.</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;id&quot;</span><span class="s2">).</span><span class="s1">asInt</span>
+            <span class="s0">val </span><span class="s1">name </span><span class="s2">= </span><span class="s1">item</span><span class="s2">.</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;name&quot;</span><span class="s2">).</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;en&quot;</span><span class="s2">).</span><span class="s1">asString</span>
+            <span class="s1">pesticideList</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Pesticide</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">name</span><span class="s2">))</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">PesticidesResponse</span><span class="s2">(</span><span class="s1">pesticideList</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s0">class </span><span class="s1">DetailDeserializer : JsonDeserializer</span><span class="s2">&lt;</span><span class="s1">Detail</span><span class="s2">&gt; {</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">deserialize</span><span class="s2">(</span><span class="s1">json: JsonElement?</span><span class="s2">, </span><span class="s1">typeOfT: Type?</span><span class="s2">, </span><span class="s1">context: JsonDeserializationContext?</span><span class="s2">)</span><span class="s1">: Detail </span><span class="s2">{</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s1">json</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">jsonObject </span><span class="s2">= </span><span class="s1">json</span><span class="s2">!!.</span><span class="s1">asJsonObject</span>
+        <span class="s0">val </span><span class="s1">id </span><span class="s2">= </span><span class="s1">jsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;pestIdCodex&quot;</span><span class="s2">).</span><span class="s1">asInt</span>
+        <span class="s1">println</span><span class="s2">(</span><span class="s1">id</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">pesticide </span><span class="s2">= </span><span class="s1">Pesticide</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">jsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;pesticide&quot;</span><span class="s2">).</span><span class="s1">asString</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">mrlsArray </span><span class="s2">= </span><span class="s1">jsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;mrls&quot;</span><span class="s2">).</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">getAsJsonArray</span><span class="s2">(</span><span class="s3">&quot;mrl&quot;</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">mrlList </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">MRLDetail</span><span class="s2">&gt;()</span>
+        <span class="s1">mrlsArray</span><span class="s2">.</span><span class="s1">forEach</span><span class="s2">{ </span><span class="s1">mrlItem </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">commodity </span><span class="s2">= </span><span class="s1">Commodity</span><span class="s2">(</span><span class="s1">name</span><span class="s2">=</span><span class="s1">mrlItem</span><span class="s2">.</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;commodity&quot;</span><span class="s2">).</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;name&quot;</span><span class="s2">).</span><span class="s1">asString</span><span class="s2">, </span><span class="s1">id</span><span class="s2">=</span><span class="s1">mrlItem</span><span class="s2">.</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;commodity&quot;</span><span class="s2">).</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;id&quot;</span><span class="s2">).</span><span class="s1">asInt</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">mrl </span><span class="s2">= </span><span class="s1">mrlItem</span><span class="s2">.</span><span class="s1">asJsonObject</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s3">&quot;mrl&quot;</span><span class="s2">)</span>
+            <span class="s0">try</span><span class="s2">{</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s1">mrl</span><span class="s2">)</span>
+                <span class="s1">mrlList</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">MRLDetail</span><span class="s2">(</span><span class="s1">pesticide</span><span class="s2">, </span><span class="s1">commodity</span><span class="s2">, </span><span class="s1">mrl</span><span class="s2">.</span><span class="s1">asDouble</span><span class="s2">))</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">){</span>
+                <span class="s1">println</span><span class="s2">(</span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">Detail</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">pesticide</span><span class="s2">, </span><span class="s1">mrlList</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

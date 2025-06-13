@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">wifigetdata</string>
-    <string name="received_value">blah blah balh</string>
-    <string name="received_int_value">0.0</string>
+    <string name="app_name"> PestiSafe </string>
 
 </resources>
