@@ -1,6 +1,5 @@
 package com.example.pestisafe
 
-import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,61 +37,42 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavController) {
     val counter = remember { mutableIntStateOf(0) }
     val r2score = remember { mutableDoubleStateOf(0.0) }
-    val r2CoroutineScope = rememberCoroutineScope()
     val shownAdditionalCards = remember { mutableIntStateOf(0) }
     val calibConcentration = sharedViewModel.calibrationConcentration
     val idealR2conditions = remember { mutableStateOf(false) }
     val voltageValue = remember { mutableDoubleStateOf(0.0) }
-    val getValueCoroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        getValueCoroutineScope.launch {
-            sharedViewModel.theValue.collect {
-                voltageValue.doubleValue = it
-
-            }
+        sharedViewModel.theValue.collect {
+            voltageValue.doubleValue = it
         }
-        r2CoroutineScope.launch {
-            sharedViewModel.r2score.collect { r2 ->
+    }
+    LaunchedEffect(Unit) {
+        sharedViewModel.r2score.collect { r2 ->
             withContext(Dispatchers.Default) {
                 r2score.doubleValue = r2
-                println("${counter.intValue} : counter")
                 if (counter.intValue >= 3) {
-                    println("Counter is more than or equal to 3 at ${counter.intValue}")
                     if (r2score.doubleValue >= 0.9) {
-                        println("R2 score is more than 0.9 at ${r2score.doubleValue}")
                         idealR2conditions.value = true
-                    } else {
-                        println("R2 score is less than 0.9 at ${r2score.doubleValue}")
                     }
-                } else {
-                    println("Counter is less than 3 at ${counter.intValue}")
                 }
-                println("\t is r2 (${r2score.doubleValue}) less? ${idealR2conditions.value} (Counter is ${counter.intValue}) | Gradient: ${sharedViewModel.gradient.doubleValue}, Intercept: ${sharedViewModel.intercept.doubleValue} ")
                 //delay(sharedViewModel.updateTiming.value + 1000) // Adjust delay between showing cards
             }
-        } }
+        }
     }
 
-    when(idealR2conditions.value){
-        true -> {
-            println("R2score (${r2score.doubleValue}) is sufficient. Switching to main screen")
+    LaunchedEffect(idealR2conditions.value, counter.intValue) {
+        if (idealR2conditions.value) {
             navController.navigate(Routes.HOME.toString())
-        }
-        false -> {
-            if (counter.intValue > 2){
-                if (shownAdditionalCards.intValue < calibConcentration.size - 3) {
-                    shownAdditionalCards.intValue++ // Show one additional card
-                    println("showing additional card")
-                } else if (counter.intValue + 1 >= calibConcentration.size) {
-                    println("All calibration values calibrated. Switching to main screen")
-                    navController.navigate(Routes.HOME.toString())
-                }
+        } else if (counter.intValue > 2) {
+            if (shownAdditionalCards.intValue < calibConcentration.size - 3) {
+                shownAdditionalCards.intValue++
+            } else if (counter.intValue + 1 >= calibConcentration.size) {
+                navController.navigate(Routes.HOME.toString())
             }
         }
     }
@@ -113,7 +93,6 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
         }
 
         val onButtonClick = {
-            println("Counter ${counter.intValue}")
             counter.intValue = index+1
             sharedViewModel.updateData(newVoltage = labelText.doubleValue, newConcentration = concentration)
         }
@@ -167,7 +146,6 @@ fun CalibrationScreen( sharedViewModel: MainViewModel, navController: NavControl
                 repeat(sharedViewModel.calibrationConcentration.size) {
                     val isVisible = it < (3 + shownAdditionalCards.intValue)
                     if (isVisible) {
-                        if (it>=3) println("Showing Card number ${it + 1}")
                         item {
                             CalibrateCard(index = it)
                         }
