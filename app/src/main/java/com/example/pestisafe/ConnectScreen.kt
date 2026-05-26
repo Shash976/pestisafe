@@ -29,17 +29,18 @@ fun MainScreen(sharedViewModel: MainViewModel, navController: NavController) {
     val buttonText = remember { mutableStateOf("Connect") }
     val pesticides = sharedViewModel.repository.pesticideDao.getAll().observeAsState(initial = emptyList()) // Observe LiveData
     val isLoading = remember { mutableStateOf(false) }
+    val userTriedToConnect = remember { mutableStateOf(false) }
 
-    // Show toast when not connected to Wi-Fi
-    LaunchedEffect(connectionState.value) {
-        if (!connectionState.value) {
+    // Show toast when not connected to Wi-Fi only if the user tried to connect
+    LaunchedEffect(connectionState.value, userTriedToConnect.value) {
+        if (!connectionState.value && userTriedToConnect.value) {
             Toast.makeText(context, "Please connect to a Wi-Fi network", Toast.LENGTH_SHORT).show()
+            userTriedToConnect.value = false
         }
     }
 
     // Handle navigation when data is available
     LaunchedEffect(pesticides.value) {
-        println("Current Pesticides List: ${pesticides.value}")
         if (isLoading.value && pesticides.value.isNotEmpty()) {
             isLoading.value = false
             navController.navigate(Routes.PESTICIDE_SELECTION.toString())
@@ -48,14 +49,19 @@ fun MainScreen(sharedViewModel: MainViewModel, navController: NavController) {
 
     val onButtonClick: () -> Unit = if (sharedViewModel.url.value.isNotEmpty()) {
         {
+            // Disconnect: clear the URL; do not trigger the Wi-Fi warning
             sharedViewModel.url.value = ""
-            connectionState.value = false
         }
     } else {
         {
-            sharedViewModel.getPesticideData()
-            sharedViewModel.resetValues()
-            isLoading.value = true // Start loading when fetching data
+            // Connect: re-check Wi-Fi and flag that the user attempted to connect
+            connectionState.value = isWifiConnected(context)
+            userTriedToConnect.value = true
+            if (connectionState.value) {
+                sharedViewModel.getPesticideData()
+                sharedViewModel.resetValues()
+                isLoading.value = true // Start loading when fetching data
+            }
         }
     }
 
@@ -67,7 +73,8 @@ fun MainScreen(sharedViewModel: MainViewModel, navController: NavController) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(if (sharedViewModel.url.value.isNotEmpty()) "Connected to: ${sharedViewModel.url.value}" else "Not connected")
-        Button(onClick = onButtonClick, enabled = connectionState.value && !isLoading.value) {
+        // Disconnect is always enabled when there is a URL to clear; Connect requires no active load
+        Button(onClick = onButtonClick, enabled = if (sharedViewModel.url.value.isNotEmpty()) true else !isLoading.value) {
             Text(if (sharedViewModel.url.value.isNotEmpty()) "Disconnect" else "Connect")
         }
     }
