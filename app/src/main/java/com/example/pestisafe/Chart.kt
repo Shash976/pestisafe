@@ -162,7 +162,7 @@ fun rememberLegend(chartColors: List<Color>) =
                     textSize = 12.sp,
                     typeface = Typeface.MONOSPACE,
                 ),
-                labelText = line_names[index],
+                labelText = line_names.getOrElse(index) { "Series ${index + 1}" },
             )
         },
         iconSize = 8.dp,
