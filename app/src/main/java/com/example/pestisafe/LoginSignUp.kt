@@ -1,4 +1,5 @@
 import android.os.Build
+import org.mindrot.jbcrypt.BCrypt
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -133,20 +134,17 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
                         onDateChange = { dob = it; dobEntered.value = true },
                         label = "Date of Birth"
                     )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                TextButton(onClick = {
-                    forgotPasswordCheck.value = !forgotPasswordCheck.value
-                    if (dobEntered.value) {
-                        forgotPasswordCoroutine.launch {
-                            try {
-                                val user =
-                                    sharedViewModel.repository.userDao.getUser(username = username)
-                                if (user.dob.uppercase().strip() == dob.toString().uppercase()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = {
+                            forgotPasswordCoroutine.launch {
+                                val user = sharedViewModel.repository.userDao.getUser(username = username)
+                                if (user == null) {
+                                    Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
+                                } else if (user.dob.uppercase().strip() == dob.toString().uppercase()) {
                                     // DOB matches, proceed to reset password
                                     // Show reset password dialog or navigate to a reset password screen
                                     forgotPassword = true
-
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -154,18 +152,21 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
-                            } catch (e: Exception) {
-                                // Handle user not found
-                                // Show error message
-                                Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
                             }
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Verify Identity")
                     }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                TextButton(onClick = {
+                    forgotPasswordCheck.value = true
                 }) {
                     Text("Forgot Password?", fontSize = 14.sp)
                 }
                 if (forgotPassword) {
-                    ShowResetPasswordDialog(sharedViewModel, username, navController)
+                    ShowResetPasswordDialog(sharedViewModel, username, navController, onDismiss = { forgotPassword = false })
                 }
             }
 
@@ -177,20 +178,16 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
                     // Handle Login or Sign-Up logic here
                     if (isLogin){
                         getUsernameCoroutine.launch{
-                            try {
-                                val user = sharedViewModel.repository.userDao.getUser(username = username)
-                                if (user.password == password){
-                                    sharedViewModel.user = user
-                                    navController.navigate(Routes.MAIN.toString())
-                                } else {
-                                    // Handle incorrect password
-                                    // Show error message
-                                    Toast.makeText(context, "Incorrect Password", Toast.LENGTH_SHORT).show()
-                                }
-                            } catch (e: Exception) {
+                            val user = sharedViewModel.repository.userDao.getUser(username = username)
+                            if (user == null) {
                                 // Handle user not found
-                                // Show error message
                                 Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
+                            } else if (BCrypt.checkpw(password, user.password)){
+                                sharedViewModel.user = user
+                                navController.navigate(Routes.MAIN.toString())
+                            } else {
+                                // Handle incorrect password
+                                Toast.makeText(context, "Incorrect Password", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -205,9 +202,17 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
                                 ).show()
                             }
                             else{
-                                sharedViewModel.repository.userDao.insert(User(name = name, username = username, password = password, email = email, dob = dob.toString()))
+                                if (dob == null) {
+                                    Toast.makeText(context, "Please select a date of birth", Toast.LENGTH_SHORT).show()
+                                    return@launch
+                                }
+                                try {
+                                    sharedViewModel.repository.userDao.insert(User(name = name, username = username, password = BCrypt.hashpw(password, BCrypt.gensalt()), email = email, dob = dob.toString()))
+                                } catch (e: Exception) {
+                                    Toast.makeText(context, "Username already taken", Toast.LENGTH_SHORT).show()
+                                    return@launch
+                                }
                                 sharedViewModel.user = sharedViewModel.repository.userDao.getUser(username = username)
-                                println("User: ${sharedViewModel.user!!.username}, Logging in")
                                 navController.navigate(Routes.MAIN.toString())
                             }
                         }
@@ -235,7 +240,7 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerField(selectedDate: LocalDate?, onDateChange: (LocalDate) -> Unit, label: String) {
-    var isDialogOpen by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     OutlinedTextField(
         value = selectedDate?.toString() ?: "",
@@ -245,39 +250,34 @@ fun DatePickerField(selectedDate: LocalDate?, onDateChange: (LocalDate) -> Unit,
         readOnly = true,
         singleLine = true,
         trailingIcon = {
-            IconButton(onClick = { isDialogOpen = true }) {
+            IconButton(onClick = {
+                val calendar = Calendar.getInstance()
+                val year = calendar.get(Calendar.YEAR)
+                val month = calendar.get(Calendar.MONTH)
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+                android.app.DatePickerDialog(
+                    context,
+                    { _, selectedYear, selectedMonth, selectedDay ->
+                        onDateChange(LocalDate.of(selectedYear, selectedMonth + 1, selectedDay))
+                    },
+                    year,
+                    month,
+                    day
+                ).show()
+            }) {
                 Icon(Icons.Default.DateRange, contentDescription = "Select Date")
             }
         }
     )
-
-    if (isDialogOpen) {
-        val context = LocalContext.current
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        android.app.DatePickerDialog(
-            context,
-            { _, selectedYear, selectedMonth, selectedDay ->
-                onDateChange(LocalDate.of(selectedYear, selectedMonth + 1, selectedDay))
-                isDialogOpen = false
-            },
-            year,
-            month,
-            day
-        ).show()
-    }
 }
 
 @Composable
-fun ShowResetPasswordDialog(sharedViewModel: MainViewModel, username: String, navController: NavController) {
+fun ShowResetPasswordDialog(sharedViewModel: MainViewModel, username: String, navController: NavController, onDismiss: () -> Unit) {
     var newPassword by remember { mutableStateOf("") }
     val forgotPasswordCoroutine = rememberCoroutineScope()
     val context = LocalContext.current
     AlertDialog(
-        onDismissRequest = { },
+        onDismissRequest = { onDismiss() },
         title = { Text("Reset Password") },
         text = {
             Column {
@@ -294,16 +294,16 @@ fun ShowResetPasswordDialog(sharedViewModel: MainViewModel, username: String, na
         },
         confirmButton = {
             TextButton(onClick = {
-                println("Password reset")
                 forgotPasswordCoroutine.launch{
-                    sharedViewModel.repository.userDao.resetPassword(username, newPassword)
-                    sharedViewModel.repository.userDao.getUser(username = username).let {
-                        sharedViewModel.user = it
-                        println("User: ${sharedViewModel.user!!.username}, Logging in")
-                        Toast.makeText(context, "Password reset successfully", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Routes.MAIN.toString())
+                    sharedViewModel.repository.userDao.resetPassword(username, BCrypt.hashpw(newPassword, BCrypt.gensalt()))
+                    val updatedUser = sharedViewModel.repository.userDao.getUser(username = username)
+                    if (updatedUser == null) {
+                        Toast.makeText(context, "User not found after password reset", Toast.LENGTH_SHORT).show()
+                        return@launch
                     }
-
+                    sharedViewModel.user = updatedUser
+                    Toast.makeText(context, "Password reset successfully", Toast.LENGTH_SHORT).show()
+                    navController.navigate(Routes.MAIN.toString())
                 }
             }) {
                 Text("Reset")
@@ -311,7 +311,7 @@ fun ShowResetPasswordDialog(sharedViewModel: MainViewModel, username: String, na
             }
         },
         dismissButton = {
-            TextButton(onClick = { }) {
+            TextButton(onClick = { onDismiss() }) {
                 Text("Cancel")
             }
         }
