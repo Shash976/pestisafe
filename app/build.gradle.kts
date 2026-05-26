@@ -7,11 +7,11 @@ plugins {
 
 android {
     namespace = "com.example.pestisafe"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.pestisafe"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -20,9 +20,7 @@ android {
             useSupportLibrary = true
         }
 
-        ksp(){
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
+
 
     }
 
@@ -46,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
@@ -54,7 +52,9 @@ android {
         }
     }
 }
-
+ksp(){
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
 tasks.dokkaHtml {
     outputDirectory.set(file(System.getProperty("user.home")).resolve("Desktop/Code/IA_dokka"))
 //    dokkaSourceSets {
@@ -64,16 +64,21 @@ tasks.dokkaHtml {
 //    }
 }
 
+configurations.all {
+    exclude(group = "xml-apis", module = "xml-apis")
+}
+
 dependencies {
-    val roomVersion = "2.6.1"
-    val lifecycleVersion = "2.8.0"
-    implementation("androidx.core:core-ktx:1.13.1")
+    val roomVersion = "2.7.1"
+    val lifecycleVersion = "2.9.1"
+    implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
+    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.8.2")
+    implementation(platform("androidx.compose:compose-bom:2025.06.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -82,26 +87,27 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation ("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("androidx.fragment:fragment-ktx:1.7.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.1")
+    implementation("androidx.fragment:fragment-ktx:1.8.8")
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("at.favre.lib:bcrypt:0.9.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.06.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation("androidx.navigation:navigation-testing:2.7.7")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.9.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:2.7.7")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation ("androidx.compose.material:material-icons-extended:1.7.6")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.0")
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:2.9.0")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("com.patrykandpatrick.vico:compose:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:compose-m2:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:views:2.0.0-alpha.19")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
 }
