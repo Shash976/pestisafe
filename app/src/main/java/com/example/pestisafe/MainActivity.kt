@@ -51,24 +51,18 @@ open class MainActivity : ComponentActivity() {
             applicationContext,
             AppDatabase::class.java,
             "dataValues.db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
     private lateinit var sharedViewModel : MainViewModel
     private lateinit var repository : Repository
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO){
-                repository = Repository(database)
-                sharedViewModel = ViewModelProvider(
-                    this@MainActivity,
-                    MainViewModelFactory(repository)
-                )[MainViewModel::class.java]
-
-            }
-
-        }
+        repository = Repository(database)
+        sharedViewModel = ViewModelProvider(
+            this@MainActivity,
+            MainViewModelFactory(repository)
+        )[MainViewModel::class.java]
 
         setContent {
             PestisafeTheme {
@@ -174,10 +168,6 @@ open class MainActivity : ComponentActivity() {
                                 }
                             }
                     })
-                    /**
-                     * Launched effect
-                     * @see LaunchedEffect
-                     */
                     LaunchedEffect(Unit) {
                         lifecycleScope.launch {
                             withContext(Dispatchers.Default){
@@ -188,11 +178,6 @@ open class MainActivity : ComponentActivity() {
                                  * @see collect
                                  */
                                 sharedViewModel.repository.dataValueDao.getAll().collect {
-                                    if (it.isNotEmpty()){
-                                        println("New Data ${it.last().voltage} V, ${it.last().concentration} ppm")
-                                    } else {
-                                        println("Data is empty")
-                                    }
                                     when (sharedViewModel.screen) {
                                         Routes.CALIBRATION -> {
                                             if (it.size >= 2) {
@@ -203,7 +188,6 @@ open class MainActivity : ComponentActivity() {
                                             }
                                         }
                                         Routes.HOME -> {
-                                            println("Updated to ${it.last().voltage} V, ${it.last().concentration} ppm")
                                             sharedViewModel.allData.value = it
                                         }
                                         Routes.MAIN -> {}
@@ -214,9 +198,6 @@ open class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                    }
-                    LaunchedEffect(sharedViewModel.screen) {
-                        navController.navigate(sharedViewModel.screen.toString())
                     }
                 }
             }
