@@ -141,8 +141,7 @@ fun LoginSignUpScreen(sharedViewModel :MainViewModel, navController: NavControll
                                 val user = sharedViewModel.repository.userDao.getUser(username = username)
                                 if (user == null) {
                                     Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
-                                } else if (user.dob.uppercase().strip() == dob.toString().uppercase()) {
-                                    // DOB matches, proceed to reset password
+                                } else if (user.dob.equals(dob?.toString(), ignoreCase = true)) {                                    // DOB matches, proceed to reset password
                                     // Show reset password dialog or navigate to a reset password screen
                                     forgotPassword = true
                                 } else {

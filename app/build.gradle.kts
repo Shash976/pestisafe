@@ -110,4 +110,5 @@ dependencies {
     implementation("com.patrykandpatrick.vico:compose-m2:2.0.0-alpha.19")
     implementation("com.patrykandpatrick.vico:views:2.0.0-alpha.19")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation("org.mindrot:jbcrypt:0.4")
 }
