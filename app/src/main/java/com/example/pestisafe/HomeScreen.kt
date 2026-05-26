@@ -1,6 +1,6 @@
 package com.example.pestisafe
 
-import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +48,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 /**
  * The home screen of the app
@@ -70,27 +69,21 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
     val updateCoroutineScope = rememberCoroutineScope()
 
     val allData = remember { mutableStateOf(emptyList<DataValue>())    }
+    val liveVoltage = remember { mutableStateOf<Double?>(null) }
+    val liveConcentration = remember { mutableStateOf<Double?>(null) }
     LaunchedEffect(Unit) {
         updateCoroutineScope.launch{
             sharedViewModel.theValue.collect { received ->
-                if (allData.value.size >= 2){
-                    val low = sharedViewModel.allData.value.map { it.voltage }.min()
-                    val high = sharedViewModel.allData.value.map { it.voltage }.max()
-                    if (received > low && received < high){
-                        sharedViewModel.updateConcentration()
-                    }
-                }
-                else {
-                    sharedViewModel.updateConcentration()
-                }
+                // Only update live display — do NOT write to DB here
+                liveVoltage.value = received
+                val concentration = sharedViewModel.calculateConcentrationPublic(received)
+                liveConcentration.value = concentration
             }
         }
         chartCoroutineScope.launch {
             try {
                 sharedViewModel.allData.collect { data ->
-                    println("collecting.....")
                     allData.value = data
-                    println(allData.value.size)
     //                    modelProducer1.tryRunTransaction {
     //                        lineSeries {
     //                            series(
@@ -111,10 +104,9 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                                 )
                             }
                         }
-                        println("Added series")
                 }
             } catch (e: Exception) {
-                println("Error: $e")
+                Log.e("PestiSafe", "Error collecting chart data: $e")
             }
         }
     }
@@ -132,11 +124,20 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
         MainChart(modelProducer2, modifier = Modifier.padding(15.dp), chartColors = listOf(Color.Black))
 
         Card(modifier = Modifier.padding(20.dp)){
-            if (allData.value.isNotEmpty()){ Text("Voltage: ${allData.value.last().voltage} V \nConcentration: ${allData.value.last().concentration} ppm") }
+            if (liveVoltage.value != null) {
+                Text("Voltage: ${liveVoltage.value} V \nConcentration: ${liveConcentration.value} ppm")
+            } else if (allData.value.isNotEmpty()) {
+                Text("Voltage: ${allData.value.last().voltage} V \nConcentration: ${allData.value.last().concentration} ppm")
+            }
+        }
+        Button(
+            onClick = { sharedViewModel.updateConcentration() },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+        ) {
+            Text("Capture Reading")
         }
 
         val pesticides = sharedViewModel.pesticides
-        println("works till line 121 $pesticides")
         var selectedPesticide by remember { mutableStateOf<Pesticide?>(null) }
         var selectedCommodity by remember { mutableStateOf<Commodity?>(null) }
         var showPesticideDropdown by remember { mutableStateOf(false) }
@@ -152,11 +153,8 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                     onDismissRequest = { showPesticideDropdown = false }
                 ) {
                     pesticides.forEach { pesticide ->
-                        println("workssss $pesticide")
                         DropdownMenuItem(onClick = {
-                            println("line138 $pesticide")
                             selectedPesticide = pesticide
-                            println("line140, selectedPesticide: $selectedPesticide")
                             showPesticideDropdown = false
                         }, text = {
                             Text(pesticide.name)
@@ -166,17 +164,13 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
             }
 
             if (selectedPesticide != null) {
-                val searchCoroutine = rememberCoroutineScope()
                 var commodities : List<Commodity> by remember { mutableStateOf(emptyList()) }
-                println("works till line 152 ${selectedPesticide!!.id}")
-                searchCoroutine.launch {
+                LaunchedEffect(selectedPesticide?.id) {
                     withContext(Dispatchers.IO){
                         commodities = sharedViewModel.repository.mrlDao.getMRLs(selectedPesticide!!.id)
-                            .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodityID) }
-                        println(commodities)
+                            .mapNotNull { sharedViewModel.repository.commodityDao.getCommodity(it.commodityID) }
                     }
                 }
-                println("works till line 157 $commodities")
                 Box(modifier = Modifier.fillMaxWidth()) {
                     TextButton(onClick = { showCommodityDropdown = true}) {
                         Text(selectedCommodity?.name ?: "Select Commodity")
@@ -185,15 +179,6 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                         expanded = showCommodityDropdown,
                         onDismissRequest = { showCommodityDropdown = false }
                     ) {
-                        if (commodities.isEmpty()){
-                            searchCoroutine.launch {
-                                withContext(Dispatchers.IO){
-                                    commodities = sharedViewModel.repository.mrlDao.getMRLs(selectedPesticide!!.id)
-                                        .map { sharedViewModel.repository.commodityDao.getCommodity(it.commodityID) }
-                                    println(commodities)
-                                }
-                            }
-                        }
                         commodities.forEach { commodity ->
                             DropdownMenuItem(onClick = {
                                 selectedCommodity = commodity
@@ -207,9 +192,8 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
             }
 
             if (selectedCommodity != null) {
-                val mrlSearchCoroutine = rememberCoroutineScope()
-                var mrl by remember { mutableStateOf(MRL(0,0,0.0)) }
-                mrlSearchCoroutine.launch {
+                var mrl by remember { mutableStateOf<MRL?>(null) }
+                LaunchedEffect(selectedPesticide?.id, selectedCommodity?.id) {
                     withContext(Dispatchers.IO){
                         mrl = sharedViewModel.repository.mrlDao.getMRL(
                             selectedPesticide!!.id,
@@ -217,28 +201,30 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                         )
                     }
                 }
-                Card(modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)){
-                    Column(modifier = Modifier.padding(10.dp).fillMaxSize().align(Alignment.CenterHorizontally)) {
-                        Text("Maximum Residue Limit: ${mrl.mrl}")
-                        val textValue = remember { mutableStateOf("") }
-                        val textColor = remember { mutableStateOf(Color.Black)    }
-                        Text(text=textValue.value, color=textColor.value, modifier = Modifier.padding(5.dp), fontSize = 25.sp, textAlign = TextAlign.Center)
-                        if (allData.value.isNotEmpty()){
-                            if (allData.value.last().concentration > mrl.mrl){
-                                textValue.value = "${allData.value.last().concentration} exceeds the residue limit. \nThis is not safe for consumption"
-                                textColor.value = Color.Red
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Icon(Icons.Filled.AssignmentLate, contentDescription = "Scan complete", tint = Color.Red, modifier = Modifier.size(30.dp).align(Alignment.CenterHorizontally))
+                if (mrl != null) {
+                    Card(modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)){
+                        Column(modifier = Modifier.padding(10.dp).fillMaxSize().align(Alignment.CenterHorizontally)) {
+                            Text("Maximum Residue Limit: ${mrl!!.mrl}")
+                            val textValue = remember { mutableStateOf("") }
+                            val textColor = remember { mutableStateOf(Color.Black)    }
+                            Text(text=textValue.value, color=textColor.value, modifier = Modifier.padding(5.dp), fontSize = 25.sp, textAlign = TextAlign.Center)
+                            if (allData.value.isNotEmpty()){
+                                if (allData.value.last().concentration > mrl!!.mrl){
+                                    textValue.value = "${allData.value.last().concentration} exceeds the residue limit. \nThis is not safe for consumption"
+                                    textColor.value = Color.Red
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Icon(Icons.Filled.AssignmentLate, contentDescription = "Scan complete", tint = Color.Red, modifier = Modifier.size(30.dp).align(Alignment.CenterHorizontally))
 
-                            }
-                            else {
-                                textValue.value = "${allData.value.last().concentration} is within the residue limit. \nThis is safe for consumption"
-                                textColor.value = Color.Green
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Icon(Icons.Filled.Check, contentDescription = "Scan complete", tint = Color.Green, modifier = Modifier.size(30.dp).align(Alignment.CenterHorizontally))
+                                }
+                                else {
+                                    textValue.value = "${allData.value.last().concentration} is within the residue limit. \nThis is safe for consumption"
+                                    textColor.value = Color.Green
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Icon(Icons.Filled.Check, contentDescription = "Scan complete", tint = Color.Green, modifier = Modifier.size(30.dp).align(Alignment.CenterHorizontally))
+                                }
                             }
                         }
                     }
@@ -296,7 +282,15 @@ fun HomeScreen(sharedViewModel: MainViewModel, navController: NavController, con
                         allData.value.toTypedArray(),
                         chosenFormat.value
                     )
-                    "Excel" -> Toast.makeText(context, "Not available yet", Toast.LENGTH_SHORT).show()
+                    "Excel" -> downloadFile(
+                        context,
+                        "${sharedViewModel.user?.username}_${selectedPesticide?.name}_${selectedCommodity?.name}_data.xlsx",
+                        allData.value.toTypedArray(),
+                        chosenFormat.value,
+                        username = sharedViewModel.user?.username ?: "",
+                        pesticide = selectedPesticide?.name ?: "",
+                        commodity = selectedCommodity?.name ?: ""
+                    )
                 }
             }) {
                 Text("Save data as ")

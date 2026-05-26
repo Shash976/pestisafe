@@ -1,5 +1,6 @@
 package com.example.pestisafe
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -10,6 +11,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,7 +57,7 @@ class MainViewModel(val repository: Repository) :ViewModel() {
         }
     }
 
-    suspend fun getFromVoltage(voltage: Double): DataValue = repository.getFromVoltage(voltage)
+    suspend fun getFromVoltage(voltage: Double): DataValue? = repository.getFromVoltage(voltage)
 
     private fun deleteAll() = viewModelScope.launch {
         repository.dataValueDao.deleteAll()
@@ -95,9 +97,13 @@ class MainViewModel(val repository: Repository) :ViewModel() {
         updateData(voltage, concentration)
     }
 
+    fun calculateConcentrationPublic(voltage: Double): Double = calculateConcentration(voltage)
+
     private fun calculateConcentration(voltage: Double): Double {
         // Y = MX + C -> X = Y-C / M
+        if (gradient.doubleValue == 0.0) return 0.0
         var concentration =  (voltage - intercept.doubleValue) / gradient.doubleValue
+        if (concentration.isNaN() || concentration.isInfinite()) return 0.0
         concentration = round(concentration*1000)/1000
         return concentration
     }
@@ -110,7 +116,6 @@ class MainViewModel(val repository: Repository) :ViewModel() {
             dataArray.map { it.voltage }.orEmpty().toDoubleArray(),
             dataArray.map { it.concentration }.orEmpty().toDoubleArray()
         )
-        println(r2score.value)
     }
 
     override fun onCleared() {
@@ -122,12 +127,11 @@ class MainViewModel(val repository: Repository) :ViewModel() {
      * Function to start data fetching
      */
     fun fetchData() {
-        println("Function called")
         viewModelScope.launch(viewModelJob) {
             while (url.value.isNotEmpty()) {
+                ensureActive()
                 withContext(Dispatchers.IO) {
                     theValue.value  = updateReceivedValue()
-                    println("${ theValue.value} , ${url.value }")
                 }
                 delay(updateTiming.value)
             }
@@ -140,11 +144,11 @@ class MainViewModel(val repository: Repository) :ViewModel() {
      */
     private suspend fun updateReceivedValue() :Double{
         try {
-            val received = getRequest(url.value).toDouble()
+            val received = getRequest(url.value).toDoubleOrNull() ?: return 0.0
             return received
         } catch (e: Exception) {
-            println("OOPS THIS IS THE ERROR $e")
-            println("URL IS ${url.value}")
+            Log.e("PestiSafe", "Error fetching value: $e")
+            Log.e("PestiSafe", "URL: ${url.value}")
         }
         return 0.0
     }
@@ -165,8 +169,6 @@ class MainViewModel(val repository: Repository) :ViewModel() {
                 val pesticideL = gson.fromJson(response, PesticidesResponse::class.java)
                 pesticides = pesticideL.pesticides
                 pesticides.forEach { repository.pesticideDao.insert(it) }
-                println(pesticides.lastIndex)
-                println("Added to database")
             }
         }
     }
@@ -179,7 +181,6 @@ class MainViewModel(val repository: Repository) :ViewModel() {
      * @see Commodity
      */
     fun getMRLData() {
-        println("Retrieving data")
         viewModelScope.launch(viewModelJob) {
             withContext(Dispatchers.IO) {
                 pesticides.forEach {
@@ -189,25 +190,27 @@ class MainViewModel(val repository: Repository) :ViewModel() {
                         val detailGson =
                             GsonBuilder().registerTypeAdapter(Detail::class.java, DetailDeserializer())
                                 .create()
-                        val detail: Detail = detailGson.fromJson(pesticideResponse, Detail::class.java)
-                        println(repository.pesticideDao.getAll().value.orEmpty().map { it.id })
-                        println(it.id)
-                        if (it.id !in repository.pesticideDao.getAll().value.orEmpty().map { it.id }) {
-                            repository.pesticideDao.insert(it)
-                        }
-
-                        detail.mrls.forEach { mrlDetail ->
-                            if (mrlDetail.commodity.id !in repository.commodityDao.getAll()
-                                    .map { it.id }
-                            ) {
-                                repository.commodityDao.insert(mrlDetail.commodity)
+                        try {
+                            val detail: Detail = detailGson.fromJson(pesticideResponse, Detail::class.java)
+                            if (it.id !in repository.pesticideDao.getAllDirect().map { it.id }) {
+                                repository.pesticideDao.insert(it)
                             }
-                            val mrl = MRL(
-                                mrlDetail.pesticide.id,
-                                mrlDetail.commodity.id,
-                                mrlDetail.mrl
-                            )
-                            repository.mrlDao.insert(mrl)
+
+                            detail.mrls.forEach { mrlDetail ->
+                                if (mrlDetail.commodity.id !in repository.commodityDao.getAll()
+                                        .map { it.id }
+                                ) {
+                                    repository.commodityDao.insert(mrlDetail.commodity)
+                                }
+                                val mrl = MRL(
+                                    mrlDetail.pesticide.id,
+                                    mrlDetail.commodity.id,
+                                    mrlDetail.mrl
+                                )
+                                repository.mrlDao.insert(mrl)
+                            }
+                        } catch (e: Exception) {
+                            Log.e("PestiSafe", "Failed to parse MRL data for pesticide: ${e.message}")
                         }
                 }
             }
@@ -241,7 +244,7 @@ class MainViewModel(val repository: Repository) :ViewModel() {
 
             }
         } catch (err: Exception) {
-            println("$err \n\t...is the error")
+            Log.e("PestiSafe", "$err \n\t...is the error")
         }
         return response?.toString() ?: ""
     }

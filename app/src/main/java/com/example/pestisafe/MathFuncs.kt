@@ -26,7 +26,9 @@ fun linearRegression(X: List<Double>, Y: List<Double>): Pair<Double, Double> {
 }
 
 
+// Prefer linearRegression() for N >= 2 points
 fun calcSlopeIntercept(x1: Double, y1: Double, x2: Double, y2: Double): Pair<Double, Double> {
+    if (x2 == x1) return Pair(0.0, 0.0)
     val gradient = (y2 - y1) / (x2 - x1)
     val intercept = y1 - (gradient * x1)
     return Pair(gradient,intercept)
@@ -57,6 +59,7 @@ fun calculateRSquared(array1: DoubleArray, array2: DoubleArray): Double {
         denominator2 += diff2 * diff2
     }
 
+    if (denominator1 == 0.0 || denominator2 == 0.0) return 0.0
     val r = numerator / sqrt(denominator1 * denominator2)
     return r * r
 }

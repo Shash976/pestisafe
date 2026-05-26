@@ -63,10 +63,10 @@ data class Commodity(
 @Entity(
     tableName = "MRL",
     foreignKeys = [
-        ForeignKey(entity = Pesticide::class, parentColumns = ["id"], childColumns = ["pesticide"], onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = Commodity::class, parentColumns = ["id"], childColumns = ["commodity"], onDelete= ForeignKey.CASCADE)
+        ForeignKey(entity = Pesticide::class, parentColumns = ["id"], childColumns = ["pesticideID"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = Commodity::class, parentColumns = ["id"], childColumns = ["commodityID"], onDelete= ForeignKey.CASCADE)
     ],
-    indices = [Index(value = ["pesticide"]), Index(value = ["commodity"])],
+    indices = [Index(value = ["pesticideID"]), Index(value = ["commodityID"])],
     )
 data class MRL(
     val pesticideID: Int,
@@ -80,7 +80,7 @@ data class MRL(
  * @property username the username of the user
  * @property email the email of the user
  */
-@Entity(tableName = "User")
+@Entity(tableName = "User", indices = [Index(value = ["username"], unique = true)])
 data class User(
     val name: String,
     val username: String,
@@ -113,7 +113,7 @@ interface DataValueDao {
     suspend fun deleteAll()
 
     @Query("SELECT * FROM DataValue WHERE Voltage = :voltage")
-    fun getFromVoltage(voltage: Double) :DataValue
+    fun getFromVoltage(voltage: Double) :DataValue?
 
     @Query("SELECT * FROM DataValue WHERE id = :id")
     fun getFromId(id :Int) :DataValue
@@ -128,14 +128,17 @@ interface PesticideDao {
     @Query("SELECT * FROM Pesticide")
     fun getAll(): LiveData<List<Pesticide>>
 
+    @Query("SELECT * FROM Pesticide")
+    suspend fun getAllDirect(): List<Pesticide>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg items: Pesticide)
 
     @Query("SELECT * FROM Pesticide WHERE name = :name")
-    fun getPesticide(name: String): Pesticide
+    fun getPesticide(name: String): Pesticide?
 
     @Query("SELECT * FROM Pesticide WHERE id = :id")
-    fun getPesticide(id: Int): Pesticide
+    fun getPesticide(id: Int): Pesticide?
 
     @Query("DELETE FROM Pesticide")
     fun deleteAll()
@@ -153,10 +156,10 @@ interface CommodityDao {
     fun insert(vararg items: Commodity)
 
     @Query("SELECT * FROM Commodity WHERE name = :name")
-    fun getCommodity(name: String): Commodity
+    fun getCommodity(name: String): Commodity?
 
     @Query("SELECT * FROM Commodity WHERE id = :id")
-    fun getCommodity(id: Int): Commodity
+    fun getCommodity(id: Int): Commodity?
 }
 
 /**
@@ -174,7 +177,7 @@ interface MRLDao {
     fun getMRLs(pesticideID: Int): List<MRL>
 
     @Query ("SELECT * FROM MRL WHERE pesticideID = :pesticide AND commodityID = :commodity")
-    fun getMRL(pesticide: Int, commodity: Int): MRL
+    fun getMRL(pesticide: Int, commodity: Int): MRL?
 }
 
 @Dao
@@ -183,7 +186,7 @@ interface UserDao {
     suspend fun insert(vararg users: User)
 
     @Query("SELECT * FROM User WHERE username = :username")
-    suspend fun getUser(username: String): User
+    suspend fun getUser(username: String): User?
 
     @Query("UPDATE User SET password = :password WHERE username = :username")
     suspend fun resetPassword(username: String, password: String)
@@ -192,7 +195,7 @@ interface UserDao {
 /**
  * The database class
  */
-@Database(entities = [DataValue::class, Pesticide::class, Commodity::class, MRL::class, User::class], version = 1, exportSchema = true)
+@Database(entities = [DataValue::class, Pesticide::class, Commodity::class, MRL::class, User::class], version = 2, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dataValueDao(): DataValueDao
     abstract fun pesticideDao(): PesticideDao
@@ -228,7 +231,7 @@ class Repository(private val appDatabase: AppDatabase){
      * @param voltage the voltage to get the data value from
      * @return the data value
      */
-    suspend fun getFromVoltage(voltage: Double): DataValue {
+    suspend fun getFromVoltage(voltage: Double): DataValue? {
         return dataValueDao.getFromVoltage(voltage)
     }
     }

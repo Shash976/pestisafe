@@ -28,10 +28,6 @@ fun PesticideSelectionScreen(sharedViewModel: MainViewModel, navController: NavC
     val selectedPesticide = remember { mutableStateOf<Pesticide?>(null) }
     val expanded = remember { mutableStateOf(false) }
 
-    // Debugging logs
-    LaunchedEffect(pesticides.value) {
-        println("Pesticides observed: ${pesticides.value}")
-    }
 
     Column(
         modifier = Modifier
@@ -76,7 +72,6 @@ fun PesticideSelectionScreen(sharedViewModel: MainViewModel, navController: NavC
                 onClick = {
                     selectedPesticide.value?.let {
                         sharedViewModel.pesticides = listOf(it)
-                        println("Selected pesticide: ${it.name}")
                         navController.navigate(Routes.IP_SCANNER.toString())
                     }
                 },

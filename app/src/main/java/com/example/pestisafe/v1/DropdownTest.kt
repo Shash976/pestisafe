@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -95,7 +96,7 @@ class DropdownTest : ComponentActivity(){
 
                     context.startActivity(intent)
                 } catch (e: Exception) {
-                    println("No ${fileType.replaceFirstChar {
+                    Log.e("PestiSafe", "No ${fileType.replaceFirstChar {
                         if (it.isLowerCase()) it.titlecase(
                             Locale.ROOT
                         ) else it.toString()
@@ -115,17 +116,14 @@ class DropdownTest : ComponentActivity(){
 
                 var counter  =1
                 while(file.exists()){
-                    println("File exists. Making new file")
                     val newNameWithoutExtension = file.name.substringBeforeLast(".")
                     file = File(dir, "$newNameWithoutExtension($counter).$extension")
                     counter++
                 }
 
                 file.createNewFile()
-                println("FILE CREATED!! Filename: ${file.name}")
 
                 if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, android.Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                    println("Permissions not given 😱 requesting now")
                     ActivityCompat.requestPermissions(
                         this,
                         arrayOf(
@@ -134,9 +132,6 @@ class DropdownTest : ComponentActivity(){
                         ),
                         PackageManager.PERMISSION_GRANTED
                     )
-                    println("Got permission. downloading file")
-                } else {
-                    println(" PERMISSIONS GO. DOWNLOADING FILE")
                 }
 
                 val outputStream = FileOutputStream(file)
@@ -255,7 +250,7 @@ fun openDownloadedFile(context: Context, filePath: String) {
 
         context.startActivity(intent)
     } catch (e: Exception) {
-        println("No ${fileType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }} Viewer Found. Error $e")
+        Log.e("PestiSafe", "No ${fileType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }} Viewer Found. Error $e")
         Toast.makeText(context, "Could not find a ${fileType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} Viewer", Toast.LENGTH_SHORT).show()
     }
 }
@@ -272,17 +267,14 @@ fun downloadFile(context: Context, fileName:String, array: Array<DataValue>, for
 
     var counter  =1
     while(file.exists()){
-        println("File exists. Making new file")
         val newNameWithoutExtension = file.name.substringBeforeLast(".")
         file = File(dir, "$newNameWithoutExtension($counter).$extension")
         counter++
     }
 
     file.createNewFile()
-    println("FILE CREATED!! Filename: ${file.name}")
 
     if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, android.Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-        println("Permissions not given 😱 requesting now")
         ActivityCompat.requestPermissions(
             context as ComponentActivity,
             arrayOf(
@@ -291,9 +283,6 @@ fun downloadFile(context: Context, fileName:String, array: Array<DataValue>, for
             ),
             PackageManager.PERMISSION_GRANTED
         )
-        println("Got permission. downloading file")
-    } else {
-        println(" PERMISSIONS GO. DOWNLOADING FILE")
     }
 
     val outputStream = FileOutputStream(file)
